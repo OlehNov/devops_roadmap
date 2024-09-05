@@ -1,0 +1,70 @@
+services:
+  db:
+    image: mysql:latest
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3310:3306"
+    networks:
+      - glamp
+  web:
+    build: .
+    volumes:
+      - .:/app
+      - static_value:/static/
+      - media_value:/media/
+    ports:
+      - "8181:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - redis
+    networks:
+      - glamp
+
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    networks:
+      - glamp
+    depends_on:
+      - db
+
+  celery-worker:
+    build: .
+    env_file:
+      - ./.env
+    command: celery -A config worker -l INFO
+    environment:
+      - PYTHONPATH=/app/src
+    depends_on:
+      - redis
+    networks:
+      - glamp
+
+  celery-beat:
+    build: .
+    command: celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    env_file:
+      - ./.env
+    environment:
+      - PYTHONPATH=/app/src
+    depends_on:
+      - redis
+    networks:
+      - glamp
+
+
+volumes:
+  db_data:
+  static_value:
+  media_value:
+
+
+networks:
+  glamp:
+    driver: bridge
