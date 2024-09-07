@@ -1,18 +1,21 @@
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from rest_framework import generics, status
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from config import settings
 from tourists.serializers import UserTouristProfileSerializer
+from rest_framework.exceptions import PermissionDenied
 from tourists.validators import validate_phone, validate_birthday
 from users.models import User
 from roles.constants import Role
+from handlers.errors import validate_phone_error, validate_birthday_error
+
+import traceback
 
 
-class TouristProfileView(generics.ListCreateAPIView):
+class TouristProfileListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = UserTouristProfileSerializer
     permission_classes = [IsAuthenticated]
 
@@ -28,7 +31,7 @@ class TouristProfileView(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class TouristProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
+class TouristProfileDetailRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserTouristProfileSerializer
     permission_classes = [IsAuthenticated]
 
@@ -43,19 +46,22 @@ class TouristProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
         queryset = self.get_queryset()
 
         if user.role == Role.ADMIN:
-            obj = generics.get_object_or_404(queryset, pk=self.kwargs.get('pk'))
+            target_user = generics.get_object_or_404(queryset, pk=self.kwargs.get('pk'))
         else:
-            raise PermissionDenied("You do not have permission to update this profile.()")
+            if settings.DEBUG:
+                raise PermissionDenied(
+                    detail={
+                        "detail": "You don't have enough permission.",
+                        "traceback": traceback.format_exc()
+                    }
+                )
+            else:
+                raise PermissionDenied({"detail": "You don't have enough permission."})
 
-        return obj
+        return target_user
 
     @transaction.atomic
     def update(self, request, *args, **kwargs):
-        user = self.request.user
-
-        if user.role != Role.ADMIN:
-            raise PermissionDenied("You do not have permission to update this profile.()(")
-
         instance = self.get_object()
 
         partial = kwargs.pop('partial', False)
@@ -70,27 +76,28 @@ class TouristProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
             try:
                 validate_phone(phone)
             except ValidationError as e:
-                if settings.DEBUG:
-                    return Response({"phone": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    return Response({'phone': "Validation error. Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                validate_phone_error(e)
 
         if birthday:
             try:
                 validate_birthday(birthday)
             except ValidationError as e:
-                if settings.DEBUG:
-                    return Response({"birthday": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    return Response({'birthday': "Validation error. The date should be specified in the format YYYY-MM-DD"},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                validate_birthday_error(e)
+
         self.perform_update(serializer)
 
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def destroy(self, request, *args, **kwargs):
+        target_user = self.get_object()
+
+        target_user.is_active = False
+        target_user.save()
+
+        return Response({"detail": "User has been deactivated."}, status=status.HTTP_204_NO_CONTENT)
 
 
-class CurrentUserProfileView(generics.RetrieveUpdateDestroyAPIView):
+class CurrentUserProfileRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserTouristProfileSerializer
     permission_classes = [IsAuthenticated]
 
@@ -112,19 +119,14 @@ class CurrentUserProfileView(generics.RetrieveUpdateDestroyAPIView):
             try:
                 validate_phone(phone)
             except ValidationError as e:
-                return Response(
-                    {"phone": str(e) if settings.DEBUG else "Validation error. Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                validate_phone_error(e)
 
         if birthday:
             try:
                 validate_birthday(birthday)
             except ValidationError as e:
-                return Response(
-                    {"birthday": str(e) if settings.DEBUG else "Validation error. The date should be specified in the format YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                validate_birthday_error(e)
 
         self.perform_update(serializer)
-        return Response(serializer.data)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
