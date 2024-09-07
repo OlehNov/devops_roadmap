@@ -23,7 +23,7 @@ Then, delete the feature branch:
 ```git branch -d feature/feature-name```
 
 
-### Hotfix Branches (hotfix/*) — Used for urgent bug fixes in production. Created from master when a critical issue needs to be resolved.
+### ```Hotfix Branches (hotfix/*)``` — Used for urgent bug fixes in production. Created from master when a critical issue needs to be resolved.
 
 To create:
 
