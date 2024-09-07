@@ -6,6 +6,7 @@ Before you begin, ensure you have the following installed on your system:
 - Python (version 3.10 or higher)
 - pip (Python package installer)
 - Docker
+- Docker-compose
 
 ## Installation
 
