@@ -16,11 +16,11 @@ To merge: After completing the feature, merge it back into develop:
 
 ```git checkout develop```,
 
-```git merge feature/taask-number-feature-name```.
+```git merge feature/task-number-feature-name```.
 
 Then, delete the feature branch:
 
-```git branch -d feature/feature-name```
+```git branch -d feature/task-number-feature-name```
 
 
 ### ```Hotfix Branches (hotfix/*)``` — Used for urgent bug fixes in production. Created from master when a critical issue needs to be resolved.
