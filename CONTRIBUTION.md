@@ -2,9 +2,9 @@
 
 ## Main Branches:
 
-```master``` — The branch for production-ready code. Only stable, fully-tested code is merged here.
+### ```master``` — The branch for production-ready code. Only stable, fully-tested code is merged here.
 
-```develop``` or ```dev``` — The branch for ongoing development. All new features and changes are integrated and tested here before being pushed to production.
+### ```develop``` or ```dev``` — The branch for ongoing development. All new features and changes are integrated and tested here before being pushed to production.
 
 ## Supporting Branches:
 
