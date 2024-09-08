@@ -1,73 +1,55 @@
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from rest_framework import generics, status
+from rest_framework import viewsets
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_204_NO_CONTENT,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from config import settings
-from tourists.serializers import UserTouristProfileSerializer
-from rest_framework.exceptions import PermissionDenied
+from tourists.serializers import UserTouristProfileSerializer, TouristDeactivateSerializer
 from tourists.validators import validate_phone, validate_birthday
 from users.models import User
+from users.permissions import IsNotDeleted
 from roles.constants import Role
+from roles.permissions import RoleIsAdmin, RoleIsManager, IsOwner, RoleIsTourist
 from handlers.errors import validate_phone_error, validate_birthday_error
 
 import traceback
 
 
-class TouristProfileListCreateAPIView(generics.ListCreateAPIView):
+class TouristProfileListCreateAPIView(ListCreateAPIView):
     serializer_class = UserTouristProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsNotDeleted]
 
     def get_queryset(self):
         user = self.request.user
         if user.role == Role.ADMIN:
-            return User.objects.all()
+            return User.objects.filter(is_deleted=False)
         return User.objects.filter(id=user.id)
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=HTTP_200_OK)
 
 
-class TouristProfileDetailRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+class TouristProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserTouristProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsNotDeleted, RoleIsAdmin]
 
     def get_queryset(self):
-        user = self.request.user
-        if user.role == Role.ADMIN:
-            return User.objects.all()
-        return User.objects.filter(id=user.id)
+        return User.objects.filter(is_deleted=False)
 
     def get_object(self):
-        user = self.request.user
         queryset = self.get_queryset()
+        tourist = get_object_or_404(queryset, pk=self.kwargs.get('pk'))
 
-        if user.role == Role.ADMIN:
-            target_user = generics.get_object_or_404(queryset, pk=self.kwargs.get('pk'))
-        else:
-            if settings.DEBUG:
-                raise PermissionDenied(
-                    detail={
-                        "detail": "You don't have enough permission.",
-                        "traceback": traceback.format_exc()
-                    }
-                )
-            else:
-                raise PermissionDenied({"detail": "You don't have enough permission."})
+        return tourist
 
-        return target_user
-
-    @transaction.atomic
-    def update(self, request, *args, **kwargs):
-        instance = self.get_object()
-
-        partial = kwargs.pop('partial', False)
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-
+    def patch(self, request, *args, **kwargs):
         tourist_data = request.data.get('tourist', {})
         phone = tourist_data.get('phone', None)
         birthday = tourist_data.get('birthday', None)
@@ -84,25 +66,15 @@ class TouristProfileDetailRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDe
             except ValidationError as e:
                 validate_birthday_error(e)
 
-        self.perform_update(serializer)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return self.update(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
-        target_user = self.get_object()
+        tourist = self.get_object()
+        deactivate_serializer = TouristDeactivateSerializer(tourist, data={'is_deleted': True}, partial=True)
+        deactivate_serializer.is_valid(raise_exception=True)
+        deactivate_serializer.save()
 
-        target_user.is_active = False
-        target_user.save()
-
-        return Response({"detail": "User has been deactivated."}, status=status.HTTP_204_NO_CONTENT)
-
-
-class CurrentUserProfileRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = UserTouristProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_object(self):
-        return self.request.user
+        return Response({"detail": "User has been deactivated."}, status=HTTP_204_NO_CONTENT)
 
     @transaction.atomic
     def update(self, request, *args, **kwargs):
@@ -110,10 +82,22 @@ class CurrentUserProfileRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDest
         partial = kwargs.pop('partial', False)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
 
+        return Response(serializer.data, status=HTTP_200_OK)
+
+
+class CurrentUserProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = UserTouristProfileSerializer
+    permission_classes = [IsAuthenticated, IsNotDeleted]
+
+    def get_object(self):
+        return self.request.user
+
+    def patch(self, request, *args, **kwargs):
         tourist_data = request.data.get('tourist', {})
-        phone = tourist_data.get('phone')
-        birthday = tourist_data.get('birthday')
+        phone = tourist_data.get('phone', None)
+        birthday = tourist_data.get('birthday', None)
 
         if phone:
             try:
@@ -127,6 +111,14 @@ class CurrentUserProfileRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDest
             except ValidationError as e:
                 validate_birthday_error(e)
 
+        return self.update(request, *args, **kwargs)
+
+    @transaction.atomic
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        partial = kwargs.pop('partial', False)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.data, status=HTTP_200_OK)

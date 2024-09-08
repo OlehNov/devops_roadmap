@@ -53,3 +53,14 @@ class UserTouristProfileSerializer(serializers.ModelSerializer):
         ret['phone'] = instance.tourist.phone if hasattr(instance, 'tourist') else ''
         ret['birthday'] = instance.tourist.birthday if hasattr(instance, 'tourist') else ''
         return ret
+
+
+class TouristDeactivateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['is_deleted']
+
+    def update(self, instance, validated_data):
+        instance.is_deleted = validated_data.get('is_deleted', True)
+        instance.save()
+        return instance
