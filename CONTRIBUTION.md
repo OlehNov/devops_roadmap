@@ -10,18 +10,19 @@
 
 ### ```Feature Branches (feature/*)``` — Used to develop new features or make changes. Each feature has its own branch and is created from develop. 
 
-To create: ```git checkout -b feature/task-number-feature-name develop```
+To create: ```git checkout -b feature/clup-task-id_feature_name develop```
 
 To merge: After completing the feature, merge it back into develop:
 
 ```git checkout develop```,
 
-```git merge feature/task-number-feature-name```.
+```git merge feature/clup-task-id_feature_name```.
 
 Then, delete the feature branch:
 
-```git branch -d feature/task-number-feature-name```
+```git branch -d feature/clup-task-id_feature_name```
 
+Example: ```feature/clup-8695p0b0b_registration```
 
 ### ```Hotfix Branches (hotfix/*)``` — Used for urgent bug fixes in production. Created from master when a critical issue needs to be resolved.
 
