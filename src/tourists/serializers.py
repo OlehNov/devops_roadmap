@@ -61,6 +61,7 @@ class TouristDeactivateSerializer(serializers.ModelSerializer):
         fields = ['is_deleted']
 
     def update(self, instance, validated_data):
+        instance.is_active = validated_data.get('is_active', False)
         instance.is_deleted = validated_data.get('is_deleted', True)
         instance.save()
         return instance

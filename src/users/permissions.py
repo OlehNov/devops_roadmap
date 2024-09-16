@@ -5,10 +5,7 @@ from rest_framework.permissions import BasePermission
 
 class IsNotDeleted(BasePermission):
     def has_permission(self, request, view):
-        if request.user and request.user.is_authenticated:
-            if request.user.is_deleted:
-                return False
-        return True
+        return request.user and request.user.is_authenticated and request.user.is_deleted == False
 
 
 def user_authenticated(user):
