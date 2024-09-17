@@ -24,6 +24,22 @@ Then, delete the feature branch:
 
 Example: ```feature/clup-8695p0b0b_registration```
 
+### ```Bugfix Branches (bugfix/*)``` — Used to fix bugs. Each bugfix has its own branch and is created from develop. 
+
+To create: ```git checkout -b bugfix/clup-task-id_bugfix_name develop```
+
+To merge: After completing the bug fixing, merge it back into develop:
+
+```git checkout develop```,
+
+```git merge bugfix/clup-task-id_bugfix_name```.
+
+Then, delete the bugfix branch:
+
+```git branch -d bugfix/clup-task-id_bugfix_name```
+
+Example: ```bugfix/clup-8695p0b0b_registration```
+
 ### ```Hotfix Branches (hotfix/*)``` — Used for urgent bug fixes in production. Created from master when a critical issue needs to be resolved.
 
 To create:
