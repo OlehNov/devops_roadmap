@@ -1,20 +1,26 @@
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from rest_framework import generics, status
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, get_object_or_404
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_204_NO_CONTENT,
+    HTTP_400_BAD_REQUEST,
+)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from config import settings
-from tourists.serializers import UserTouristProfileSerializer
+from tourists.serializers import UserTouristProfileSerializer, TouristDeactivateSerializer
 from tourists.validators import validate_phone, validate_birthday
 from users.models import User
+from users.permissions import IsNotDeleted
 from roles.constants import Role
+from roles.permissions import RoleIsAdmin, RoleIsManager, IsOwner, RoleIsTourist
+from handlers.errors import validate_phone_error, validate_birthday_error
 
 
-class TouristProfileView(generics.ListCreateAPIView):
+class TouristProfileListCreateAPIView(ListCreateAPIView):
     serializer_class = UserTouristProfileSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsNotDeleted]
 
     def get_queryset(self):
         user = self.request.user
@@ -25,43 +31,19 @@ class TouristProfileView(generics.ListCreateAPIView):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=HTTP_200_OK, headers=headers)
 
 
-class TouristProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
+class TouristProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = UserTouristProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        user = self.request.user
-        if user.role == Role.ADMIN:
-            return User.objects.all()
-        return User.objects.filter(id=user.id)
+    permission_classes = [IsAuthenticated, IsNotDeleted, RoleIsAdmin]
 
     def get_object(self):
-        user = self.request.user
-        queryset = self.get_queryset()
+        tourist = get_object_or_404(User.objects.all(), pk=self.kwargs.get('pk'))
+        return tourist
 
-        if user.role == Role.ADMIN:
-            obj = generics.get_object_or_404(queryset, pk=self.kwargs.get('pk'))
-        else:
-            raise PermissionDenied("You do not have permission to update this profile.()")
-
-        return obj
-
-    @transaction.atomic
-    def update(self, request, *args, **kwargs):
-        user = self.request.user
-
-        if user.role != Role.ADMIN:
-            raise PermissionDenied("You do not have permission to update this profile.()(")
-
-        instance = self.get_object()
-
-        partial = kwargs.pop('partial', False)
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
-
+    def patch(self, request, *args, **kwargs):
         tourist_data = request.data.get('tourist', {})
         phone = tourist_data.get('phone', None)
         birthday = tourist_data.get('birthday', None)
@@ -70,61 +52,115 @@ class TouristProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
             try:
                 validate_phone(phone)
             except ValidationError as e:
-                if settings.DEBUG:
-                    return Response({"phone": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    return Response({'phone': "Validation error. Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."},
-                                    status=status.HTTP_400_BAD_REQUEST)
+                validate_phone_error(e)
 
         if birthday:
             try:
                 validate_birthday(birthday)
             except ValidationError as e:
-                if settings.DEBUG:
-                    return Response({"birthday": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-                else:
-                    return Response({'birthday': "Validation error. The date should be specified in the format YYYY-MM-DD"},
-                                    status=status.HTTP_400_BAD_REQUEST)
-        self.perform_update(serializer)
+                validate_birthday_error(e)
 
-        return Response(serializer.data)
+        return self.update(request, *args, **kwargs)
 
+    def put(self, request, *args, **kwargs):
+        tourist_data = request.data.get('tourist', {})
+        phone = tourist_data.get('phone', None)
+        birthday = tourist_data.get('birthday', None)
 
-class CurrentUserProfileView(generics.RetrieveUpdateDestroyAPIView):
-    serializer_class = UserTouristProfileSerializer
-    permission_classes = [IsAuthenticated]
+        if phone:
+            try:
+                validate_phone(phone)
+            except ValidationError as e:
+                validate_phone_error(e)
 
-    def get_object(self):
-        return self.request.user
+        if birthday:
+            try:
+                validate_birthday(birthday)
+            except ValidationError as e:
+                validate_birthday_error(e)
+
+        return self.update(request, *args, **kwargs)
 
     @transaction.atomic
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         partial = kwargs.pop('partial', False)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
-        serializer.is_valid(raise_exception=True)
 
+        if serializer.is_valid():
+            serializer.save()
+            self.perform_update(serializer)
+            return Response(serializer.data, status=HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, *args, **kwargs):
+        tourist = self.get_object()
+        deactivate_serializer = TouristDeactivateSerializer(tourist, data={'is_deleted': True, 'is_active': False}, partial=True)
+
+        if deactivate_serializer.is_valid():
+            deactivate_serializer.save()
+            return Response({"detail": "User has been deactivated."}, status=HTTP_204_NO_CONTENT)
+        else:
+            return Response(deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+
+class CurrentUserProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = UserTouristProfileSerializer
+    permission_classes = [IsAuthenticated, IsNotDeleted]
+
+    def get_object(self):
+        return self.request.user
+
+    def patch(self, request, *args, **kwargs):
         tourist_data = request.data.get('tourist', {})
-        phone = tourist_data.get('phone')
-        birthday = tourist_data.get('birthday')
+        phone = tourist_data.get('phone', None)
+        birthday = tourist_data.get('birthday', None)
 
         if phone:
             try:
                 validate_phone(phone)
             except ValidationError as e:
-                return Response(
-                    {"phone": str(e) if settings.DEBUG else "Validation error. Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                validate_phone_error(e)
 
         if birthday:
             try:
                 validate_birthday(birthday)
             except ValidationError as e:
-                return Response(
-                    {"birthday": str(e) if settings.DEBUG else "Validation error. The date should be specified in the format YYYY-MM-DD"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+                validate_birthday_error(e)
 
-        self.perform_update(serializer)
-        return Response(serializer.data)
+        return self.update(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        tourist_data = request.data.get('tourist', {})
+        phone = tourist_data.get('phone', None)
+        birthday = tourist_data.get('birthday', None)
+
+        if phone:
+            try:
+                validate_phone(phone)
+            except ValidationError as e:
+                validate_phone_error(e)
+
+        if birthday:
+            try:
+                validate_birthday(birthday)
+            except ValidationError as e:
+                validate_birthday_error(e)
+
+        return self.update(request, *args, **kwargs)
+
+    @transaction.atomic
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        partial = kwargs.pop('partial', False)
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+
+        if serializer.is_valid():
+            serializer.save()
+            self.perform_update(serializer)
+            return Response(serializer.data, status=HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
