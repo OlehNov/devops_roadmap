@@ -5,8 +5,10 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView
 )
+from src.config.api import PingView
 
 urlpatterns = [
+    path('ping', PingView.as_view(), name='ping'),
     path('admin/', admin.site.urls),
     path('users/tourists/', include('tourists.urls')),
     path('users/', include('users.urls')),
