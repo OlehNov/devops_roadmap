@@ -1,9 +1,11 @@
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.views import APIView, status
 
 
 class PingView(APIView):
-    http_method_names = ['get']
+    permission_classes = [AllowAny]
+    allowed_methods = ['GET']
 
     def get(self, request, *args, **kwargs):
-        return Response({'response': 'pong'})
+        return Response({'ping': 'pong'}, status=status.HTTP_200_OK)
