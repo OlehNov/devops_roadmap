@@ -29,10 +29,6 @@ from users.utils import TokenGenerator
 User = get_user_model()
 
 
-def index(request):
-    return HttpResponse("Hello, you're on the GLAMP home page.")
-
-
 def signup(request):
     if request.method == "POST":
         username = request.POST['username']
