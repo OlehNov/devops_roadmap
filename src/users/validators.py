@@ -7,10 +7,10 @@ from roles.constants import Role
 
 class NoSpacePasswordValidator:
     def validate(self, password, user=None):
-        if ' ' in password:
+        if " " in password:
             raise ValidationError(
                 "The password must not contain spaces.",
-                code='password_contains_space',
+                code="password_contains_space",
             )
 
     def get_help_text(self):
@@ -19,10 +19,10 @@ class NoSpacePasswordValidator:
 
 class LatinOnlyPasswordValidator:
     def validate(self, password, user=None):
-        if re.search(r'[^\x00-\x7F]', password):
+        if re.search(r"[^\x00-\x7F]", password):
             raise ValidationError(
                 "The password must contain only Latin characters.",
-                code='password_not_latin',
+                code="password_not_latin",
             )
 
     def get_help_text(self):
@@ -32,7 +32,6 @@ class LatinOnlyPasswordValidator:
 def validate_role(value):
     if value not in [role.value for role in Role]:
         raise ValidationError(
-            '%(value)s is not a valid role',
-            params={'value': value},
+            "%(value)s is not a valid role",
+            params={"value": value},
         )
-

@@ -5,7 +5,11 @@ from rest_framework.permissions import BasePermission
 
 class IsNotDeleted(BasePermission):
     def has_permission(self, request, view):
-        return request.user and request.user.is_authenticated and request.user.is_deleted == False
+        return (
+            request.user
+            and request.user.is_authenticated
+            and request.user.is_deleted == False
+        )
 
 
 def user_authenticated(user):

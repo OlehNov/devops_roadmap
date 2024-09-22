@@ -3,7 +3,6 @@ from django.contrib.auth import get_user_model, login
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.core.mail import send_mail
 from django.db import transaction
-from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
@@ -21,19 +20,20 @@ from users.permissions import user_authenticated
 from users.serializers import (
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
-    UserTouristRegistrationSerializer
+    UserTouristRegistrationSerializer,
 )
 from users.tasks import send_reset_password_email, verify_email
 from users.utils import TokenGenerator
+
 
 User = get_user_model()
 
 
 def signup(request):
     if request.method == "POST":
-        username = request.POST['username']
-        password = request.POST['password']
-        email = request.POST['email']
+        username = request.POST["username"]
+        password = request.POST["password"]
+        email = request.POST["email"]
 
         user = User.objects.create_user(
             username=username, password=password, email=email
@@ -47,7 +47,7 @@ def signup(request):
         ]
         send_mail(subject, message, email_from, recipient_list)
         return redirect("/dashboard/")
-    return render(request, 'mail_notification.html')
+    return render(request, "mail_notification.html")
 
 
 class UserTouristRegisterView(generics.CreateAPIView):
@@ -63,11 +63,11 @@ class UserTouristRegisterView(generics.CreateAPIView):
         try:
             with transaction.atomic():
                 user = User.objects.create_user(
-                    email=serializer.validated_data['email'],
-                    first_name=serializer.validated_data['first_name'],
-                    last_name=serializer.validated_data['last_name'],
-                    password=serializer.validated_data['password'],
-                    role=Role.TOURIST
+                    email=serializer.validated_data["email"],
+                    first_name=serializer.validated_data["first_name"],
+                    last_name=serializer.validated_data["last_name"],
+                    password=serializer.validated_data["password"],
+                    role=Role.TOURIST,
                 )
                 user.is_active = False
                 user.save()
@@ -77,7 +77,10 @@ class UserTouristRegisterView(generics.CreateAPIView):
         except Exception as e:
             if settings.DEBUG:
                 return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-            return Response({"error": "An error occurred. Please try again later."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": "An error occurred. Please try again later."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         verify_email.apply_async(args=[user.pk])
 
@@ -86,8 +89,8 @@ class UserTouristRegisterView(generics.CreateAPIView):
 
 class ActivateUserAPIView(APIView):
     def get(self, request, *args, **kwargs):
-        uuid64 = kwargs.get('uuid64')
-        token = kwargs.get('token')
+        uuid64 = kwargs.get("uuid64")
+        token = kwargs.get("token")
         pk = force_str(urlsafe_base64_decode(uuid64))
         current_user = get_object_or_404(User, pk=pk)
         user_email = current_user.email
@@ -100,17 +103,26 @@ class ActivateUserAPIView(APIView):
             new_access_token = str(refresh.access_token)
             new_refresh_token = str(refresh)
 
-            login(request, current_user, backend='django.contrib.auth.backends.ModelBackend')
+            login(
+                request,
+                current_user,
+                backend="django.contrib.auth.backends.ModelBackend",
+            )
 
-            return Response({
-                "detail": "User activated successfully.",
-                "user": pk,
-                "access": new_access_token,
-                "refresh": new_refresh_token,
-                "user_email": user_email
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "detail": "User activated successfully.",
+                    "user": pk,
+                    "access": new_access_token,
+                    "refresh": new_refresh_token,
+                    "user_email": user_email,
+                },
+                status=status.HTTP_200_OK,
+            )
 
-        return Response({"error": "Unexpected error."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": "Unexpected error."}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class PasswordResetRequestView(APIView):
@@ -120,25 +132,29 @@ class PasswordResetRequestView(APIView):
         serializer = PasswordResetRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = get_object_or_404(User, email=serializer.validated_data['email'])
+        user = get_object_or_404(User, email=serializer.validated_data["email"])
         token_generator = PasswordResetTokenGenerator()
         token = token_generator.make_token(user)
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         reset_url = request.build_absolute_uri(
-            reverse('users:password_reset_confirm', kwargs={'uidb64': uid, 'token': token})
+            reverse(
+                "users:password_reset_confirm", kwargs={"uidb64": uid, "token": token}
+            )
         )
 
         send_reset_password_email.apply_async(args=[user.email, reset_url])
 
-        return Response({"detail": "Password reset email has been sent."}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Password reset email has been sent."}, status=status.HTTP_200_OK
+        )
 
 
 class PasswordResetConfirmView(APIView):
     def post(self, request, *args, **kwargs):
         user_authenticated(request.user)
 
-        uidb64 = kwargs.get('uidb64')
-        token = kwargs.get('token')
+        uidb64 = kwargs.get("uidb64")
+        token = kwargs.get("token")
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = get_object_or_404(User, pk=uid)
 
@@ -148,9 +164,12 @@ class PasswordResetConfirmView(APIView):
             serializer = PasswordResetConfirmSerializer(data=request.data, user=user)
             if serializer.is_valid():
                 serializer.save()
-                return Response({"detail": "Password has been reset."}, status=status.HTTP_200_OK)
+                return Response(
+                    {"detail": "Password has been reset."}, status=status.HTTP_200_OK
+                )
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
-
+        return Response(
+            {"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST
+        )

@@ -10,26 +10,18 @@ from users.validators import validate_role
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    first_name = models.CharField(
-        max_length=255,
-        default=' '
-    )
-    last_name = models.CharField(
-        max_length=255,
-        default=' '
-    )
+    first_name = models.CharField(max_length=255, default=" ")
+    last_name = models.CharField(max_length=255, default=" ")
     role = models.IntegerField(
-        null=True,
-        default=Role.TOURIST,
-        validators=[validate_role]
+        null=True, default=Role.TOURIST, validators=[validate_role]
     )
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'role']
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["first_name", "last_name", "role"]
 
     objects = UserManager()
 

@@ -16,13 +16,13 @@ User = get_user_model()
 def send_registration_email(user_id):
     user_instance = User.objects.get(pk=user_id)
     message = render_to_string(
-        'emails/registration_email.html',
+        "emails/registration_email.html",
         context={
-            'user': user_instance,
-            'domain': os.getenv('DOMAIN'),
-            'uid': urlsafe_base64_encode(force_bytes(user_id)),
-            'token': TokenGenerator().make_token(user_instance)
-        }
+            "user": user_instance,
+            "domain": os.getenv("DOMAIN"),
+            "uid": urlsafe_base64_encode(force_bytes(user_id)),
+            "token": TokenGenerator().make_token(user_instance),
+        },
     )
 
     email = EmailMessage(
@@ -30,12 +30,14 @@ def send_registration_email(user_id):
         body=message,
         to=[user_instance.email],
     )
-    email.content_subtype = 'html'
+    email.content_subtype = "html"
     email.send()
 
 
 def send_reset_password(email, reset_url):
-    subject = 'Password Reset Requested'
-    message = f'Click the link below to reset your password:\n\n{reset_url}'
-    from_email = os.getenv(settings.EMAIL_HOST_USER, default=settings.DEFAULT_FROM_EMAIL)
+    subject = "Password Reset Requested"
+    message = f"Click the link below to reset your password:\n\n{reset_url}"
+    from_email = os.getenv(
+        settings.EMAIL_HOST_USER, default=settings.DEFAULT_FROM_EMAIL
+    )
     send_mail(subject, message, from_email, [email])
