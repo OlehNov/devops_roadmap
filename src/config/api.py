@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView, status
 
 
-class PingView(APIView):
+class PingPongAPIView(APIView):
     permission_classes = [AllowAny]
     allowed_methods = ['GET']
 
