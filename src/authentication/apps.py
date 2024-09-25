@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class TouristsConfig(AppConfig):
+class GlampConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "tourists"
+    name = "authentication"

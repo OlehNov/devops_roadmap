@@ -16,20 +16,20 @@ class CustomBaseFilterBackend(BaseFilterBackend):
         for field, value in request.query_params.items():
             try:
                 # Extract field name and operator from the query parameter
-                filter_fields = FILTER_PATTERN.findall(f'{field}={value}')[0]
+                filter_fields = FILTER_PATTERN.findall(f"{field}={value}")[0]
                 # filter_fields[0] -> field name
                 # filter_fields[1] -> operator for get lookup expressions
                 field_name, operator = filter_fields[0], filter_fields[1]
                 lookup = LOOKUP_SEP + OPERATORS.get(operator)
 
                 match operator:
-                    case 'between':
-                        value = tuple(value.strip('()').split(','))
-                    case 'in':
-                        value = value.strip('()').split(',')
-                    case 'null':
+                    case "between":
+                        value = tuple(value.strip("()").split(","))
+                    case "in":
+                        value = value.strip("()").split(",")
+                    case "null":
                         value = True
-                    case 'notnull':
+                    case "notnull":
                         value = False
 
                 filter_params[field_name + lookup] = value

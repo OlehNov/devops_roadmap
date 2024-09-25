@@ -18,7 +18,9 @@ def validate_birthday(value):
 
 
 def validate_phone(value):
-    phone_pattern = re.compile(r'^\+\d{9,15}$')
+    phone_pattern = re.compile(r"^\+\d{9,15}$")
     if not phone_pattern.match(value):
-        raise ValidationError("Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+        raise ValidationError(
+            "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."
+        )
     return value

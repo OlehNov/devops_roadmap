@@ -10,26 +10,23 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "email"]
+        fields = ["id", "email", "first_name", "last_name", "is_active"]
 
 
-class UserTouristRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(
-        write_only=True, required=True, validators=[validate_password]
-    )
-    confirm_password = serializers.CharField(write_only=True, required=True)
-
+class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email", "first_name", "last_name", "password", "confirm_password")
-
-    def validate(self, attrs):
-        if attrs["password"] != attrs["confirm_password"]:
-            raise serializers.ValidationError(
-                {"password": "Password fields didn't match."}
-            )
-
-        return attrs
+        fields = (
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "is_active",
+            "is_staff",
+            "role"
+        )
+        read_only_fields = ("is_active", "is_staff", "role")
+        write_only_fields = ("password",)
 
 
 class UserLoginSerializer(serializers.ModelSerializer):

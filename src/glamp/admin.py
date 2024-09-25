@@ -7,7 +7,7 @@ from glamp.models import (
     Category,
     Glamp,
     Picture,
-    TypeGlamp
+    TypeGlamp,
 )
 
 
@@ -19,11 +19,11 @@ class AttributeGlampInLine(admin.StackedInline):
 @admin.register(Glamp)
 class GlampAdmin(admin.ModelAdmin):
     search_fields = (
-        'name',
-        'type_glamp__name',
-        'capacity',
-        'status',
-        'price',
+        "name",
+        "type_glamp__name",
+        "capacity",
+        "status",
+        "price",
     )
     inlines = [AttributeGlampInLine]
 

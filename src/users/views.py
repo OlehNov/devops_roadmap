@@ -1,26 +1,25 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.core.mail import send_mail
 from django.db import transaction
-from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from rest_framework import generics, status
+from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from roles.constants import Role
-from tourists.models import Tourist
 from users.permissions import user_authenticated
 from users.serializers import (
+    UserSerializer,
+    CurrentUserSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
-    UserTouristRegistrationSerializer,
 )
 from users.tasks import send_reset_password_email, verify_email
 from users.utils import TokenGenerator
@@ -29,62 +28,24 @@ from users.utils import TokenGenerator
 User = get_user_model()
 
 
-def signup(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        email = request.POST["email"]
+class UserViewSet(ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_url_kwarg = "user_id"
 
-        user = User.objects.create_user(
-            username=username, password=password, email=email
-        )
-        login(request, user)
-        subject = "Welcome to GLAMP"
-        message = f"HI {user.username}, thank you for registering in GLAMP."
-        email_from = settings.EMAIL_HOST_USER
-        recipient_list = [
-            user.email,
-        ]
-        send_mail(subject, message, email_from, recipient_list)
-        return redirect("/dashboard/")
-    return render(request, "mail_notification.html")
+    def get_queryset(self):
+        user = self.request.user
 
+        if user.role == Role.ADMIN:
+            return User.objects.all()
 
-class UserTouristRegisterView(generics.CreateAPIView):
-    """User registration class"""
+        return User.objects.filter(id=user.id)
 
-    serializer_class = UserTouristRegistrationSerializer
-    permission_classes = [AllowAny]
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        try:
-            with transaction.atomic():
-                user = User.objects.create_user(
-                    email=serializer.validated_data["email"],
-                    first_name=serializer.validated_data["first_name"],
-                    last_name=serializer.validated_data["last_name"],
-                    password=serializer.validated_data["password"],
-                    role=Role.TOURIST,
-                )
-                user.is_active = False
-                user.save()
-
-                Tourist.objects.create(user=user)
-
-        except Exception as e:
-            if settings.DEBUG:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-            return Response(
-                {"error": "An error occurred. Please try again later."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        verify_email.apply_async(args=[user.pk])
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    @action(detail=False, methods=["get", "GET"], url_path="current-user")
+    def current_user(self, request):
+        serializer = CurrentUserSerializer(self.request.user)
+        return Response(serializer.data, 200)
 
 
 class ActivateUserAPIView(APIView):
