@@ -15,6 +15,8 @@ ROOT_API = settings.ROOT_API
 urlpatterns = [
     path('admin/', admin.site.urls),
 
+    path('', PingView.as_view(), name='ping'),
+
     path('api/schema/', SpectacularJSONAPIView.as_view(), name='schema'),
 
     path(
