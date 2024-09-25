@@ -6,6 +6,7 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView
 )
+from config.api import PingView
 
 
 ROOT_API = settings.ROOT_API
