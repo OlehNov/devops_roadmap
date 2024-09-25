@@ -6,7 +6,7 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView
 )
-from config.api import PingView
+from config.api import PingPongAPIView
 
 
 ROOT_API = settings.ROOT_API
@@ -14,6 +14,8 @@ ROOT_API = settings.ROOT_API
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('', PingPongAPIView.as_view(), name='ping'),
 
     path('api/schema/', SpectacularJSONAPIView.as_view(), name='schema'),
 
