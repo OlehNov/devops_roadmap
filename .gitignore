@@ -7,16 +7,12 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-Makefile
-/env
+/.env
 /req.py
 */migrations/*
-src/users/migrations/
-src/roles/migrations/
-src/glamp/migrations/
-src/tourists/migrations/
-!migrations/__init__.py
-src/.env
+.env
+/env
+env
 /.vscode
 /htmlcov
 static
@@ -136,7 +132,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -174,3 +169,6 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
+settings_local.py
+migrations/*
+!migrations/__init__.py

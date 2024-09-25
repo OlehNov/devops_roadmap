@@ -4,21 +4,20 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from rest_framework.routers import DefaultRouter
 
 from users.views import (
-    UserTouristRegisterView,
+    UserViewSet,
     ActivateUserAPIView,
     PasswordResetRequestView,
     PasswordResetConfirmView,
 )
 
-app_name = "users"
+
+router = DefaultRouter()
+router.register("", UserViewSet)
 
 urlpatterns = [
-    path("tourist-reg/", UserTouristRegisterView.as_view(), name="tourist_register"),
-    path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-    path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
     path(
         "activate-user/<str:uuid64>/<str:token>/",
         ActivateUserAPIView.as_view(),
@@ -26,10 +25,8 @@ urlpatterns = [
     ),
     path("password-reset/", PasswordResetRequestView.as_view(), name="password_reset"),
     path(
-        "password-reset-confirm/<uidb64>/<token>/",
+        "password-reset-confirm/<str:uidb64>/<str:token>/",
         PasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
-    # path('user_url/', include('config.urls')),
-    # path('signup/', views.mail_notification),
-]
+] + router.urls

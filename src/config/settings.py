@@ -25,8 +25,6 @@ ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
-
-
 INSTALLED_APPS = [
     'jazzmin',
 
@@ -48,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
 
+    'authentication',
     'glamp',
     'roles',
     'tourists',
@@ -69,10 +68,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+ROOT_API = 'api/v1'
 
 ROOT_URLCONF = 'config.urls'
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+# Templates Settings
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -108,16 +110,23 @@ DATABASES = {
 
 # REST FRAMEWORK Settings
 REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend'
+    ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 10,
-
 }
 
 # Simple JWT Settings
@@ -219,12 +228,49 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # Spectacular Settings
-
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Glamp API Documentation',
-    'DESCRIPTION': 'Glamp',
+    'TITLE': 'GLAMP API',
+    'DESCRIPTION': 'GLAMP REST API.',
     'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    # 'TOS': 'https://example.com/terms/',
+    'CONTACT': {
+        'name': 'API Support',
+        # 'url': 'https://example.com/support/',
+        'email': 'born2code.py@gmail.com',
+    },
+    # 'LICENSE': {
+    #     'name': 'MIT License',
+    #     'url': 'https://opensource.org/licenses/MIT',
+    # },
+    # 'SCHEMA_PATH_PREFIX': '/api/',  # To exclude common path prefixes like '/api/' from the schema
+    'SERVE_INCLUDE_SCHEMA': False,  # Whether to include schema in Swagger UI responses or not
+    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],  # Permissions for serving schema
+    'COMPONENT_SPLIT_REQUEST': True,  # Split request and response components
+    # 'POSTPROCESSING_HOOKS': [],  # A list of functions to customize the schema generation process
+    # 'ENUM_NAME_OVERRIDES': {},  # Mapping for overriding enum names
+    'SORT_OPERATION_PARAMETERS': True,  # Sort parameters in operations
+    'SCHEMA_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.BasicAuthentication'
+    ],
+    # 'AUTHENTICATION_WHITELIST': [],  # Authentication classes that should always be included in security definitions
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'defaultModelsExpandDepth': 1,
+    },
+    'REDOC_UI_SETTINGS': {
+        'hideDownloadButton': True,
+        'pathInMiddlePanel': True,
+        'theme': {
+            'spacing': {
+                'unit': 10,
+                'sectionHorizontal': 20,
+            },
+        },
+    },
+    'PREPROCESSING_HOOKS': [],  # Pre-processing hooks to modify or inspect the schema
 }
 
 
@@ -296,3 +342,30 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
+
+try:
+    from .settings_local import *
+except ImportError:
+    pass
+
+if DEBUG:
+    REST_FRAMEWORK = {
+        'DEFAULT_FILTER_BACKENDS': [
+            'django_filters.rest_framework.DjangoFilterBackend'
+        ],
+        'DEFAULT_AUTHENTICATION_CLASSES': [
+            'rest_framework_simplejwt.authentication.JWTAuthentication',
+            'rest_framework.authentication.SessionAuthentication',
+            'rest_framework.authentication.BasicAuthentication',
+        ],
+        'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+        'DEFAULT_PERMISSION_CLASSES': (
+            'rest_framework.permissions.IsAuthenticated',
+        ),
+        'DEFAULT_RENDERER_CLASSES': [
+            'rest_framework.renderers.JSONRenderer',
+            'rest_framework.renderers.BrowsableAPIRenderer',
+        ],
+        'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+        'PAGE_SIZE': 10,
+    }
