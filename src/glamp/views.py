@@ -4,7 +4,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from glamp.filters import CustomBaseFilterBackend
-from glamp.models import AttributeGlamp, Glamp
+from glamp.models import Glamp
 from glamp.serializers import GlampSerializer
 
 
@@ -100,9 +100,7 @@ from glamp.serializers import GlampSerializer
     "- `GET http://localhost:8181/glamp/glamp/?filters[type_glamp__name][$eqi]=Тент&filters[address__street][$eqi]=вул. Набережна&filters[attribute__attribute__name][$eqi]=Транспорт&filters[attribute__attribute_name][$eqi]=Можна замовити трансфер` \n\n"
 )
 class GlampListView(ReadOnlyModelViewSet):
-    queryset = Glamp.objects.select_related(
-        "type_glamp", "address", "owner"
-    ).prefetch_related(Prefetch("attribute", queryset=AttributeGlamp.objects.all()))
+    queryset = Glamp.objects.select_related('owner')
     permission_classes = [AllowAny]
     serializer_class = GlampSerializer
     filter_backends = [CustomBaseFilterBackend]
