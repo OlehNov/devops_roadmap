@@ -30,8 +30,10 @@ urlpatterns = [
         name='swagger',
     ),
 
+
     path(f'{ROOT_API}/auth/', include(('authentication.urls', 'authentication'), namespace='authentication')),
     path(f'{ROOT_API}/tourists/', include(('tourists.urls', 'tourists'), namespace='tourists')),
     path(f'{ROOT_API}/users/', include(('users.urls', 'users'), namespace='users')),
     path(f'{ROOT_API}/glamps/', include(('glamp.urls', 'glamps'), namespace='glamps')),
+    path(f'{ROOT_API}/eventlogs/', include(('eventlogs.urls', 'eventlogs'), namespace='eventlogs')),
 ]

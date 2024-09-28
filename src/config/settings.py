@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'roles',
     'tourists',
     'users',
+    'eventlogs',
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -104,6 +105,14 @@ DATABASES = {
         'PASSWORD': os.getenv('DB_PASSWORD', default='glamp_password'),
         'HOST': os.getenv('DB_HOST', default='localhost'),
         'PORT': int(os.getenv('DB_PORT', default='3306')),
+    },
+    'eventlogs': {
+        'ENGINE': os.getenv('EVENTLOGS_DB_ENGINE', default='django.db.backends.mysql'),
+        'NAME': os.getenv('EVENTLOGS_DB_NAME', default='glamp'),
+        'USER': os.getenv('EVENTLOGS_DB_USER', default='glamp_user'),
+        'PASSWORD': os.getenv('EVENTLOGS_DB_PASSWORD', default='glamp_password'),
+        'HOST': os.getenv('EVENTLOGS_DB_HOST', default='localhost'),
+        'PORT': int(os.getenv('EVENTLOGS_DB_PORT', default='3306')),
     }
 }
 

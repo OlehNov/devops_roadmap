@@ -13,6 +13,7 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from eventlogs.mixins import EventLogMixin
 from roles.constants import Role
 from users.permissions import user_authenticated
 from users.serializers import (
@@ -28,7 +29,7 @@ from users.utils import TokenGenerator
 User = get_user_model()
 
 
-class UserViewSet(ModelViewSet):
+class UserViewSet(EventLogMixin, ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
@@ -46,6 +47,20 @@ class UserViewSet(ModelViewSet):
     def current_user(self, request):
         serializer = CurrentUserSerializer(self.request.user)
         return Response(serializer.data, 200)
+
+    def perform_create(self, serializer):
+        model = serializer.save()
+        self.log_event(self.request, model)
+        return model
+
+    def perform_update(self, serializer):
+        model = serializer.save()
+        self.log_event(self.request, model)
+        return model
+
+    def perform_destroy(self, model):
+        self.log_event(self.request, model)
+        return super().perform_destroy(model)
 
 
 class ActivateUserAPIView(APIView):
