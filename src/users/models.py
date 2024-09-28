@@ -10,8 +10,8 @@ from users.validators import validate_role
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=255, default=None)
-    last_name = models.CharField(max_length=255, default=None)
+    first_name = models.CharField(max_length=255, null=True, default=None)
+    last_name = models.CharField(max_length=255,  null=True, default=None)
     role = models.PositiveSmallIntegerField(
         null=True, default=None
     )
