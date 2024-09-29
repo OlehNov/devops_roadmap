@@ -2,7 +2,7 @@ from django.core.validators import FileExtensionValidator
 from django.db.models import CASCADE, FileField, ForeignKey, Model
 from django.utils.translation import gettext as _
 
-from glamp.utils import folder_path
+from glamps.utils import folder_path
 
 
 class Picture(Model):

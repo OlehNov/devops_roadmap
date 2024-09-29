@@ -27,7 +27,6 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 INSTALLED_APPS = [
     'jazzmin',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,7 +34,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-
     'celery',
     'cloudinary',
     'cloudinary_storage',
@@ -45,9 +43,8 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'rest_framework',
     'rest_framework_simplejwt',
-
     'authentication',
-    'glamp',
+    'glamps',
     'roles',
     'tourists',
     'users',
@@ -78,7 +75,9 @@ CORS_ALLOW_ALL_ORIGINS = True
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates', ],
+        'DIRS': [
+            BASE_DIR / 'templates',
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -244,7 +243,9 @@ SPECTACULAR_SETTINGS = {
     # },
     # 'SCHEMA_PATH_PREFIX': '/api/',  # To exclude common path prefixes like '/api/' from the schema
     'SERVE_INCLUDE_SCHEMA': False,  # Whether to include schema in Swagger UI responses or not
-    'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],  # Permissions for serving schema
+    'SERVE_PERMISSIONS': [
+        'rest_framework.permissions.AllowAny'
+    ],  # Permissions for serving schema
     'COMPONENT_SPLIT_REQUEST': True,  # Split request and response components
     # 'POSTPROCESSING_HOOKS': [],  # A list of functions to customize the schema generation process
     # 'ENUM_NAME_OVERRIDES': {},  # Mapping for overriding enum names
@@ -253,7 +254,7 @@ SPECTACULAR_SETTINGS = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.BasicAuthentication'
+        'rest_framework.authentication.BasicAuthentication',
     ],
     # 'AUTHENTICATION_WHITELIST': [],  # Authentication classes that should always be included in security definitions
     'SWAGGER_UI_SETTINGS': {
@@ -282,27 +283,19 @@ JAZZMIN_SETTINGS = {
     'site_brand': 'Glamp Administration',
     'welcome_sign': 'Glamp Admin Panel',
     'search_model': [],
-    'topmenu_links': [{'app': 'glamp'}],
+    'topmenu_links': [{'app': 'glamps'}],
     'show_sidebar': True,
     'navigation_expanded': True,
     'hide_models': [
         'auth.group',
         'sites.site',
-        'glamp.category',
-        'glamp.typeglamp',
-        'glamp.picture',
-        'glamp.address',
     ],
     'order_with_respect_to': [
         'users',
         'profiles',
-        'glamp.attributeglamp',
-        'glamp.attribute',
     ],
     'icons': {
-        'glamp.attributeglamp': 'fas fa-project-diagram',
-        'glamp.attribute': 'fas fa-tools',
-        'glamp.glamp': 'fas fa-campground',
+        'glamps.glamp': 'fas fa-campground',
     },
     'show_ui_builder': True,
     'changeform_format': 'horizontal_tabs',
@@ -315,8 +308,12 @@ JAZZMIN_SETTINGS = {
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", default="redis://broker:6379/0")
-CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND", default="redis://broker:6379/0")
+CELERY_BROKER_URL = os.getenv(
+    "CELERY_BROKER_URL", default="redis://broker:6379/0"
+)
+CELERY_RESULT_BACKEND = os.getenv(
+    "CELERY_RESULT_BACKEND", default="redis://broker:6379/0"
+)
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 
