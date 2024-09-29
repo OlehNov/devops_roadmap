@@ -7,7 +7,7 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
@@ -49,7 +49,8 @@ class UserViewSet(ModelViewSet):
 
 
 class ActivateUserAPIView(APIView):
-    def get(self, request, *args, **kwargs):
+    permission_classes = [AllowAny]
+    def post(self, request, *args, **kwargs):
         uuid64 = kwargs.get("uuid64")
         token = kwargs.get("token")
         pk = force_str(urlsafe_base64_decode(uuid64))
