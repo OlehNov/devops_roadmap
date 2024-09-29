@@ -17,7 +17,7 @@ from django.db.models import (
 )
 from django.utils.translation import gettext as _
 
-from glamp.constants import STATUS, TypeGlamp
+from glamps.constants import STATUS, TypeGlamp
 
 User = get_user_model()
 
@@ -31,16 +31,16 @@ class Glamp(Model):
     )
 
     # General info
-    type_glamp = PositiveSmallIntegerField(_('Glamp Type'), help_text='')
+    glamp_type = PositiveSmallIntegerField(_('Glamp Type'), default=None)
 
     name = CharField(
-        _('Glamp Name'), max_length=225, null=False, blank=False, unique=True
+        _('Glamp Name'), max_length=225, null=False, blank=False, default=None
     )
     description = CharField(
-        _('Description'), max_length=5000, null=True, blank=True
+        _('Description'), max_length=5000, null=True, blank=True, default=None
     )
     capacity = PositiveSmallIntegerField(
-        _('Capacity'), validators=[MinValueValidator(1)]
+        _('Capacity'), validators=[MinValueValidator(1)], default=None
     )
     price = DecimalField(
         _('Price'),
@@ -51,13 +51,16 @@ class Glamp(Model):
         blank=True,
         help_text=_('Price for one night'),
     )
-    status = PositiveSmallIntegerField(_('Status'), help_text=STATUS)
+    status = PositiveSmallIntegerField(
+        _('Status'), help_text=STATUS, default=None
+    )
 
     owner = ForeignKey(
         User,
         on_delete=CASCADE,
         blank=False,
         null=False,
+        default=None,
         verbose_name=_('Glamp Owner'),
         related_name='glamp_owner',
     )
@@ -73,11 +76,15 @@ class Glamp(Model):
         blank=False,
         default=None,
     )
-    apartment = CharField(_('Apartment'), max_length=25, null=True, blank=True)
+    apartment = CharField(
+        _('Apartment'), max_length=25, null=True, blank=True, default=None
+    )
     city = CharField(
         _('City'), max_length=255, null=False, blank=False, default=None
     )
-    region = CharField(_('Region'), max_length=255, null=True, blank=True)
+    region = CharField(
+        _('Region'), max_length=255, null=True, blank=True, default=None
+    )
 
     latitude = FloatField(
         _('Latitude'),
@@ -141,13 +148,15 @@ class Glamp(Model):
     beautiful_views = BooleanField(_('Beautiful Views'), default=False)
 
     # Bedroom
-    number_of_bedrooms = PositiveSmallIntegerField(_('Number Of Bedrooms'))
+    number_of_bedrooms = PositiveSmallIntegerField(
+        _('Number Of Bedrooms'), default=None
+    )
     number_of_beds = PositiveSmallIntegerField(
-        _('Number Of Beds'), default=False
+        _('Number Of Beds'), default=None
     )
     cot_for_babies = BooleanField(_('Cot For Babies'), default=False)
     number_of_bathrooms = PositiveSmallIntegerField(
-        _('Number Of Bathrooms'), default=False
+        _('Number Of Bathrooms'), default=None
     )
     bathroom_in_room = BooleanField(_('Bathroom In The Room'), default=False)
 

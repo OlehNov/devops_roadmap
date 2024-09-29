@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from glamp.models import (
+from glamps.models import (
     Glamp,
     Picture,
 )

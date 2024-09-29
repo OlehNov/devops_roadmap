@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 
-from glamp.models import Glamp
+from glamps.models import Glamp
 from users.serializers import UserSerializer
 
 
