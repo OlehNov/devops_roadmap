@@ -283,7 +283,7 @@ JAZZMIN_SETTINGS = {
     'site_brand': 'Glamp Administration',
     'welcome_sign': 'Glamp Admin Panel',
     'search_model': [],
-    'topmenu_links': [{'app': 'glamp'}],
+    'topmenu_links': [{'app': 'glamps'}],
     'show_sidebar': True,
     'navigation_expanded': True,
     'hide_models': [
@@ -295,7 +295,7 @@ JAZZMIN_SETTINGS = {
         'profiles',
     ],
     'icons': {
-        'glamp.glamp': 'fas fa-campground',
+        'glamps.glamp': 'fas fa-campground',
     },
     'show_ui_builder': True,
     'changeform_format': 'horizontal_tabs',
