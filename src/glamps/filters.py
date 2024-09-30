@@ -4,7 +4,7 @@ from rest_framework.filters import BaseFilterBackend
 from rest_framework.views import View
 from rest_framework.viewsets import ViewSet
 
-from glamp.constants import FILTER_PATTERN, LOOKUP_SEP, OPERATORS
+from glamps.constants import FILTER_PATTERN, LOOKUP_SEP, OPERATORS
 
 
 class CustomBaseFilterBackend(BaseFilterBackend):
