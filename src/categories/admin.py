@@ -5,6 +5,7 @@ from categories.models import Category
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     search_fields = (
+        'id',
         'name',
         'slug',
         'title',

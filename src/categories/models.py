@@ -16,7 +16,6 @@ class Category(Model):
         null=False,
         blank=False,
         unique=True,
-        default=None,
     )
     slug = SlugField(
         _('Slug'),
@@ -24,7 +23,6 @@ class Category(Model):
         null=False,
         blank=False,
         unique=True,
-        default=None,
     )
     title = CharField(_('Title'), max_length=120, null=True, default=None)
     description = TextField(
