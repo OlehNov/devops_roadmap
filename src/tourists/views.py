@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from rest_framework.generics import (
@@ -38,6 +39,10 @@ class TouristListAPIView(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+
+        if isinstance(user, AnonymousUser):
+            return User.objects.none()
+
         if user.role == Role.ADMIN:
             return User.objects.all()
         return User.objects.filter(id=user.id)

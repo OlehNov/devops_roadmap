@@ -20,10 +20,11 @@ from users.serializers import (
     CurrentUserSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
+    ActivateUserSerializer,
 )
 from users.tasks import send_reset_password_email, verify_email
 from users.utils import TokenGenerator
-
+from yaml import serialize
 
 User = get_user_model()
 
@@ -49,35 +50,34 @@ class UserViewSet(ModelViewSet):
 
 
 class ActivateUserAPIView(APIView):
+    """User activate class"""
+
     permission_classes = [AllowAny]
+    serializer_class = ActivateUserSerializer
+
     def post(self, request, *args, **kwargs):
-        uuid64 = kwargs.get("uuid64")
-        token = kwargs.get("token")
-        pk = force_str(urlsafe_base64_decode(uuid64))
-        current_user = get_object_or_404(User, pk=pk)
-        user_email = current_user.email
+        data = {
+            "uuid64": kwargs.get("uuid64"),
+            "token": kwargs.get("token"),
+        }
+        serializer = self.serializer_class(data=data)
 
-        if current_user and TokenGenerator().check_token(current_user, token):
-            current_user.is_active = True
-            current_user.save()
-
-            refresh = RefreshToken.for_user(current_user)
-            new_access_token = str(refresh.access_token)
-            new_refresh_token = str(refresh)
+        if serializer.is_valid():
+            result = serializer.activate()  # Activate user.
 
             login(
                 request,
-                current_user,
+                result["current_user"],
                 backend="django.contrib.auth.backends.ModelBackend",
             )
 
             return Response(
                 {
                     "detail": "User activated successfully.",
-                    "user": pk,
-                    "access": new_access_token,
-                    "refresh": new_refresh_token,
-                    "user_email": user_email,
+                    "current_user": result['current_user'].pk,
+                    "access": result['access'],
+                    "refresh": result['refresh'],
+                    "user_email": result['current_user'].email,
                 },
                 status=status.HTTP_200_OK,
             )
@@ -88,10 +88,12 @@ class ActivateUserAPIView(APIView):
 
 
 class PasswordResetRequestView(APIView):
+    serializer_class = PasswordResetRequestSerializer
+
     def post(self, request, *args, **kwargs):
         user_authenticated(request.user)
 
-        serializer = PasswordResetRequestSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         user = get_object_or_404(User, email=serializer.validated_data["email"])
@@ -112,6 +114,8 @@ class PasswordResetRequestView(APIView):
 
 
 class PasswordResetConfirmView(APIView):
+    serializer_class = PasswordResetConfirmSerializer
+
     def post(self, request, *args, **kwargs):
         user_authenticated(request.user)
 
@@ -123,7 +127,7 @@ class PasswordResetConfirmView(APIView):
         token_generator = PasswordResetTokenGenerator()
 
         if user and token_generator.check_token(user, token):
-            serializer = PasswordResetConfirmSerializer(data=request.data, user=user)
+            serializer = self.serializer_class(data=request.data, user=user)
             if serializer.is_valid():
                 serializer.save()
                 return Response(
