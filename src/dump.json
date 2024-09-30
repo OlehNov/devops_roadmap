@@ -282,5 +282,285 @@
             "birthday": "1997-05-15",
             "phone": "+12345678910"
         }
+    },
+    {
+        "model": "categories.category",
+        "pk": 1,
+        "fields": {
+            "name": "Сімейний відпочинок",
+            "slug": "simeyniy-vidpochinok",
+            "title": "Сімейний відпочинок",
+            "description": "Кемпінг для сімей з дітьми",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-01T12:00:00Z",
+            "updated": "2024-09-05T12:00:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 2,
+        "fields": {
+            "name": "Пригодницький",
+            "slug": "prigodnitskiy",
+            "title": "Пригодницький",
+            "description": "Кемпінг для активних пригод",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-02T14:30:00Z",
+            "updated": "2024-09-06T14:30:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 3,
+        "fields": {
+            "name": "Романтичний",
+            "slug": "romantichniy",
+            "title": "Романтичний",
+            "description": "Кемпінг для пар і романтичних зустрічей",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-03T09:15:00Z",
+            "updated": "2024-09-07T09:15:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 4,
+        "fields": {
+            "name": "Дикий кемпінг",
+            "slug": "dykiy-kemping",
+            "title": "Дикий кемпінг",
+            "description": "Кемпінг у дикій природі, подалі від цивілізації",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-04T11:45:00Z",
+            "updated": "2024-09-08T11:45:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 5,
+        "fields": {
+            "name": "Кемпінг біля озера",
+            "slug": "kemping-bilya-ozeru",
+            "title": "Кемпінг біля озера",
+            "description": "Кемпінг з доступом до озера",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-05T08:00:00Z",
+            "updated": "2024-09-09T08:00:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 6,
+        "fields": {
+            "name": "Гірський кемпінг",
+            "slug": "girskiy-kemping",
+            "title": "Гірський кемпінг",
+            "description": "Кемпінг в гірській місцевості",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-06T10:20:00Z",
+            "updated": "2024-09-10T10:20:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 7,
+        "fields": {
+            "name": "Пляжний кемпінг",
+            "slug": "plyazhniy-kemping",
+            "title": "Пляжний кемпінг",
+            "description": "Кемпінг на пляжі",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-07T15:30:00Z",
+            "updated": "2024-09-11T15:30:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 8,
+        "fields": {
+            "name": "Кемпінг для груп",
+            "slug": "kemping-dlya-grup",
+            "title": "Кемпінг для груп",
+            "description": "Кемпінг для великих груп і корпоративів",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-08T13:00:00Z",
+            "updated": "2024-09-12T13:00:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 9,
+        "fields": {
+            "name": "Екотуризм",
+            "slug": "ekoturizm",
+            "title": "Екотуризм",
+            "description": "Кемпінг з акцентом на екологію і природу",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-09T16:00:00Z",
+            "updated": "2024-09-13T16:00:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 10,
+        "fields": {
+            "name": "Кемпінг для рибалок",
+            "slug": "kemping-dlya-ribalok",
+            "title": "Кемпінг для рибалок",
+            "description": "Кемпінг з можливістю риболовлі",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-10T09:45:00Z",
+            "updated": "2024-09-14T09:45:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 11,
+        "fields": {
+            "name": "Водний спорт",
+            "slug": "vodniy-sport",
+            "title": "Водний спорт",
+            "description": "Кемпінг з можливістю займатися водними видами спорту",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-11T11:15:00Z",
+            "updated": "2024-09-15T11:15:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 12,
+        "fields": {
+            "name": "Кемпінг на вихідні",
+            "slug": "kemping-na-vikhidni",
+            "title": "Кемпінг на вихідні",
+            "description": "Кемпінг для короткострокового відпочинку",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-12T10:00:00Z",
+            "updated": "2024-09-16T10:00:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 13,
+        "fields": {
+            "name": "Кемпінг з тваринами",
+            "slug": "kemping-z-tvarinami",
+            "title": "Кемпінг з тваринами",
+            "description": "Кемпінг, де дозволено перебувати з домашніми тваринами",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-13T12:30:00Z",
+            "updated": "2024-09-17T12:30:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 14,
+        "fields": {
+            "name": "Спеціалізований кемпінг",
+            "slug": "spetsializovanyi-kemping",
+            "title": "Спеціалізований кемпінг",
+            "description": "Кемпінг для певних видів активностей або груп",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-14T09:00:00Z",
+            "updated": "2024-09-18T09:00:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 15,
+        "fields": {
+            "name": "Кемпінг для фотографів",
+            "slug": "kemping-dlya-fotohrafiv",
+            "title": "Кемпінг для фотографів",
+            "description": "Кемпінг з можливістю фотографувати природу",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-15T10:15:00Z",
+            "updated": "2024-09-19T10:15:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 16,
+        "fields": {
+            "name": "Тематичний кемпінг",
+            "slug": "tematychnyi-kemping",
+            "title": "Тематичний кемпінг",
+            "description": "Кемпінг, присвячений певній темі або події",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-16T08:45:00Z",
+            "updated": "2024-09-20T08:45:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 17,
+        "fields": {
+            "name": "Кемпінг на самоті",
+            "slug": "kemping-na-samoti",
+            "title": "Кемпінг на самоті",
+            "description": "Кемпінг для тих, хто хоче побути наодинці з природою",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-17T12:00:00Z",
+            "updated": "2024-09-21T12:00:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 18,
+        "fields": {
+            "name": "Кемпінг для новачків",
+            "slug": "kemping-dlya-novachkiv",
+            "title": "Кемпінг для новачків",
+            "description": "Кемпінг для тих, хто вперше вирушає на природу",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-18T11:30:00Z",
+            "updated": "2024-09-22T11:30:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 19,
+        "fields": {
+            "name": "Кемпінг для спостереження за птахами",
+            "slug": "kemping-dlya-sposterezhennya-za-pihtamy",
+            "title": "Кемпінг для спостереження за птахами",
+            "description": "Кемпінг для орнітологів і любителів птахів",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-19T10:00:00Z",
+            "updated": "2024-09-23T10:00:00Z"
+        }
+    },
+    {
+        "model": "categories.category",
+        "pk": 20,
+        "fields": {
+            "name": "Кемпінг для активного відпочинку",
+            "slug": "kemping-dlya-aktivnogo-vidpochynku",
+            "title": "Кемпінг для активного відпочинку",
+            "description": "Кемпінг з можливістю займатися спортом",
+            "is_active": true,
+            "is_hidden": false,
+            "created": "2024-09-20T12:00:00Z",
+            "updated": "2024-09-24T12:00:00Z"
+        }
     }
 ]
