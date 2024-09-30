@@ -33,8 +33,9 @@ class Picture(Model):
     )
 
     class Meta:
-        verbose_name = _("Картинка")
-        verbose_name_plural = _("Картинка")
+        db_table = 'picture'
+        verbose_name = _("Picture")
+        verbose_name_plural = _("Pictures")
 
     def __str__(self) -> str:
         return f"{self.pic}"

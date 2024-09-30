@@ -234,6 +234,7 @@ class Glamp(Model):
     updated = DateTimeField(_("Updated"), auto_now=True)
 
     class Meta:
+        db_table = 'glamp'
         verbose_name = _("Glamp")
         verbose_name_plural = _("Glamp")
 

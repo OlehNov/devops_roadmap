@@ -4,6 +4,7 @@ from django.db.models import (
     SlugField,
     BooleanField,
     DateTimeField,
+    TextField,
 )
 from django.utils.translation import gettext as _
 
@@ -25,8 +26,10 @@ class Category(Model):
         unique=True,
         default=None,
     )
-    title = CharField(_('Title'), max_length=50, default=None)
-    description = CharField(_('Description'), max_length=5000, default=None)
+    title = CharField(_('Title'), max_length=120, null=True, default=None)
+    description = TextField(
+        _('Description'), max_length=5000, null=True, default=None
+    )
 
     is_active = BooleanField(_('Status Active'), default=False)
     is_hidden = BooleanField(_('Status Hidden'), default=False)
@@ -35,9 +38,10 @@ class Category(Model):
     updated = DateTimeField(_('Updated'), auto_now=True)
 
     class Meta:
-        ordering = ('name',)
+        db_table = 'category'
+        ordering = ('id',)
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
 
     def __str__(self) -> str:
-        return f'{self.name}: {self.title}'
+        return f'{self.name}'
