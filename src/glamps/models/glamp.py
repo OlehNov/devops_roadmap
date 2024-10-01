@@ -3,6 +3,7 @@ from uuid import uuid4
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models import (
+    SET_NULL,
     CASCADE,
     CharField,
     DateTimeField,
@@ -15,6 +16,7 @@ from django.db.models import (
     FloatField,
     BooleanField,
 )
+from categories.models import Category
 from django.utils.translation import gettext as _
 
 from glamps.constants import STATUS, TypeGlamp
@@ -38,6 +40,13 @@ class Glamp(Model):
     )
     description = CharField(
         _('Description'), max_length=5000, null=True, blank=True, default=None
+    )
+    category = ForeignKey(
+        Category,
+        on_delete=SET_NULL,
+        null=True,
+        verbose_name=_('Category'),
+        related_name='glamp_category',
     )
     capacity = PositiveSmallIntegerField(
         _('Capacity'), validators=[MinValueValidator(1)], default=None
