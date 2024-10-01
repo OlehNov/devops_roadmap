@@ -45,4 +45,9 @@ urlpatterns = [
         f'{ROOT_API}/glamps/',
         include(('glamps.urls', 'glamps'), namespace='glamps'),
     ),
+    path(
+        f'{ROOT_API}/eventlogs/',
+        include(('eventlogs.urls', 'eventlogs'), namespace='eventlogs'),
+    ),
+
 ]

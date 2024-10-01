@@ -1,10 +1,9 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
 
 from eventlogs.models import EventLog
 from eventlogs.serializers import EventLogSerializer
-from roles.permissions import RoleIsAdmin
 
 
 class EventLogListAPIView(ListAPIView):
@@ -18,4 +17,4 @@ class EventLogRetrieveAPIView(RetrieveAPIView):
     serializer_class = EventLogSerializer
 
     def get_queryset(self):
-        return EventLog.objects.filter(id=self.kwargs.get('id'))
+        return EventLog.objects.get(id=self.kwargs.get('id'))

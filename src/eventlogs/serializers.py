@@ -7,4 +7,3 @@ class EventLogSerializer(ModelSerializer):
     class Meta:
         model = EventLog
         fields = '__all__'
-        read_only_fields = fields

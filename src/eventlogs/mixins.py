@@ -5,8 +5,10 @@ from eventlogs.models import EventLog
 
 
 class EventLogMixin:
-    def write_to_db(self, request, operation_type, operated_object):
-        EventLog.objects.using('eventlogs').create(
+
+    @staticmethod
+    def write_to_db(request, operation_type, operated_object):
+        EventLog.objects.using('eventlog').create(
             user_id=request.user.id,
             user_email=request.user.email,
             object_type=operated_object,

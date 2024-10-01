@@ -5,6 +5,7 @@ services:
       - .env
     volumes:
       - db_data:/var/lib/mysql
+      - ./commands:/commands
     ports:
       - 3306:3306
     networks:
@@ -15,23 +16,24 @@ services:
       timeout: 5s
       retries: 5
 
-  eventlogs_db:
-    image: mysql:latest
-    env_file:
-      - .env
-    volumes:
-      - eventlogs_db_data:/var/lib/mysql
-    ports:
-      - 3307:3306
-    networks:
-      - glamp
-    depends_on:
-      - db
-    healthcheck:
-      test: [ "CMD-SHELL", "mysqladmin ping -h localhost || exit 1" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+
+#  eventlogs_db:
+#    image: mysql:latest
+#    env_file:
+#      - .env
+#    volumes:
+#      - eventlogs_db_data:/var/lib/mysql
+#    ports:
+#      - 3307:3306
+#    networks:
+#      - glamp
+#    depends_on:
+#      - db
+#    healthcheck:
+#      test: [ "CMD-SHELL", "mysqladmin ping -h localhost || exit 1" ]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
 
   web:
     build: .

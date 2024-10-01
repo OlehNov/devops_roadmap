@@ -105,9 +105,9 @@ DATABASES = {
         'HOST': os.getenv('DB_HOST', default='localhost'),
         'PORT': int(os.getenv('DB_PORT', default='3306')),
     },
-    'eventlogs': {
+    'eventlog': {
         'ENGINE': os.getenv('EVENTLOGS_DB_ENGINE', default='django.db.backends.mysql'),
-        'NAME': os.getenv('EVENTLOGS_DB_NAME', default='glamp'),
+        'NAME': os.getenv('EVENTLOGS_DB_NAME', default='eventlog'),
         'USER': os.getenv('EVENTLOGS_DB_USER', default='glamp_user'),
         'PASSWORD': os.getenv('EVENTLOGS_DB_PASSWORD', default='glamp_password'),
         'HOST': os.getenv('EVENTLOGS_DB_HOST', default='localhost'),
