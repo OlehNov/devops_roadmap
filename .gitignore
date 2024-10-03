@@ -173,3 +173,8 @@ cython_debug/
 settings_local.py
 migrations/*
 !migrations/__init__.py
+
+
+src/users/migrations/
+src/glamp/migrations/
+src/tourists/migrations/
