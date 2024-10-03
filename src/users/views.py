@@ -1,3 +1,4 @@
+from crontab import current_user
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.db import transaction
@@ -14,7 +15,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from roles.constants import Role
-from users.permissions import user_authenticated
+from users.permissions import IsAuthenticatedOrForbidden
 from users.serializers import (
     UserSerializer,
     CurrentUserSerializer,
@@ -65,16 +66,12 @@ class ActivateUserAPIView(APIView):
         if serializer.is_valid():
             result = serializer.activate()  # Activate user.
 
-            login(
-                request,
-                result["current_user"],
-                backend="django.contrib.auth.backends.ModelBackend",
-            )
+            login(request, result["current_user"])
 
             return Response(
                 {
                     "detail": "User activated successfully.",
-                    "current_user": result['current_user'].pk,
+                    "current_user": result['current_user'].id,
                     "access": result['access'],
                     "refresh": result['refresh'],
                     "user_email": result['current_user'].email,
@@ -88,37 +85,40 @@ class ActivateUserAPIView(APIView):
 
 
 class PasswordResetRequestView(APIView):
+    permission_classes = [IsAuthenticatedOrForbidden]
     serializer_class = PasswordResetRequestSerializer
 
     def post(self, request, *args, **kwargs):
-        user_authenticated(request.user)
-
         serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
 
-        user = get_object_or_404(User, email=serializer.validated_data["email"])
-        token_generator = PasswordResetTokenGenerator()
-        token = token_generator.make_token(user)
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        reset_url = request.build_absolute_uri(
-            reverse(
-                "users:password_reset_confirm", kwargs={"uidb64": uid, "token": token}
+        if serializer.is_valid():
+
+            user = get_object_or_404(User, email=serializer.validated_data["email"])
+            token_generator = PasswordResetTokenGenerator()
+            token = token_generator.make_token(user)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            reset_url = request.build_absolute_uri(
+                reverse(
+                    "users:password_reset_confirm", kwargs={"uidb64": uid, "token": token}
+                )
             )
-        )
 
-        send_reset_password_email.apply_async(args=[user.email, reset_url])
+            send_reset_password_email.apply_async(args=[user.email, reset_url])
 
-        return Response(
-            {"detail": "Password reset email has been sent."}, status=status.HTTP_200_OK
-        )
+            return Response(
+                {"detail": "Password reset email has been sent."}, status=status.HTTP_200_OK
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 class PasswordResetConfirmView(APIView):
+    permission_classes = [IsAuthenticatedOrForbidden]
     serializer_class = PasswordResetConfirmSerializer
 
     def post(self, request, *args, **kwargs):
-        user_authenticated(request.user)
-
         uidb64 = kwargs.get("uidb64")
         token = kwargs.get("token")
         uid = force_str(urlsafe_base64_decode(uidb64))

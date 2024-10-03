@@ -105,8 +105,8 @@ class ActivateUserSerializer(serializers.Serializer):
     def validate(self, data):
         uuid64 = data.get("uuid64")
         token = data.get("token")
-        pk = force_str(urlsafe_base64_decode(uuid64))
-        current_user = get_object_or_404(User, pk=pk)
+        user_id = force_str(urlsafe_base64_decode(uuid64))
+        current_user = get_object_or_404(User, id=user_id)
 
         if current_user and TokenGenerator().check_token(current_user, token):
             data["current_user"] = current_user
@@ -123,7 +123,7 @@ class ActivateUserSerializer(serializers.Serializer):
 
         refresh = RefreshToken.for_user(current_user)
         return {
-           "current_user": current_user,
+            "current_user": current_user,
             "access": str(refresh.access_token),
             "refresh": str(refresh),
         }
