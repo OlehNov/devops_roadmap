@@ -27,5 +27,5 @@ RUN pip install --upgrade pip setuptools wheel && \
     pip install -r requirements.txt --no-cache-dir
 
 COPY . .
-# CMD ["dockerize", "-wait", "tcp://db:3306", "-timeout", "60s", "sh", "-c", "python src/manage.py makemigrations && python src/manage.py migrate && python src/manage.py loaddata src/dump.json && python src/manage.py runserver 0.0.0.0:8000"]
-CMD ["dockerize", "-wait", "tcp://db:3306", "-timeout", "60s", "bash", "-c", "python src/manage.py makemigrations && python src/manage.py migrate && python src/manage.py runserver 0.0.0.0:8000"]
+CMD ["dockerize", "-wait", "tcp://db:3306", "-timeout", "60s", "sh", "-c", "python src/manage.py makemigrations && python src/manage.py migrate && python src/manage.py loaddata src/dump.json && python src/manage.py runserver 0.0.0.0:8000"]
+# CMD ["dockerize", "-wait", "tcp://db:3306", "-timeout", "60s", "bash", "-c", "python src/manage.py runserver 0.0.0.0:8000"]
