@@ -1,19 +1,20 @@
-from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveAPIView
-from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import IsAdminUser
 
 from eventlogs.models import EventLog
 from eventlogs.serializers import EventLogSerializer
 
 
 class EventLogListAPIView(ListAPIView):
-    permission_classes = [AllowAny]
-    queryset = EventLog.objects.all()
+    permission_classes = [IsAdminUser]
+    queryset = EventLog.objects.all().order_by("id")
     serializer_class = EventLogSerializer
+    pagination_class = PageNumberPagination
 
 
 class EventLogRetrieveAPIView(RetrieveAPIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
     serializer_class = EventLogSerializer
 
     def get_queryset(self):
