@@ -125,7 +125,7 @@ class PasswordResetRequestView(APIView):
         )
 
 
-class PasswordResetConfirmView(APIView):
+class PasswordResetConfirmView(EventLogMixin, APIView):
     def post(self, request, *args, **kwargs):
         user_authenticated(request.user)
 
@@ -140,6 +140,7 @@ class PasswordResetConfirmView(APIView):
             serializer = PasswordResetConfirmSerializer(data=request.data, user=user)
             if serializer.is_valid():
                 serializer.save()
+                self.log_event(self.request,"password_reset")
                 return Response(
                     {"detail": "Password has been reset."}, status=status.HTTP_200_OK
                 )

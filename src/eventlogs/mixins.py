@@ -8,10 +8,10 @@ class EventLogMixin:
 
     @staticmethod
     def write_to_db(request, operation_type, operated_object):
-        EventLog.objects.using('eventlog').create(
+        EventLog.objects.create(
             user_id=request.user.id,
             user_email=request.user.email,
-            object_type=operated_object,
+            instance=operated_object,
             operation_type=operation_type
         )
 

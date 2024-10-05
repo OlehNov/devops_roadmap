@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class EventLog(models.Model):
     user_id = models.IntegerField(
         null=True,
@@ -9,7 +10,7 @@ class EventLog(models.Model):
         null=True,
         default=None
     )
-    object_type = models.CharField(max_length=100)
+    instance = models.CharField(max_length=100)
 
     operation_type = models.SmallIntegerField(
         null=True,
@@ -19,6 +20,6 @@ class EventLog(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'eventlogs'
+        db_table = 'eventlog'
 
 

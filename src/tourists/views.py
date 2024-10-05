@@ -153,6 +153,7 @@ class TouristRetrieveUpdateDestroyAPIView(EventLogMixin, RetrieveUpdateDestroyAP
 
         if deactivate_serializer.is_valid():
             deactivate_serializer.save()
+            self.log_event(request, tourist)
             return Response(
                 {"detail": "User has been deleted"}, status=HTTP_204_NO_CONTENT
             )
@@ -160,7 +161,7 @@ class TouristRetrieveUpdateDestroyAPIView(EventLogMixin, RetrieveUpdateDestroyAP
         return Response(deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class CurrentTouristProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+class CurrentTouristProfileRetrieveUpdateDestroyAPIView(EventLogMixin, RetrieveUpdateDestroyAPIView):
     serializer_class = TouristSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted]
     lookup_url_kwarg = "tourist_id"
@@ -214,6 +215,7 @@ class CurrentTouristProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPI
         if serializer.is_valid():
             serializer.save()
             self.perform_update(serializer)
+            self.log_event(request, instance)
             return Response(serializer.data, status=HTTP_200_OK)
         else:
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
