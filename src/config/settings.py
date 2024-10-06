@@ -187,6 +187,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'users.validators.LatinOnlyPasswordValidator',
     },
+    {
+        'NAME': 'users.validators.DigitRequiredPasswordValidator',
+    },
+    {
+        'NAME': 'users.validators.UpperLowerCasePasswordValidator',
+    },
 ]
 
 # Internationalization
