@@ -3,6 +3,7 @@ from django.http import HttpRequest
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.views import View
 from rest_framework.viewsets import ViewSet
+from glamps.utils import to_bool
 
 from glamps.constants import FILTER_PATTERN, LOOKUP_SEP, OPERATORS
 
@@ -23,14 +24,10 @@ class CustomBaseFilterBackend(BaseFilterBackend):
                 lookup = LOOKUP_SEP + OPERATORS.get(operator)
 
                 match operator:
-                    case "between":
+                    case "$between":
                         value = tuple(value.strip("()").split(","))
-                    case "in":
+                    case "$in":
                         value = value.strip("()").split(",")
-                    case "null":
-                        value = True
-                    case "notnull":
-                        value = False
 
                 filter_params[field_name + lookup] = value
 

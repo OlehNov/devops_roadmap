@@ -1,9 +1,11 @@
 import datetime as dt
 import hashlib
 import os
+import typing as t
 
 from django.conf import settings
 from django.db.models import Model
+from glamps.constants import TRUE_HANDLER, FALSE_HANDLER
 
 TODAY = dt.date.today()
 
