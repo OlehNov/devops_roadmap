@@ -1,4 +1,3 @@
-from django.db.models import Prefetch
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ReadOnlyModelViewSet

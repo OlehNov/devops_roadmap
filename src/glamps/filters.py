@@ -3,7 +3,6 @@ from django.http import HttpRequest
 from rest_framework.filters import BaseFilterBackend
 from rest_framework.views import View
 from rest_framework.viewsets import ViewSet
-from glamps.utils import to_bool
 
 from glamps.constants import FILTER_PATTERN, LOOKUP_SEP, OPERATORS
 

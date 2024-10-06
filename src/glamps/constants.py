@@ -40,9 +40,6 @@ HELP_TEXT_TYPE_GLAMPS = (
     "12: TREE HOUSE",
 )
 
-TRUE_HANDLER = {"true", "1", "yes", "on"}
-FALSE_HANDLER = {"false", "0", "no", "off"}
-
 LOOKUP_SEP = "__"
 
 FILTER_PATTERN = re.compile(r"filters\[(.*?)\]\[(.*?)\]=([^&]*)")
