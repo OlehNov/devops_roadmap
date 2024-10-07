@@ -3,8 +3,6 @@ from rest_framework.routers import DefaultRouter
 
 from eventlogs.views import EventLogListAPIView, EventLogRetrieveAPIView
 
-router = DefaultRouter()
-
 
 urlpatterns = [
     path(
@@ -12,8 +10,8 @@ urlpatterns = [
         EventLogListAPIView.as_view(),
         name="eventlogs_list",
     ),
-    path("log/<int:id>/",
+    path("<int:event_id>/",
          EventLogRetrieveAPIView.as_view(),
          name="eventlog"),
 
-] + router.urls
+]

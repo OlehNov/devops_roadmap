@@ -49,7 +49,7 @@ class TouristListAPIView(ListAPIView):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
-class UserTouristRegisterView(EventLogMixin, CreateAPIView):
+class UserTouristRegisterView(CreateAPIView, EventLogMixin):
     """User registration class"""
 
     serializer_class = UserTouristRegistrationSerializer
@@ -87,7 +87,7 @@ class UserTouristRegisterView(EventLogMixin, CreateAPIView):
         return Response(serializer.data, status=HTTP_201_CREATED)
 
 
-class TouristRetrieveUpdateDestroyAPIView(EventLogMixin, RetrieveUpdateDestroyAPIView):
+class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
     serializer_class = TouristSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, RoleIsAdmin]
     lookup_url_kwarg = "tourist_id"
@@ -161,7 +161,7 @@ class TouristRetrieveUpdateDestroyAPIView(EventLogMixin, RetrieveUpdateDestroyAP
         return Response(deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class CurrentTouristProfileRetrieveUpdateDestroyAPIView(EventLogMixin, RetrieveUpdateDestroyAPIView):
+class CurrentTouristProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
     serializer_class = TouristSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted]
     lookup_url_kwarg = "tourist_id"

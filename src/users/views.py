@@ -29,7 +29,7 @@ from users.utils import TokenGenerator
 User = get_user_model()
 
 
-class UserViewSet(EventLogMixin, ModelViewSet):
+class UserViewSet(ModelViewSet, EventLogMixin):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
@@ -125,7 +125,7 @@ class PasswordResetRequestView(APIView):
         )
 
 
-class PasswordResetConfirmView(EventLogMixin, APIView):
+class PasswordResetConfirmView(APIView, EventLogMixin):
     def post(self, request, *args, **kwargs):
         user_authenticated(request.user)
 
@@ -140,7 +140,7 @@ class PasswordResetConfirmView(EventLogMixin, APIView):
             serializer = PasswordResetConfirmSerializer(data=request.data, user=user)
             if serializer.is_valid():
                 serializer.save()
-                self.log_event(self.request,"password_reset")
+                self.log_event(self.request, "password_reset")
                 return Response(
                     {"detail": "Password has been reset."}, status=status.HTTP_200_OK
                 )

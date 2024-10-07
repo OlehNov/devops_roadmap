@@ -1,8 +1,13 @@
 import os
 import subprocess
 
-create_eventlog_database = (f"mysql -h db -u {os.getenv('ROOT_USER')} -p{os.getenv('ROOT_PASSWORD')} -e "
-                            f"'CREATE DATABASE IF NOT EXISTS {os.getenv('EVENTLOGS_DATABASE')}; "
-                            f"GRANT ALL PRIVILEGES ON {os.getenv('EVENTLOGS_DATABASE')}.* TO \"{os.getenv('EVENTLOGS_DB_USER')}\"@\"%\";'")
+root_user = os.getenv('ROOT_USER')
+root_password = os.getenv('ROOT_PASSWORD')
+eventlogs_database_name = os.getenv('EVENTLOGS_DATABASE')
+eventlogs_database_user = os.getenv('EVENTLOGS_DB_USER')
+
+create_eventlog_database = (f"mysql -h db -u {root_user} -p{root_password} -e "
+                            f"'CREATE DATABASE IF NOT EXISTS {eventlogs_database_name}; "
+                            f"GRANT ALL PRIVILEGES ON {eventlogs_database_name}.* TO \"{eventlogs_database_user}\"@\"%\";'")
 
 subprocess.run(create_eventlog_database, shell=True, check=True)

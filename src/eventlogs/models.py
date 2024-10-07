@@ -10,7 +10,11 @@ class EventLog(models.Model):
         null=True,
         default=None
     )
-    instance = models.CharField(max_length=100)
+
+    instance = models.JSONField(
+        default=None,
+        null=True,
+    )
 
     operation_type = models.SmallIntegerField(
         null=True,
@@ -21,5 +25,6 @@ class EventLog(models.Model):
 
     class Meta:
         db_table = 'eventlog'
+        order_by = "-id"
 
 

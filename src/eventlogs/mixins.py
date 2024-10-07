@@ -6,7 +6,7 @@ from eventlogs.models import EventLog
 
 class EventLogMixin:
 
-    @staticmethod
+
     def _write_to_db(request, operation_type, operated_object):
         EventLog.objects.create(
             user_id=request.user.id,
@@ -17,11 +17,11 @@ class EventLogMixin:
 
     def log_event(self, request, operated_object):
 
-        if request.method == "POST":
+        if self.request.method.upper() == "POST":
             self._write_to_db(request, OperationType.CREATE, operated_object)
 
-        if request.method == "PUT" or self.request.method == "PATCH":
+        if self.request.method.upper() == "PUT" or request.method == "PATCH":
             self._write_to_db(request, OperationType.UPDATE, operated_object)
 
-        if request.method == "DELETE":
+        if self.request.method.upper() == "DELETE":
             self._write_to_db(request, OperationType.DELETE, operated_object)

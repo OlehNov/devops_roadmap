@@ -44,12 +44,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'authentication',
-    'glamps',
     'categories',
+    'eventlogs',
+    'glamps',
     'roles',
     'tourists',
     'users',
-    'eventlogs',
 ]
 
 AUTH_USER_MODEL = "users.User"
