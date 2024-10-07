@@ -23,14 +23,10 @@ class CustomBaseFilterBackend(BaseFilterBackend):
                 lookup = LOOKUP_SEP + OPERATORS.get(operator)
 
                 match operator:
-                    case "between":
+                    case "$between":
                         value = tuple(value.strip("()").split(","))
-                    case "in":
+                    case "$in":
                         value = value.strip("()").split(",")
-                    case "null":
-                        value = True
-                    case "notnull":
-                        value = False
 
                 filter_params[field_name + lookup] = value
 

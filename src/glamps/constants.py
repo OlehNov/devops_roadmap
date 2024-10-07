@@ -26,18 +26,18 @@ class TypeGlamp(IntEnum):
 
 HELP_TEXT_STATUSES = "1: Unregister, 2: Moderated, 3: Active, 4: Closed"
 HELP_TEXT_TYPE_GLAMPS = (
-    '1: DOME, '
-    '2: ECO, '
-    '3: SAFARI, '
-    '4: AWNING, '
-    '5: TRIANGULAR, '
-    '6: TENT, '
-    '7: MODULAR, '
-    '8: BARREL, '
-    '9: CONTAINER, '
-    '10: ON_WHEELS, '
-    '11: YURTA, '
-    '12: TREE HOUSE',
+    "1: DOME, "
+    "2: ECO, "
+    "3: SAFARI, "
+    "4: AWNING, "
+    "5: TRIANGULAR, "
+    "6: TENT, "
+    "7: MODULAR, "
+    "8: BARREL, "
+    "9: CONTAINER, "
+    "10: ON_WHEELS, "
+    "11: YURTA, "
+    "12: TREE HOUSE",
 )
 
 LOOKUP_SEP = "__"
@@ -52,6 +52,7 @@ OPERATORS = {
     "$gt": "gt",
     "$gte": "gte",
     "$in": "in",
+    "$is": "iexact",
     "$null": "isnull",
     "$notnull": "isnull",
     "$contains": "contains",
