@@ -3,8 +3,9 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from tourists.models import Tourist
-from tourists.validators import validate_phone, validate_birthday, validate_first_name, validate_last_name
+from tourists.validators import validate_phone, validate_birthday
 from users.models import User
+from users.validators import validate_first_name_last_name
 
 
 class TouristSerializer(serializers.ModelSerializer):
@@ -90,8 +91,8 @@ class UserTouristRegistrationSerializer(serializers.ModelSerializer):
                 {"password": "Password fields didn't match."}
             )
 
-        validate_first_name(attrs["first_name"])
-        validate_last_name(attrs["last_name"])
+        validate_first_name_last_name(attrs["first_name"])
+        validate_first_name_last_name(attrs["last_name"])
 
         return attrs
 
