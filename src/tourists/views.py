@@ -17,6 +17,7 @@ from rest_framework.status import (
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 
+from eventlogs.mixins import EventLogMixin
 from handlers.errors import validate_phone_error, validate_birthday_error
 from roles.constants import Role
 from roles.permissions import RoleIsAdmin
@@ -53,7 +54,7 @@ class TouristListAPIView(ListAPIView):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
-class UserTouristRegisterView(CreateAPIView):
+class UserTouristRegisterView(CreateAPIView, EventLogMixin):
     """User registration class"""
 
     serializer_class = UserTouristRegistrationSerializer
@@ -78,7 +79,7 @@ class UserTouristRegisterView(CreateAPIView):
                     user.save()
 
                     Tourist.objects.create(user=user)
-
+                    self.log_event(request, Tourist)
             except Exception as e:
                 if settings.DEBUG:
                     return Response({"error": str(e)}, status=HTTP_400_BAD_REQUEST)
@@ -96,7 +97,8 @@ class UserTouristRegisterView(CreateAPIView):
 
 
 
-class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+
+class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
     serializer_class = TouristSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, RoleIsAdmin]
     lookup_url_kwarg = "tourist_id"
@@ -149,6 +151,7 @@ class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
 
         if serializer.is_valid():
             self.perform_update(serializer)
+            self.log_event(request, instance)
             return Response(serializer.data, status=HTTP_200_OK)
 
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
@@ -161,6 +164,7 @@ class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
 
         if deactivate_serializer.is_valid():
             deactivate_serializer.save()
+            self.log_event(request, tourist)
             return Response(
                 {"detail": "User has been deleted"}, status=HTTP_204_NO_CONTENT
             )
@@ -168,7 +172,7 @@ class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         return Response(deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class CurrentTouristProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+class CurrentTouristProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
     serializer_class = TouristSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted]
     lookup_url_kwarg = "tourist_id"
@@ -222,6 +226,7 @@ class CurrentTouristProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPI
         if serializer.is_valid():
             serializer.save()
             self.perform_update(serializer)
+            self.log_event(request, instance)
             return Response(serializer.data, status=HTTP_200_OK)
         else:
             return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)

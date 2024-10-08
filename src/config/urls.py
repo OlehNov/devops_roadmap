@@ -6,6 +6,8 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+
+from config import api
 from config.api import PingPongAPIView
 
 
@@ -14,7 +16,7 @@ ROOT_API = settings.ROOT_API
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', PingPongAPIView.as_view(), name='ping'),
+    path('', api.ping_pong_view, name='ping'),
     path('api/schema/', SpectacularJSONAPIView.as_view(), name='schema'),
     path(
         'api/redoc/',
@@ -45,4 +47,9 @@ urlpatterns = [
         f'{ROOT_API}/glamps/',
         include(('glamps.urls', 'glamps'), namespace='glamps'),
     ),
+    path(
+        f'{ROOT_API}/eventlogs/',
+        include(('eventlogs.urls', 'eventlogs'), namespace='eventlogs'),
+    ),
+
 ]
