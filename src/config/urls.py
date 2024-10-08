@@ -10,7 +10,6 @@ from drf_spectacular.views import (
 from config import api
 
 
-
 ROOT_API = settings.ROOT_API
 
 
