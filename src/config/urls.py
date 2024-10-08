@@ -8,7 +8,6 @@ from drf_spectacular.views import (
 )
 
 from config import api
-from config.api import PingPongAPIView
 
 
 ROOT_API = settings.ROOT_API

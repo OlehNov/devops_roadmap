@@ -25,6 +25,6 @@ class EventLog(models.Model):
 
     class Meta:
         db_table = 'eventlog'
-        order_by = "-id"
+        ordering = ("-id",)
 
 
