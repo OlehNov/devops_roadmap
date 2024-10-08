@@ -12,6 +12,12 @@ class IsNotDeleted(BasePermission):
         )
 
 
-def user_authenticated(user):
-    if isinstance(user, AnonymousUser):
-        raise PermissionDenied("Forbidden")
+class IsAuthenticatedOrForbidden(BasePermission):
+    """
+    Allows access only to authenticated users.
+    """
+
+    def has_permission(self, request, view):
+        if isinstance(request.user, AnonymousUser):
+            raise PermissionDenied("Forbidden")
+        return True

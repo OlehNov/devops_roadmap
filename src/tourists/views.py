@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from rest_framework.generics import (
@@ -39,6 +40,10 @@ class TouristListAPIView(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
+
+        if user.is_anonymous:
+            return User.objects.none()
+
         if user.role == Role.ADMIN:
             return User.objects.all()
         return User.objects.filter(id=user.id)
@@ -58,33 +63,39 @@ class UserTouristRegisterView(CreateAPIView, EventLogMixin):
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
 
-        try:
-            with transaction.atomic():
-                user = User.objects.create_user(
-                    email=serializer.validated_data["email"],
-                    first_name=serializer.validated_data["first_name"],
-                    last_name=serializer.validated_data["last_name"],
-                    password=serializer.validated_data["password"],
-                    role=Role.TOURIST,
+        if serializer.is_valid():
+
+            try:
+                with transaction.atomic():
+                    user = User.objects.create_user(
+                        email=serializer.validated_data["email"],
+                        first_name=serializer.validated_data["first_name"],
+                        last_name=serializer.validated_data["last_name"],
+                        password=serializer.validated_data["password"],
+                        role=Role.TOURIST,
+                    )
+                    user.is_active = False
+                    user.save()
+
+                    Tourist.objects.create(user=user)
+                    self.log_event(request, Tourist)
+            except Exception as e:
+                if settings.DEBUG:
+                    return Response({"error": str(e)}, status=HTTP_400_BAD_REQUEST)
+                return Response(
+                    {"error": "An error occurred. Please try again later."},
+                    status=HTTP_400_BAD_REQUEST,
                 )
-                user.is_active = False
-                user.save()
 
-                Tourist.objects.create(user=user)
-                self.log_event(request, Tourist)
-        except Exception as e:
-            if settings.DEBUG:
-                return Response({"error": str(e)}, status=HTTP_400_BAD_REQUEST)
-            return Response(
-                {"error": "An error occurred. Please try again later."},
-                status=HTTP_400_BAD_REQUEST,
-            )
+            verify_email.apply_async(args=[user.pk])
 
-        verify_email.apply_async(args=[user.pk])
+            return Response(serializer.data, status=HTTP_201_CREATED)
 
-        return Response(serializer.data, status=HTTP_201_CREATED)
+        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+
+
 
 
 class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):

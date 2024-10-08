@@ -3,6 +3,7 @@ from uuid import uuid4
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models import (
+    SET_NULL,
     CASCADE,
     CharField,
     DateTimeField,
@@ -15,9 +16,10 @@ from django.db.models import (
     FloatField,
     BooleanField,
 )
+from categories.models import Category
 from django.utils.translation import gettext as _
 
-from glamps.constants import STATUS, TypeGlamp
+from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
 
 User = get_user_model()
 
@@ -31,13 +33,23 @@ class Glamp(Model):
     )
 
     # General info
-    glamp_type = PositiveSmallIntegerField(_('Glamp Type'), default=None)
+    glamp_type = PositiveSmallIntegerField(
+        _('Glamp Type'), help_text=HELP_TEXT_TYPE_GLAMPS, default=None
+    )
 
     name = CharField(
         _('Glamp Name'), max_length=225, null=False, blank=False, default=None
     )
     description = CharField(
         _('Description'), max_length=5000, null=True, blank=True, default=None
+    )
+    category = ForeignKey(
+        Category,
+        on_delete=SET_NULL,
+        null=True,
+        default=None,
+        verbose_name=_('Category'),
+        related_name='glamp_category',
     )
     capacity = PositiveSmallIntegerField(
         _('Capacity'), validators=[MinValueValidator(1)], default=None
@@ -52,7 +64,7 @@ class Glamp(Model):
         help_text=_('Price for one night'),
     )
     status = PositiveSmallIntegerField(
-        _('Status'), help_text=STATUS, default=None
+        _('Status'), help_text=HELP_TEXT_STATUSES, default=None
     )
 
     owner = ForeignKey(
@@ -60,7 +72,6 @@ class Glamp(Model):
         on_delete=CASCADE,
         blank=False,
         null=False,
-        default=None,
         verbose_name=_('Glamp Owner'),
         related_name='glamp_owner',
     )
@@ -72,16 +83,14 @@ class Glamp(Model):
     building_number = CharField(
         _('Building Number'),
         max_length=255,
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         default=None,
     )
     apartment = CharField(
         _('Apartment'), max_length=25, null=True, blank=True, default=None
     )
-    city = CharField(
-        _('City'), max_length=255, null=False, blank=False, default=None
-    )
+    city = CharField(_('City'), max_length=255, null=False, blank=False)
     region = CharField(
         _('Region'), max_length=255, null=True, blank=True, default=None
     )

@@ -1,8 +1,12 @@
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
+from users.utils import TokenGenerator
+
 
 User = get_user_model()
 
@@ -92,3 +96,34 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
         self.user.set_password(password)
         self.user.save()
         return self.user
+
+
+class ActivateUserSerializer(serializers.Serializer):
+    uuid64 = serializers.CharField()
+    token = serializers.CharField()
+
+    def validate(self, data):
+        uuid64 = data.get("uuid64")
+        token = data.get("token")
+        user_id = force_str(urlsafe_base64_decode(uuid64))
+        current_user = get_object_or_404(User, id=user_id)
+
+        if current_user and TokenGenerator().check_token(current_user, token):
+            data["current_user"] = current_user
+        else:
+            raise serializers.ValidationError("Invalid activation data.")
+
+        return data
+
+    def activate(self):
+        current_user = self.validated_data["current_user"]
+
+        current_user.is_active = True
+        current_user.save()
+
+        refresh = RefreshToken.for_user(current_user)
+        return {
+            "current_user": current_user,
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+        }
