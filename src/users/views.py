@@ -86,10 +86,10 @@ class ActivateUserAPIView(APIView):
             return Response(
                 {
                     "detail": "User activated successfully.",
-                    "current_user": result['current_user'].id,
-                    "access": result['access'],
-                    "refresh": result['refresh'],
-                    "user_email": result['current_user'].email,
+                    "current_user": result["current_user"].id,
+                    "access": result["access"],
+                    "refresh": result["refresh"],
+                    "user_email": result["current_user"].email,
                 },
                 status=status.HTTP_200_OK,
             )

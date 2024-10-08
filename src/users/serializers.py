@@ -14,7 +14,7 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "email", "first_name", "last_name", "is_active"]
+        fields = ["id", "email", "first_name", "last_name", "is_active", "is_staff", "role"]
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
@@ -36,7 +36,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=255, required=True, allow_blank=False)
     password = serializers.CharField(
-        max_length=128, write_only=True, validators=[validate_password]
+        max_length=255, write_only=True, validators=[validate_password]
     )
 
     class Meta:

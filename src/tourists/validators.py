@@ -1,11 +1,14 @@
 import re
-from datetime import date
+from datetime import datetime, date
 
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 
 def validate_birthday(value):
+    if isinstance(value, str):
+        value = datetime.strptime(value, '%Y-%m-%d').date()
+
     age = (date.today() - value).days // 365
 
     if value > date.today():

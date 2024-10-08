@@ -5,6 +5,7 @@ from rest_framework import serializers
 from tourists.models import Tourist
 from tourists.validators import validate_phone, validate_birthday
 from users.models import User
+from users.validators import validate_first_name_last_name
 
 
 class TouristSerializer(serializers.ModelSerializer):
@@ -89,6 +90,9 @@ class UserTouristRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"password": "Password fields didn't match."}
             )
+
+        validate_first_name_last_name(attrs["first_name"])
+        validate_first_name_last_name(attrs["last_name"])
 
         return attrs
 
