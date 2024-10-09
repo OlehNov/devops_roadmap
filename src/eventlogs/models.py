@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -27,4 +28,6 @@ class EventLog(models.Model):
         db_table = 'eventlog'
         ordering = ("-id",)
 
-
+    def clean_operation_type(self):
+        if self.operation_type not in [1, 2, 3]:
+            raise ValidationError("operation type must be 1, 2 or 3")

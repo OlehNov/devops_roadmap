@@ -1,5 +1,3 @@
-from django.db import transaction
-
 from eventlogs.constants import OperationType
 from eventlogs.models import EventLog
 
@@ -17,7 +15,8 @@ class EventLogMixin:
     on database, it writes the ID of user, email of user, object on which operation was made, type of the operation and timestamp
     """
 
-    def _write_to_db(request, operation_type, operated_object):
+    def _write_to_db(self, request, operation_type, operated_object):
+
         EventLog.objects.create(
             user_id=request.user.id,
             user_email=request.user.email,
