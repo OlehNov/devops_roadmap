@@ -1,5 +1,5 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from glamps.filters import CustomBaseFilterBackend
@@ -7,26 +7,27 @@ from glamps.models import Glamp
 from glamps.serializers import GlampSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from glamps.permissions import IsOwnerOrReadOnly
+from roles.constants import Role
+from users.permissions import IsAuthenticatedOrForbidden
 
 
 @extend_schema(
     tags=["glamp"],
 )
-class GlampViewSet(ModelViewSet):
+class GlampModelViewSet(ModelViewSet):
     queryset = Glamp.objects.select_related("owner", "category")
     serializer_class = GlampSerializer
+    filter_backends = [CustomBaseFilterBackend]
 
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
             return [AllowAny()]
-        return [IsOwnerOrReadOnly()]
 
-    def get_filter_backends(self):
-        if self.action == "list":
-            return [CustomBaseFilterBackend]
-
-        return super().get_filter_backends()
+        match self.request.user.role:
+            case Role.TOURIST:
+                return []
+            case _:
+                return [IsAuthenticatedOrForbidden()]
 
     @extend_schema(
         description=(
@@ -165,15 +166,15 @@ class GlampViewSet(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def perform_create(self, serializer):
-        model = serializer.save()
-        self.log_event(self.request, model)
-        return model
+        glamp_instance = serializer.save()
+        self.log_event(self.request, glamp_instance)
+        return glamp_instance
 
     def perform_update(self, serializer):
-        model = serializer.save()
-        self.log_event(self.request, model)
-        return model
+        glamp_instance = serializer.save()
+        self.log_event(self.request, glamp_instance)
+        return glamp_instance
 
-    def perform_destroy(self, model):
-        self.log_event(self.request, model)
-        return super().perform_destroy(model)
+    def perform_destroy(self, glamp_instance):
+        self.log_event(self.request, glamp_instance)
+        return super().perform_destroy(glamp_instance)
