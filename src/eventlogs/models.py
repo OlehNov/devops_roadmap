@@ -27,7 +27,3 @@ class EventLog(models.Model):
     class Meta:
         db_table = 'eventlog'
         ordering = ("-id",)
-
-    def clean_operation_type(self):
-        if self.operation_type not in [1, 2, 3]:
-            raise ValidationError("operation type must be 1, 2 or 3")
