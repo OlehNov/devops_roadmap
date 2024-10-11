@@ -1,5 +1,4 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from glamps.filters import CustomBaseFilterBackend
@@ -7,8 +6,13 @@ from glamps.models import Glamp
 from glamps.serializers import GlampSerializer
 from rest_framework.response import Response
 from rest_framework import status
-from roles.constants import Role
-from users.permissions import IsAuthenticatedOrForbidden
+from glamps.permissions import (
+    RoleIsAdmin,
+    RoleIsManager,
+    IsOwner,
+    RoleIsTourist,
+    IsAnonymousUser,
+)
 
 
 @extend_schema(
@@ -20,14 +24,34 @@ class GlampModelViewSet(ModelViewSet):
     filter_backends = [CustomBaseFilterBackend]
 
     def get_permissions(self):
-        if self.action in ["list", "retrieve"]:
-            return [AllowAny()]
-
-        match self.request.user.role:
-            case Role.TOURIST:
-                return []
+        match self.action:
+            case "list":
+                permission_classes = [
+                    IsAnonymousUser
+                    | RoleIsAdmin
+                    | RoleIsManager
+                    | RoleIsTourist
+                    | IsOwner
+                ]
+            case "retrieve":
+                permission_classes = [
+                    IsAnonymousUser
+                    | RoleIsAdmin
+                    | RoleIsManager
+                    | IsOwner
+                    | RoleIsTourist
+                    | IsAnonymousUser
+                ]
+            case "create":
+                permission_classes = [RoleIsAdmin | RoleIsManager | IsOwner]
+            case "update":
+                permission_classes = [RoleIsAdmin | RoleIsManager | IsOwner]
+            case "destroy":
+                permission_classes = [RoleIsAdmin | RoleIsManager | IsOwner]
             case _:
-                return [IsAuthenticatedOrForbidden()]
+                permission_classes = []
+
+        return [permission() for permission in permission_classes]
 
     @extend_schema(
         description=(
