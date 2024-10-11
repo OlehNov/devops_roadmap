@@ -9,9 +9,10 @@ from rest_framework import status
 from glamps.permissions import (
     RoleIsAdmin,
     RoleIsManager,
-    IsOwner,
+    IsGlampOwner,
     RoleIsTourist,
     IsAnonymousUser,
+    RoleIsOwner,
 )
 
 
@@ -31,23 +32,29 @@ class GlampModelViewSet(ModelViewSet):
                     | RoleIsAdmin
                     | RoleIsManager
                     | RoleIsTourist
-                    | IsOwner
+                    | RoleIsOwner
                 ]
             case "retrieve":
                 permission_classes = [
                     IsAnonymousUser
                     | RoleIsAdmin
                     | RoleIsManager
-                    | IsOwner
+                    | RoleIsOwner
                     | RoleIsTourist
                     | IsAnonymousUser
                 ]
             case "create":
-                permission_classes = [RoleIsAdmin | RoleIsManager | IsOwner]
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | RoleIsOwner
+                ]
             case "update":
-                permission_classes = [RoleIsAdmin | RoleIsManager | IsOwner]
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | IsGlampOwner
+                ]
             case "destroy":
-                permission_classes = [RoleIsAdmin | RoleIsManager | IsOwner]
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | IsGlampOwner
+                ]
             case _:
                 permission_classes = []
 

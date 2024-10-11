@@ -37,7 +37,13 @@ class RoleIsTourist(BasePermission):
         return request.user.role == Role.TOURIST
 
 
-class IsOwner(BasePermission):
+class RoleIsOwner(BasePermission):
+    def has_permission(self, request, view):
+        user_authenticated(user=request.user)
+        return request.user.role == Role.OWNER
+
+
+class IsGlampOwner(BasePermission):
     def has_permission(self, request, view):
         user_authenticated(user=request.user)
         return True
