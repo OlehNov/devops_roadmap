@@ -39,6 +39,10 @@ urlpatterns = [
         include(('tourists.urls', 'tourists'), namespace='tourists'),
     ),
     path(
+        f'{ROOT_API}/admins/',
+        include(('admins.urls', 'admins'), namespace='admins'),
+    ),
+    path(
         f'{ROOT_API}/users/',
         include(('users.urls', 'users'), namespace='users'),
     ),
