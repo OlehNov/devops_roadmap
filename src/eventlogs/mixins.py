@@ -51,14 +51,3 @@ class EventLogMixin:
 
         self._write_to_db(request, operation_type, instance)
 
-
-
-
-
-
-
-
-
-        return self._write_to_db(self._validate_is_not_none(request),
-                                 self._validate_is_not_none(operation_type),
-                                 self._validate_is_not_none(instance))
