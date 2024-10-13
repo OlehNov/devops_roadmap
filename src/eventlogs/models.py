@@ -5,7 +5,7 @@ class EventLog(models.Model):
     user_id = models.IntegerField(null=True, default=None)
     user_email = models.EmailField(null=True, default=None)
 
-    instance = models.JSONField(
+    instance = models.TextField(
         default=None,
         null=True,
     )

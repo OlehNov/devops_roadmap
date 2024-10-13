@@ -143,7 +143,6 @@ class PasswordResetConfirmView(APIView):
             serializer = self.serializer_class(data=request.data, user=user)
             if serializer.is_valid():
                 serializer.save()
-                self.log_event(self.request, "password_reset")
                 return Response(
                     {"detail": "Password has been reset."}, status=status.HTTP_200_OK
                 )
