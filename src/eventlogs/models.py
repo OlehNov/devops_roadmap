@@ -1,4 +1,3 @@
-from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -12,7 +11,7 @@ class EventLog(models.Model):
         default=None
     )
 
-    instance = models.JSONField(
+    instance = models.TextField(
         default=None,
         null=True,
     )

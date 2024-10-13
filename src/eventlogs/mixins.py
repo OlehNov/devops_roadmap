@@ -4,13 +4,13 @@ from eventlogs.models import EventLog
 
 class EventLogMixin:
     """
-    Using for logging Create, Update, Delete events
+    Using for logging Create, Update, Delete events ONLY
 
     Implement by inheriting from EventLogMixin and using log_event method,
     must be implemented after successfully setting changes to main Database
 
     log_event method takes two arguments: request and object, on which was the operation made
-    by checking request method - defining which operation was made and set operation_type value when calling _write_to_db method, which makes new DB raw
+    by checking request method - defining which operation was made and set operation_type value then calling _write_to_db method, which makes new DB raw
 
     on database, it writes the ID of user, email of user, object on which operation was made, type of the operation and timestamp
     """
@@ -24,13 +24,41 @@ class EventLogMixin:
             operation_type=operation_type
         )
 
+    def _validate(self, value):
+        if value is None:
+            return ValueError(f"{value} is None")
+        return value
+
     def log_event(self, request, operated_object):
 
-        if self.request.method.upper() == "POST":
-            self._write_to_db(request, OperationType.CREATE, operated_object)
+        request = self._validate(request)
+        operated_object = self._validate(operated_object)
+        instance = {
+            "instance_id": operated_object.id,
+            "instance_class": operated_object.__class__.__name__,
+            "request_data": request.data
+        }
 
-        if self.request.method.upper() == "PUT" or request.method == "PATCH":
-            self._write_to_db(request, OperationType.UPDATE, operated_object)
+        match request.method.upper():
+            case "POST":
+                operation_type = OperationType.CREATE
+            case "PUT" | "PATCH":
+                operation_type = OperationType.UPDATE
+            case "DELETE":
+                operation_type = OperationType.DELETE
+            case _:
+                raise ValueError(f"Unsupported HTTP method: {request.method}")
 
-        if self.request.method.upper() == "DELETE":
-            self._write_to_db(request, OperationType.DELETE, operated_object)
+        self._write_to_db(request, operation_type, instance)
+
+
+
+
+
+
+
+
+
+        return self._write_to_db(self._validate_is_not_none(request),
+                                 self._validate_is_not_none(operation_type),
+                                 self._validate_is_not_none(instance))

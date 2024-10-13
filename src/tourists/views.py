@@ -77,9 +77,9 @@ class UserTouristRegisterView(CreateAPIView, EventLogMixin):
                     )
                     user.is_active = False
                     user.save()
-
                     Tourist.objects.create(user=user)
-                    self.log_event(request, Tourist)
+                    self.log_event(request=request, operated_object=user)
+
             except Exception as e:
                 if settings.DEBUG:
                     return Response({"error": str(e)}, status=HTTP_400_BAD_REQUEST)
