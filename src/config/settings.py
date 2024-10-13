@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'glamps',
     'roles',
     'tourists',
+    'admins',
     'users',
 ]
 
