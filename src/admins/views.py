@@ -19,7 +19,7 @@ from rest_framework.permissions import IsAuthenticated
 
 class AdminListAPIView(ListAPIView):
     serializer_class = AdminSerializer
-    pagination_class = [IsAuthenticated, IsNotDeleted, IsSuperuser]
+    permission_classes = [IsAuthenticated, IsNotDeleted, IsSuperuser]
     lookup_url_kwarg = "admin_id"
 
     def get_queryset(self):
