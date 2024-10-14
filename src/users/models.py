@@ -5,9 +5,10 @@ from django.db import models
 
 from users.managers import UserManager
 from users.validators import validate_role
+from mixins.timestamps import TimestampMixin
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractBaseUser, PermissionsMixin, TimestampMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=255, null=True, default=None)
     last_name = models.CharField(max_length=255, null=True, default=None)

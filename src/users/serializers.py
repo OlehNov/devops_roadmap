@@ -22,8 +22,10 @@ class UserSerializer(serializers.ModelSerializer):
             "is_active",
             "is_staff",
             "role",
+            "created_at",
+            "updated_at"
         ]
-
+        read_only_fields = ["created_at", "updated_at"]
 
 class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -36,8 +38,10 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "is_active",
             "is_staff",
             "role",
+            "created_at",
+            "updated_at"
         )
-        read_only_fields = ("is_active", "is_staff", "role")
+        read_only_fields = ("is_active", "is_staff", "role", "created_at", "updated_at")
         write_only_fields = ("password",)
 
 
