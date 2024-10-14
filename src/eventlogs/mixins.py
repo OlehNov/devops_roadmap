@@ -17,9 +17,16 @@ class EventLogMixin:
 
     def _write_to_db(self, request, operation_type, operated_object):
 
+        if request.user.is_authenticated:
+            user_id = request.user.id
+            user_email = request.user.email
+        else:
+            user_id = None
+            user_email = "Anonymous"
+
         EventLog.objects.create(
-            user_id=request.user.id,
-            user_email=request.user.email,
+            user_id=user_id,
+            user_email=user_email,
             instance=operated_object,
             operation_type=operation_type
         )
