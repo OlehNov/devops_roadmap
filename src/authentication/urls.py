@@ -6,7 +6,6 @@ from authentication.api import (
     CustomTokenVerifyView,
 )
 
-
 urlpatterns = [
     path("token/", CustomObtainTokenPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh/", CustomTokenRefreshView.as_view(), name="token_refresh"),

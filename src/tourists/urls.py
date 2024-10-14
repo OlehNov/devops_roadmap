@@ -1,8 +1,9 @@
 from django.urls import path
+
 from tourists.views import (
-    UserTouristRegisterView,
     TouristListAPIView,
     TouristRetrieveUpdateDestroyAPIView,
+    UserTouristRegisterView,
 )
 
 urlpatterns = [

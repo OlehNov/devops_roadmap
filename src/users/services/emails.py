@@ -10,7 +10,6 @@ from dotenv import load_dotenv
 
 from users.utils import TokenGenerator
 
-
 load_dotenv()
 
 User = get_user_model()

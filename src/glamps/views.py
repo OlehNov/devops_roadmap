@@ -1,19 +1,19 @@
 from drf_spectacular.utils import extend_schema
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from glamps.filters import CustomBaseFilterBackend
 from glamps.models import Glamp
-from glamps.serializers import GlampSerializer
-from rest_framework.response import Response
-from rest_framework import status
 from glamps.permissions import (
+    IsAnonymousUser,
+    IsGlampOwner,
     RoleIsAdmin,
     RoleIsManager,
-    IsGlampOwner,
-    RoleIsTourist,
-    IsAnonymousUser,
     RoleIsOwner,
+    RoleIsTourist,
 )
+from glamps.serializers import GlampSerializer
 
 
 @extend_schema(
@@ -44,17 +44,11 @@ class GlampModelViewSet(ModelViewSet):
                     | IsAnonymousUser
                 ]
             case "create":
-                permission_classes = [
-                    RoleIsAdmin | RoleIsManager | RoleIsOwner
-                ]
+                permission_classes = [RoleIsAdmin | RoleIsManager | RoleIsOwner]
             case "update":
-                permission_classes = [
-                    RoleIsAdmin | RoleIsManager | IsGlampOwner
-                ]
+                permission_classes = [RoleIsAdmin | RoleIsManager | IsGlampOwner]
             case "destroy":
-                permission_classes = [
-                    RoleIsAdmin | RoleIsManager | IsGlampOwner
-                ]
+                permission_classes = [RoleIsAdmin | RoleIsManager | IsGlampOwner]
             case _:
                 permission_classes = []
 
@@ -103,7 +97,7 @@ class GlampModelViewSet(ModelViewSet):
             "- `GET http://localhost:8181/api/v1/glamps/?filters[name][$endsWith]=Welcome` \n\n"
             "`$endsWithi` - **Ends with (case-insensitive)**\n\n"
             "- `GET http://localhost:8181/api/v1/glamps/?filters[name][$endsWithi]=WeLcomE` \n\n"
-            "You can also combine fields with \"&\" symbol for more precise filtering: \n\n"
+            'You can also combine fields with "&" symbol for more precise filtering: \n\n'
             "- `GET http://localhost:8181/api/v1/glamps/?filters[city][$in]=Одеса,Буковель&?filters[heating_system][$eq]=1&?filters[price][$gte]=950` \n\n"
             "For fields with **bool** type you can use operator **[$eq]** or **[$eqi]** and values 1 and 0: \n\n"
             "- `0 - False` \n\n"

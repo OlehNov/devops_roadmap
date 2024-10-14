@@ -28,7 +28,7 @@ class EventLogMixin:
             user_id=user_id,
             user_email=user_email,
             instance=operated_object,
-            operation_type=operation_type
+            operation_type=operation_type,
         )
 
     def _validate(self, value):
@@ -43,7 +43,7 @@ class EventLogMixin:
         instance = {
             "instance_id": operated_object.id,
             "instance_class": operated_object.__class__.__name__,
-            "request_data": request.data
+            "request_data": request.data,
         }
 
         match request.method.upper():
@@ -57,4 +57,3 @@ class EventLogMixin:
                 raise ValueError(f"Unsupported HTTP method: {request.method}")
 
         self._write_to_db(request, operation_type, instance)
-

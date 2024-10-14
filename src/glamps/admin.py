@@ -1,25 +1,22 @@
 from django.contrib import admin
 
-from glamps.models import (
-    Glamp,
-    Picture,
-)
+from glamps.models import Glamp, Picture
 
 
 @admin.register(Glamp)
 class GlampAdmin(admin.ModelAdmin):
     search_fields = (
         "name",
-        'type_glamp',
+        "type_glamp",
         "capacity",
         "status",
         "price",
-        'status',
-        'street',
-        'city',
-        'region',
-        'latitude',
-        'longitude',
+        "status",
+        "street",
+        "city",
+        "region",
+        "latitude",
+        "longitude",
     )
 
 

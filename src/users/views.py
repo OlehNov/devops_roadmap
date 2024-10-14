@@ -8,25 +8,25 @@ from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
+from yaml import serialize
 
 from eventlogs.mixins import EventLogMixin
 from roles.constants import Role
 from users.permissions import IsAuthenticatedOrForbidden
 from users.serializers import (
-    UserSerializer,
+    ActivateUserSerializer,
     CurrentUserSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
-    ActivateUserSerializer,
+    UserSerializer,
 )
 from users.tasks import send_reset_password_email, verify_email
 from users.utils import TokenGenerator
-from yaml import serialize
 
 User = get_user_model()
 
@@ -114,14 +114,16 @@ class PasswordResetRequestView(APIView):
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             reset_url = request.build_absolute_uri(
                 reverse(
-                    "users:password_reset_confirm", kwargs={"uidb64": uid, "token": token}
+                    "users:password_reset_confirm",
+                    kwargs={"uidb64": uid, "token": token},
                 )
             )
 
             send_reset_password_email.apply_async(args=[user.email, reset_url])
 
             return Response(
-                {"detail": "Password reset email has been sent."}, status=status.HTTP_200_OK
+                {"detail": "Password reset email has been sent."},
+                status=status.HTTP_200_OK,
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

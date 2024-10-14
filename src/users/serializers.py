@@ -5,8 +5,8 @@ from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
-from users.utils import TokenGenerator
 
+from users.utils import TokenGenerator
 
 User = get_user_model()
 
@@ -14,7 +14,15 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "email", "first_name", "last_name", "is_active", "is_staff", "role"]
+        fields = [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "is_active",
+            "is_staff",
+            "role",
+        ]
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
@@ -27,7 +35,7 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "last_name",
             "is_active",
             "is_staff",
-            "role"
+            "role",
         )
         read_only_fields = ("is_active", "is_staff", "role")
         write_only_fields = ("password",)

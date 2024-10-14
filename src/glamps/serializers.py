@@ -1,8 +1,8 @@
 from rest_framework.serializers import ModelSerializer
 
+from categories.serializers import CategorySerializer
 from glamps.models import Glamp
 from users.serializers import UserSerializer
-from categories.serializers import CategorySerializer
 
 
 class GlampSerializer(ModelSerializer):
@@ -11,4 +11,4 @@ class GlampSerializer(ModelSerializer):
 
     class Meta:
         model = Glamp
-        fields = '__all__'
+        fields = "__all__"

@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from tourists.models import Tourist
-from tourists.validators import validate_phone, validate_birthday
+from tourists.validators import validate_birthday, validate_phone
 from users.models import User
 from users.validators import validate_first_name_last_name
 

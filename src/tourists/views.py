@@ -8,26 +8,26 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
     get_object_or_404,
 )
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
 )
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.response import Response
 
 from eventlogs.mixins import EventLogMixin
-from handlers.errors import validate_phone_error, validate_birthday_error
+from handlers.errors import validate_birthday_error, validate_phone_error
 from roles.constants import Role
 from roles.permissions import RoleIsAdmin
 from tourists.models import Tourist
 from tourists.serializers import (
-    TouristSerializer,
     TouristDeactivateSerializer,
+    TouristSerializer,
     UserTouristRegistrationSerializer,
 )
-from tourists.validators import validate_phone, validate_birthday
+from tourists.validators import validate_birthday, validate_phone
 from users.models import User
 from users.permissions import IsNotDeleted
 from users.tasks import verify_email
@@ -44,8 +44,9 @@ class TouristListAPIView(ListAPIView):
         if user.is_anonymous:
             return User.objects.none()
 
-        if user.role == Role.ADMIN:
-            return User.objects.all()
+        if user.role == Role.ADMIN or user.is_staff:
+            return User.objects.filter(role=Role.TOURIST)
+
         return User.objects.filter(id=user.id)
 
     def list(self, request, *args, **kwargs):
@@ -95,9 +96,6 @@ class UserTouristRegisterView(CreateAPIView, EventLogMixin):
             return Response(serializer.data, status=HTTP_201_CREATED)
 
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-
-
-
 
 
 class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
@@ -174,7 +172,9 @@ class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLog
         return Response(deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class CurrentTouristProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
+class CurrentTouristProfileRetrieveUpdateDestroyAPIView(
+    RetrieveUpdateDestroyAPIView, EventLogMixin
+):
     serializer_class = TouristSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted]
     lookup_url_kwarg = "tourist_id"
@@ -201,9 +201,8 @@ class CurrentTouristProfileRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPI
         return self.update(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
-        tourist_data = request.data.get("tourist", {})
-        phone = tourist_data.get("phone", None)
-        birthday = tourist_data.get("birthday", None)
+        phone = request.data.get("phone", None)
+        birthday = request.data.get("birthday", None)
 
         if phone:
             try:

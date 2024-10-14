@@ -2,8 +2,8 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 from config import settings
+from tourists.validators import validate_birthday, validate_phone
 from users.models import User
-from tourists.validators import validate_phone, validate_birthday
 
 
 class BaseModel(models.Model):

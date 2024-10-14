@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
-from users.models import User
+
 from admins.models import Admin
+from users.models import User
 
 
 class AdminSerializer(ModelSerializer):
@@ -14,7 +15,6 @@ class AdminSerializer(ModelSerializer):
             "last_name",
             "role",
         ]
-
 
     def update(self, instance, validated_data):
         # Update User fields

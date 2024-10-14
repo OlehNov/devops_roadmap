@@ -2,9 +2,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import BasePermission
-from roles.constants import Role
-from glamps.models.glamp import Glamp
 
+from glamps.models.glamp import Glamp
+from roles.constants import Role
 
 User = get_user_model()
 

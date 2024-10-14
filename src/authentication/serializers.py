@@ -5,7 +5,6 @@ from rest_framework_simplejwt.serializers import (
     TokenVerifySerializer,
 )
 
-
 User = get_user_model()
 
 

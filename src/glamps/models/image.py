@@ -33,7 +33,7 @@ class Picture(Model):
     )
 
     class Meta:
-        db_table = 'picture'
+        db_table = "picture"
         verbose_name = _("Picture")
         verbose_name_plural = _("Pictures")
 

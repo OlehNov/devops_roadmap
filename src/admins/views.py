@@ -4,17 +4,15 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
     get_object_or_404,
 )
-from rest_framework.status import (
-    HTTP_200_OK,
-    HTTP_400_BAD_REQUEST,
-    HTTP_204_NO_CONTENT,
-)
-from eventlogs.mixins import EventLogMixin
-from admins.serializers import AdminSerializer, AdminDeactivateSerializer
-from users.models import User
-from rest_framework.response import Response
-from users.permissions import IsSuperuser, IsNotDeleted
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
+
+from admins.serializers import AdminDeactivateSerializer, AdminSerializer
+from eventlogs.mixins import EventLogMixin
+from roles.constants import Role
+from users.models import User
+from users.permissions import IsNotDeleted, IsSuperuser
 
 
 class AdminListAPIView(ListAPIView):
@@ -28,7 +26,10 @@ class AdminListAPIView(ListAPIView):
         if user.is_anonymous:
             return User.objects.none()
 
-        return User.objects.filter(role=1)
+        if user.role == Role.ADMIN or user.is_staff:
+            return User.objects.filter(role=Role.ADMIN)
+
+        return User.objects.none()
 
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()

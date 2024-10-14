@@ -6,4 +6,3 @@ def ping_pong_view(request):
         return HttpResponse("{'ping': 'pong'}")
     else:
         return HttpResponse("POST, PUT, PATCH methods are not allowed")
-
