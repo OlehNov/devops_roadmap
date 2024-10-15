@@ -25,6 +25,7 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 INSTALLED_APPS = [
     "jazzmin",
+
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -32,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
+
     "celery",
     "cloudinary",
     "cloudinary_storage",
@@ -41,13 +43,14 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "rest_framework",
     "rest_framework_simplejwt",
+
+    "administrators",
     "authentication",
     "categories",
     "eventlogs",
     "glamps",
     "roles",
     "tourists",
-    "admins",
     "users",
 ]
 

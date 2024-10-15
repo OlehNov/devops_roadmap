@@ -1,13 +1,14 @@
 from django.core.validators import FileExtensionValidator
-from django.db.models import CASCADE, FileField, ForeignKey, Model
+from django.db.models import CASCADE, FileField, ForeignKey
 from django.utils.translation import gettext as _
 
 from glamps.utils import folder_path
+from mixins.timestamps import TimestampMixin
 
 
-class Picture(Model):
+class Picture(TimestampMixin):
     pic = FileField(
-        _("Картинка"),
+        _("Picture"),
         upload_to=folder_path,
         validators=[
             FileExtensionValidator(

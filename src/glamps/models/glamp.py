@@ -20,11 +20,13 @@ from django.utils.translation import gettext as _
 
 from categories.models import Category
 from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
+from mixins.timestamps import TimestampMixin
+
 
 User = get_user_model()
 
 
-class Glamp(Model):
+class Glamp(TimestampMixin):
     uuid = UUIDField(
         unique=True,
         default=uuid4,
@@ -219,13 +221,11 @@ class Glamp(Model):
         _("The Room Is Completely Located On The First Floor"), default=False
     )
 
-    created = DateTimeField(_("Created"), auto_now_add=True)
-    updated = DateTimeField(_("Updated"), auto_now=True)
-
     class Meta:
-        db_table = "glamps"
+        db_table = "glamp"
+        ordering = ("name",)
         verbose_name = _("Glamp")
-        verbose_name_plural = _("Glamp")
+        verbose_name_plural = _("Glamps")
 
     def __str__(self) -> str:
         return f"{self.name}"

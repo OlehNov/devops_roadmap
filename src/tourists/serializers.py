@@ -1,11 +1,14 @@
+from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from tourists.models import Tourist
 from tourists.validators import validate_birthday, validate_phone
-from users.models import User
 from users.validators import validate_first_name_last_name
+
+
+User = get_user_model()
 
 
 class TouristSerializer(serializers.ModelSerializer):
@@ -31,7 +34,10 @@ class TouristSerializer(serializers.ModelSerializer):
             "birthday",
             "status",
             "role",
+            "created_at",
+            "updated_at"
         ]
+        read_only_fields = ["created_at", "updated_at"]
 
     def update(self, instance, validated_data):
         # Update User fields
@@ -83,12 +89,18 @@ class UserTouristRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("email", "first_name", "last_name", "password", "confirm_password")
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+            "password",
+            "confirm_password"
+        )
 
     def validate(self, attrs):
         if attrs["password"] != attrs["confirm_password"]:
             raise serializers.ValidationError(
-                {"password": "Password fields didn't match."}
+                {"password": "Password fields do not match."}
             )
 
         validate_first_name_last_name(attrs["first_name"])

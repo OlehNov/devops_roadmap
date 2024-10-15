@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from rest_framework.generics import (
     ListAPIView,
@@ -8,17 +9,22 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
 
-from admins.serializers import AdminDeactivateSerializer, AdminSerializer
+from administrators.serializers import (
+    AdministratorDeactivateSerializer,
+    AdministratorSerializer
+)
 from eventlogs.mixins import EventLogMixin
 from roles.constants import Role
-from users.models import User
 from users.permissions import IsNotDeleted, IsSuperuser
 
 
-class AdminListAPIView(ListAPIView):
-    serializer_class = AdminSerializer
+User = get_user_model()
+
+
+class AdministratorListAPIView(ListAPIView):
+    serializer_class = AdministratorSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, IsSuperuser]
-    lookup_url_kwarg = "admin_id"
+    lookup_url_kwarg = "administrator_id"
 
     def get_queryset(self):
         user = self.request.user
@@ -37,16 +43,16 @@ class AdminListAPIView(ListAPIView):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
-class AdminRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = AdminSerializer
+class AdministratorRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
+    serializer_class = AdministratorSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, IsSuperuser]
-    lookup_url_kwarg = "admin_id"
+    lookup_url_kwarg = "administrator_id"
 
     def get_object(self):
-        admin = get_object_or_404(
+        administrator = get_object_or_404(
             User.objects.filter(role=1), id=self.kwargs.get("admin_id")
         )
-        return admin
+        return administrator
 
     def patch(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -56,9 +62,9 @@ class AdminRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
 
     @transaction.atomic
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
+        administrator = self.get_object()
         partial = kwargs.pop("partial", False)
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(administrator, data=request.data, partial=partial)
 
         if serializer.is_valid():
             self.perform_update(serializer)
@@ -67,9 +73,9 @@ class AdminRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
-        admin = self.get_object()
-        deactivate_serializer = AdminDeactivateSerializer(
-            admin, data={"is_deleted": True, "is_active": False}
+        administrator = self.get_object()
+        deactivate_serializer = AdministratorDeactivateSerializer(
+            administrator, data={"is_deleted": True, "is_active": False}
         )
 
         if deactivate_serializer.is_valid():

@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 
+
 User = get_user_model()
 
 
-@admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     exclude = ["groups", "user_permissions", "password"]
     list_filter = [
@@ -40,3 +40,6 @@ class UserAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at"
     ]
+
+
+admin.site.register(User, UserAdmin)

@@ -17,7 +17,8 @@ class GlampAdmin(admin.ModelAdmin):
         "region",
         "latitude",
         "longitude",
+        "created_at",
+        "updated_at"
     )
-
 
 admin.site.register(Picture)

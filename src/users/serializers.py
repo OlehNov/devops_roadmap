@@ -8,6 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.utils import TokenGenerator
 
+
 User = get_user_model()
 
 
@@ -26,6 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
             "updated_at"
         ]
         read_only_fields = ["created_at", "updated_at"]
+
 
 class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:

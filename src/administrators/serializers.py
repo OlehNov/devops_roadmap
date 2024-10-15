@@ -1,10 +1,13 @@
+from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer
 
-from admins.models import Admin
-from users.models import User
+from administrators.models import Administrator
 
 
-class AdminSerializer(ModelSerializer):
+User = get_user_model()
+
+
+class AdministratorSerializer(ModelSerializer):
 
     class Meta:
         model = User
@@ -14,6 +17,8 @@ class AdminSerializer(ModelSerializer):
             "first_name",
             "last_name",
             "role",
+            "created_at",
+            "updated_at"
         ]
 
     def update(self, instance, validated_data):
@@ -23,13 +28,13 @@ class AdminSerializer(ModelSerializer):
         instance.role = validated_data.get("role", instance.role)
         instance.save()
 
-        admin_profile, created = Admin.objects.get_or_create(user=instance)
+        admin_profile, created = Administrator.objects.get_or_create(user=instance)
         admin_profile.save()
 
         return instance
 
 
-class AdminDeactivateSerializer(ModelSerializer):
+class AdministratorDeactivateSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ["is_deleted"]

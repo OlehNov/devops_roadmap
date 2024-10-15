@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
 from django.db import transaction
@@ -28,9 +29,11 @@ from tourists.serializers import (
     UserTouristRegistrationSerializer,
 )
 from tourists.validators import validate_birthday, validate_phone
-from users.models import User
 from users.permissions import IsNotDeleted
 from users.tasks import verify_email
+
+
+User = get_user_model()
 
 
 class TouristListAPIView(ListAPIView):
@@ -145,13 +148,13 @@ class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLog
 
     @transaction.atomic
     def update(self, request, *args, **kwargs):
-        instance = self.get_object()
+        tourist = self.get_object()
         partial = kwargs.pop("partial", False)
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(tourist, data=request.data, partial=partial)
 
         if serializer.is_valid():
             self.perform_update(serializer)
-            self.log_event(request, instance)
+            self.log_event(request, tourist)
             return Response(serializer.data, status=HTTP_200_OK)
 
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)

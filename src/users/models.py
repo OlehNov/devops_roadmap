@@ -24,6 +24,10 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampMixin):
 
     objects = UserManager()
 
+    class Meta:
+        db_table = "user"
+        ordering = ("-id",)
+
     def __str__(self):
         return self.email
 

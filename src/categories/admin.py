@@ -12,6 +12,6 @@ class CategoryAdmin(admin.ModelAdmin):
         "title",
         "is_active",
         "is_hidden",
-        "created",
-        "updated",
+        "created_at",
+        "updated_at",
     )

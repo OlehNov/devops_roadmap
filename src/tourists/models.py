@@ -1,23 +1,34 @@
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db import models
 
 from config import settings
+from mixins.timestamps import TimestampMixin
 from tourists.validators import validate_birthday, validate_phone
-from users.models import User
 
 
-class BaseModel(models.Model):
+User = get_user_model()
+
+
+class Tourist(TimestampMixin):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=255, null=True, blank=True)
+    birthday = models.DateField(
+        null=True,
+        blank=True,
+        validators=[validate_birthday]
+    )
+    phone = models.CharField(
+        max_length=15,
+        null=True, blank=True,
+        validators=[validate_phone]
+    )
+
     objects = models.Manager()
 
     class Meta:
-        abstract = True
-
-
-class Tourist(BaseModel):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    status = models.CharField(max_length=255, null=True, blank=True)
-    birthday = models.DateField(null=True, blank=True)
-    phone = models.CharField(max_length=15, null=True, blank=True)
+        db_table = "tourist"
+        ordering = ("-id",)
 
     def clean(self):
         if self.phone:
