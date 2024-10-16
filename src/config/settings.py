@@ -376,3 +376,42 @@ if DEBUG:
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
         "PAGE_SIZE": 10,
     }
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {name} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
+            "class": "logging.StreamHandler",
+            "formatter": "verbose"
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
+            "propagate": True
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
+            "propagate": False
+        },
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
+            "propagate": False
+        },
+    },
+}
