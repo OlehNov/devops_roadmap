@@ -392,7 +392,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            "level": os.getenv("DJANGO_LOG_LEVEL"),
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
             "class": "logging.StreamHandler",
             "formatter": "verbose"
         },
@@ -400,17 +400,17 @@ LOGGING = {
     "loggers": {
         "django": {
             "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL"),
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
             "propagate": True
         },
         "django.request": {
             "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL"),
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
             "propagate": False
         },
         "django.db.backends": {
             "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL"),
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
             "propagate": False
         },
     },
