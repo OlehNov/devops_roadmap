@@ -10,6 +10,7 @@ class Picture(TimestampMixin):
     pic = FileField(
         _("Picture"),
         upload_to=folder_path,
+        max_length=2000,
         validators=[
             FileExtensionValidator(
                 allowed_extensions=[
