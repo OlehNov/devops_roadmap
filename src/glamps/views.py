@@ -20,7 +20,9 @@ from glamps.serializers import GlampSerializer
     tags=["glamp"],
 )
 class GlampModelViewSet(ModelViewSet):
-    queryset = Glamp.objects.select_related("owner", "category")
+    queryset = Glamp.objects.select_related(
+        "owner", "category"
+    ).prefetch_related("picture")
     serializer_class = GlampSerializer
     filter_backends = [CustomBaseFilterBackend]
 
@@ -44,11 +46,17 @@ class GlampModelViewSet(ModelViewSet):
                     | IsAnonymousUser
                 ]
             case "create":
-                permission_classes = [RoleIsAdmin | RoleIsManager | RoleIsOwner]
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | RoleIsOwner
+                ]
             case "update":
-                permission_classes = [RoleIsAdmin | RoleIsManager | IsGlampOwner]
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | IsGlampOwner
+                ]
             case "destroy":
-                permission_classes = [RoleIsAdmin | RoleIsManager | IsGlampOwner]
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | IsGlampOwner
+                ]
             case _:
                 permission_classes = []
 

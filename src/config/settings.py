@@ -14,7 +14,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-k$83@$)75u_^s==b+!rf%3^99-mrw7-0o43)yw0@tb8i8^acil"
+SECRET_KEY = (
+    "django-insecure-k$83@$)75u_^s==b+!rf%3^99-mrw7-0o43)yw0@tb8i8^acil"
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -25,7 +27,6 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 INSTALLED_APPS = [
     "jazzmin",
-
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -33,7 +34,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sites",
-
     "celery",
     "cloudinary",
     "cloudinary_storage",
@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "rest_framework",
     "rest_framework_simplejwt",
-
     "administrators",
     "authentication",
     "categories",
@@ -109,10 +108,14 @@ DATABASES = {
         "PORT": int(os.getenv("DB_PORT", default="3306")),
     },
     "eventlog": {
-        "ENGINE": os.getenv("EVENTLOGS_DB_ENGINE", default="django.db.backends.mysql"),
+        "ENGINE": os.getenv(
+            "EVENTLOGS_DB_ENGINE", default="django.db.backends.mysql"
+        ),
         "NAME": os.getenv("EVENTLOGS_DB_NAME", default="eventlog"),
         "USER": os.getenv("EVENTLOGS_DB_USER", default="glamp_user"),
-        "PASSWORD": os.getenv("EVENTLOGS_DB_PASSWORD", default="glamp_password"),
+        "PASSWORD": os.getenv(
+            "EVENTLOGS_DB_PASSWORD", default="glamp_password"
+        ),
         "HOST": os.getenv("EVENTLOGS_DB_HOST", default="localhost"),
         "PORT": int(os.getenv("EVENTLOGS_DB_PORT", default="3306")),
     },
@@ -121,14 +124,18 @@ DATABASES = {
 
 # REST FRAMEWORK Settings
 REST_FRAMEWORK = {
-    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend"
+    ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
         # 'rest_framework.authentication.SessionAuthentication',
         "rest_framework.authentication.BasicAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PERMISSION_CLASSES": (
+        "rest_framework.permissions.IsAuthenticated",
+    ),
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
@@ -218,8 +225,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "/static/"
-MEDIA_URL = "/media/"
-VIDEO_URL = "/video/"
+MEDIA_URL = "/glamp_pic/"
 
 
 # Cloudinary storage settings
@@ -230,9 +236,7 @@ CLOUDINARY_STORAGE = {
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
 }
 
-DEFAULT_FILE_STORAGE = os.getenv("CLOUDINARY_DEFAULT_FILE_STORAGE")
-STATICFILES_STORAGE = os.getenv("CLOUDINARY_STATICFILES_STORAGE")
-DEFAULT_VIDEO_STORAGE = os.getenv("CLOUDINARY_DEFAULT_VIDEO_STORAGE")
+DEFAULT_FILE_STORAGE = os.getenv("DEFAULT_FILE_STORAGE")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -322,7 +326,9 @@ JAZZMIN_SETTINGS = {
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
-CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", default="redis://broker:6379/0")
+CELERY_BROKER_URL = os.getenv(
+    "CELERY_BROKER_URL", default="redis://broker:6379/0"
+)
 CELERY_RESULT_BACKEND = os.getenv(
     "CELERY_RESULT_BACKEND", default="redis://broker:6379/0"
 )
@@ -368,7 +374,9 @@ if DEBUG:
             "rest_framework.authentication.BasicAuthentication",
         ],
         "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-        "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+        "DEFAULT_PERMISSION_CLASSES": (
+            "rest_framework.permissions.IsAuthenticated",
+        ),
         "DEFAULT_RENDERER_CLASSES": [
             "rest_framework.renderers.JSONRenderer",
             "rest_framework.renderers.BrowsableAPIRenderer",
@@ -394,24 +402,24 @@ LOGGING = {
         "console": {
             "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
             "class": "logging.StreamHandler",
-            "formatter": "verbose"
+            "formatter": "verbose",
         },
     },
     "loggers": {
         "django": {
             "handlers": ["console"],
             "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-            "propagate": True
+            "propagate": True,
         },
         "django.request": {
             "handlers": ["console"],
             "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-            "propagate": False
+            "propagate": False,
         },
         "django.db.backends": {
             "handlers": ["console"],
             "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-            "propagate": False
+            "propagate": False,
         },
     },
 }
