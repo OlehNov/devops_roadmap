@@ -34,6 +34,13 @@ urlpatterns = [
         ),
     ),
     path(
+        f"{ROOT_API}/owners/",
+        include(
+            ("owners.urls", "owners"),
+            namespace="owners",
+        ),
+    ),
+    path(
         f"{ROOT_API}/tourists/",
         include(("tourists.urls", "tourists"), namespace="tourists"),
     ),

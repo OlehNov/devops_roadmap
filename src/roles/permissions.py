@@ -31,7 +31,14 @@ class RoleIsTourist(BasePermission):
         return request.user.role == Role.TOURIST
 
 
-class IsOwner(BasePermission):
+class RoleIsOwner(BasePermission):
     def has_permission(self, request, view):
         user_authenticated(user=request.user)
-        return request.user.role == Role.TOURIST
+        return request.user.role == Role.OWNER
+
+
+class IsAdminOrSuperuser(BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_superuser:
+            return True
+        return request.user.role == Role.ADMIN
