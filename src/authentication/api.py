@@ -14,6 +14,7 @@ from authentication.serializers import (
     CustomTokenRefreshSerializer,
     CustomTokenVerifySerializer,
 )
+from handlers.errors import handle_error
 
 
 class CustomObtainTokenPairView(TokenObtainPairView):
@@ -39,4 +40,4 @@ class UserLogoutView(APIView):
 
             return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+            return handle_error(e)
