@@ -58,6 +58,12 @@ class UpperLowerCasePasswordValidator:
         return "Your password must contain at least one uppercase letter and one lowercase letter."
 
 
+class MaximumLengthValidator:
+    def validate(self, password, user=None):
+        if len(password) > 255:
+            raise ValidationError("The password must contain no more than 255 characters")
+
+
 def validate_role(value):
     if value not in [role.value for role in Role]:
         raise ValidationError(
@@ -70,7 +76,7 @@ def validate_first_name_last_name(value):
     if len(value) < 2:
         raise ValidationError("The name must have more than two characters.")
 
-    if re.match(r"^[A-Za-zА-Яа-яєЄїЇіІ`'-]+$", value) is None:
+    if re.match(r"^[A-Za-zА-Яа-яєЄїЇіІ`'ʼ-]+$", value) is None:
         raise ValidationError("The name must not contain digits or special characters.")
 
     return value
