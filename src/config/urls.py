@@ -34,10 +34,10 @@ urlpatterns = [
         ),
     ),
     path(
-        f"{ROOT_API}/owners/",
+        f"{ROOT_API}/glamp-owners/",
         include(
-            ("owners.urls", "owners"),
-            namespace="owners",
+            ("glamp_owners.urls", "glamp-owners"),
+            namespace="glamp-owners",
         ),
     ),
     path(

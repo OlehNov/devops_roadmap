@@ -1,7 +1,10 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from users.permissions import IsNotDeleted, IsSuperuser
+
+from eventlogs.mixins import EventLogMixin
+from glamps.filters import CustomBaseFilterBackend
+from users.permissions import IsNotDeleted
 from django.db import transaction
 from roles.constants import Role
 from tourists.validators import validate_phone
@@ -13,11 +16,11 @@ from rest_framework.generics import (
     RetrieveUpdateDestroyAPIView,
     get_object_or_404,
 )
-from owners.models import Owner
-from owners.serializers import (
-    OwnerRegistrationSerializer,
-    OwnerSerializer,
-    OwnerDeactivateSerializer,
+from glamp_owners.models import GlampOwner
+from glamp_owners.serializers import (
+    GlampOwnerRegistrationSerializer,
+    GlampOwnerSerializer,
+    GlampOwnerDeactivateSerializer,
 )
 from rest_framework.response import Response
 from rest_framework.status import (
@@ -34,12 +37,13 @@ from users.tasks import verify_email
 
 User = get_user_model()
 
-class OwnerRegisterView(CreateAPIView):
-    """Owner registration class"""
 
-    serializer_class = OwnerRegistrationSerializer
+class GlampOwnerRegisterView(CreateAPIView, EventLogMixin):
+    """GlampOwner registration class"""
+
+    serializer_class = GlampOwnerRegistrationSerializer
     permission_classes = [AllowAny]
-    lookup_url_kwarg = "owner_id"
+    lookup_url_kwarg = "glampowner_id"
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -58,7 +62,9 @@ class OwnerRegisterView(CreateAPIView):
                     user.is_active = False
                     user.save()
 
-                    Owner.objects.create(user=user)
+                    glamp_owner = GlampOwner.objects.create(user=user)
+                    self.log_event(request=request, operated_object=user)
+                    self.log_event(request=request, operated_object=glamp_owner)
 
             except Exception as e:
                 if settings.DEBUG:
@@ -75,10 +81,11 @@ class OwnerRegisterView(CreateAPIView):
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class OwnerListAPIView(ListAPIView):
-    serializer_class = OwnerSerializer
+class GlampOwnerListAPIView(ListAPIView):
+    serializer_class = GlampOwnerSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted]
-    lookup_url_kwarg = "owner_id"
+    filter_backends = [CustomBaseFilterBackend]
+    lookup_url_kwarg = "glampowner_id"
 
     def get_queryset(self):
         user = self.request.user
@@ -86,7 +93,7 @@ class OwnerListAPIView(ListAPIView):
         if user.is_anonymous:
             return User.objects.none()
 
-        if user.role == Role.ADMIN or user.is_staff:
+        if user.role == Role.ADMIN or user.is_staff or user.is_superuser:
             return User.objects.filter(role=Role.OWNER)
 
         if user.role == Role.OWNER:
@@ -98,10 +105,11 @@ class OwnerListAPIView(ListAPIView):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
-class OwnerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = OwnerSerializer
+class GlampOwnerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
+    serializer_class = GlampOwnerSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, IsAdminOrSuperuser]
-    lookup_url_kwarg = "owner_id"
+    filter_backends = [CustomBaseFilterBackend]
+    lookup_url_kwarg = "glampowner_id"
 
     def _validate_phone_number(self, phone_number=None):
         if phone_number:
@@ -111,10 +119,10 @@ class OwnerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
                 validate_phone_error(e)
 
     def get_object(self):
-        owner = get_object_or_404(
-            User.objects.all(), id=self.kwargs.get("owner_id")
+        glamp_owner = get_object_or_404(
+            User.objects.all(), id=self.kwargs.get("glampowner_id")
         )
-        return owner
+        return glamp_owner
 
     def patch(self, request, *args, **kwargs):
         phone_number = request.data.get("phone", None)
@@ -134,26 +142,28 @@ class OwnerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
 
     @transaction.atomic
     def update(self, request, *args, **kwargs):
-        owner = self.get_object()
+        glamp_owner = self.get_object()
         partial = kwargs.pop("partial", False)
-        serializer = self.get_serializer(owner, data=request.data, partial=partial)
+        serializer = self.get_serializer(glamp_owner, data=request.data, partial=partial)
 
         if serializer.is_valid():
             self.perform_update(serializer)
+            self.log_event(request, glamp_owner)
             return Response(serializer.data, status=HTTP_200_OK)
 
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, *args, **kwargs):
-        owner = self.get_object()
-        deactivate_serializer = OwnerDeactivateSerializer(
-            owner, data={"is_deleted": True, "is_active": False}
+        glamp_owner = self.get_object()
+        deactivate_serializer = GlampOwnerDeactivateSerializer(
+            glamp_owner, data={"is_deleted": True, "is_active": False}
         )
 
         if deactivate_serializer.is_valid():
             deactivate_serializer.save()
+            self.log_event(request, glamp_owner)
             return Response(
-                {"detail": "Owner has been deleted"}, status=HTTP_204_NO_CONTENT
+                {"detail": "GlampOwner has been deleted"}, status=HTTP_204_NO_CONTENT
             )
 
         return Response(deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST)

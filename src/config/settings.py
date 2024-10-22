@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     "roles",
     "tourists",
     "users",
-    "owners",
+    "glamp_owners",
 ]
 
 AUTH_USER_MODEL = "users.User"
