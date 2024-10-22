@@ -5,6 +5,8 @@ from django.db import models
 from config import settings
 from mixins.timestamps import TimestampMixin
 from tourists.validators import validate_birthday, validate_phone
+from roles.constants import HELP_TEXT_PROFILE_STATUS
+from roles.validators import validate_profile_status
 
 
 User = get_user_model()
@@ -12,16 +14,17 @@ User = get_user_model()
 
 class Tourist(TimestampMixin):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    status = models.CharField(max_length=255, null=True, blank=True)
-    birthday = models.DateField(
+    status = models.PositiveSmallIntegerField(
         null=True,
-        blank=True,
-        validators=[validate_birthday]
+        default=None,
+        validators=[validate_profile_status],
+        help_text=HELP_TEXT_PROFILE_STATUS,
+    )
+    birthday = models.DateField(
+        null=True, blank=True, validators=[validate_birthday]
     )
     phone = models.CharField(
-        max_length=15,
-        null=True, blank=True,
-        validators=[validate_phone]
+        max_length=15, null=True, blank=True, validators=[validate_phone]
     )
 
     objects = models.Manager()

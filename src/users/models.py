@@ -6,13 +6,19 @@ from django.db import models
 from users.managers import UserManager
 from users.validators import validate_role
 from mixins.timestamps import TimestampMixin
+from roles.constants import HELP_TEXT_ROLE
 
 
 class User(AbstractBaseUser, PermissionsMixin, TimestampMixin):
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=255, null=True, default=None)
     last_name = models.CharField(max_length=255, null=True, default=None)
-    role = models.PositiveSmallIntegerField(null=True, default=None, validators=[validate_role])
+    role = models.PositiveSmallIntegerField(
+        null=True,
+        default=None,
+        validators=[validate_role],
+        help_text=HELP_TEXT_ROLE,
+    )
 
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)

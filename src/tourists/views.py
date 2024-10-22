@@ -1,4 +1,5 @@
 from django.conf import settings
+from drf_spectacular.utils import extend_schema
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ValidationError
@@ -36,6 +37,7 @@ from users.tasks import verify_email
 User = get_user_model()
 
 
+@extend_schema(tags=['tourist'])
 class TouristListAPIView(ListAPIView):
     serializer_class = TouristSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted]
@@ -58,6 +60,7 @@ class TouristListAPIView(ListAPIView):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
+@extend_schema(tags=['tourist'])
 class UserTouristRegisterView(CreateAPIView, EventLogMixin):
     """User registration class"""
 
@@ -88,7 +91,9 @@ class UserTouristRegisterView(CreateAPIView, EventLogMixin):
 
             except Exception as e:
                 if settings.DEBUG:
-                    return Response({"error": str(e)}, status=HTTP_400_BAD_REQUEST)
+                    return Response(
+                        {"error": str(e)}, status=HTTP_400_BAD_REQUEST
+                    )
                 return Response(
                     {"error": "An error occurred. Please try again later."},
                     status=HTTP_400_BAD_REQUEST,
@@ -101,7 +106,10 @@ class UserTouristRegisterView(CreateAPIView, EventLogMixin):
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
-class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
+@extend_schema(tags=['tourist'])
+class TouristRetrieveUpdateDestroyAPIView(
+    RetrieveUpdateDestroyAPIView, EventLogMixin
+):
     serializer_class = TouristSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, RoleIsAdmin]
     lookup_url_kwarg = "tourist_id"
@@ -150,7 +158,9 @@ class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLog
     def update(self, request, *args, **kwargs):
         tourist = self.get_object()
         partial = kwargs.pop("partial", False)
-        serializer = self.get_serializer(tourist, data=request.data, partial=partial)
+        serializer = self.get_serializer(
+            tourist, data=request.data, partial=partial
+        )
 
         if serializer.is_valid():
             self.perform_update(serializer)
@@ -172,9 +182,12 @@ class TouristRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLog
                 {"detail": "User has been deleted"}, status=HTTP_204_NO_CONTENT
             )
 
-        return Response(deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST)
+        return Response(
+            deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST
+        )
 
 
+@extend_schema(tags=['tourist'])
 class CurrentTouristProfileRetrieveUpdateDestroyAPIView(
     RetrieveUpdateDestroyAPIView, EventLogMixin
 ):
@@ -225,7 +238,9 @@ class CurrentTouristProfileRetrieveUpdateDestroyAPIView(
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
         partial = kwargs.pop("partial", False)
-        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial
+        )
 
         if serializer.is_valid():
             serializer.save()
