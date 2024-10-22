@@ -9,7 +9,7 @@ from django.db import transaction
 from roles.constants import Role
 from tourists.validators import validate_phone
 from django.core.exceptions import ValidationError
-from handlers.errors import validate_phone_error
+from handlers.errors import validate_phone_error, handle_error
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
@@ -28,6 +28,7 @@ from rest_framework.status import (
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
+    HTTP_404_NOT_FOUND,
 )
 from roles.permissions import (
     IsAdminOrSuperuser
@@ -67,12 +68,7 @@ class GlampOwnerRegisterView(CreateAPIView, EventLogMixin):
                     self.log_event(request=request, operated_object=glamp_owner)
 
             except Exception as e:
-                if settings.DEBUG:
-                    return Response({"error": str(e)}, status=HTTP_400_BAD_REQUEST)
-                return Response(
-                    {"error": "An error occurred. Please try again later."},
-                    status=HTTP_400_BAD_REQUEST,
-                )
+                handle_error(e)
 
             verify_email.apply_async(args=[user.pk])
 
@@ -99,8 +95,14 @@ class GlampOwnerListAPIView(ListAPIView):
         if user.role == Role.OWNER:
             return User.objects.filter(id=user.id)
 
+        return User.objects.none()
+
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
+
+        if not queryset.exists():
+            return Response({"detail": "Not found"}, status=HTTP_404_NOT_FOUND)
+
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=HTTP_200_OK)
 
