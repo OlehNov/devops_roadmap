@@ -16,7 +16,12 @@ class EventLogMixin:
     """
 
     def _write_to_db(self, request, operation_type, operated_object):
+        """
+        This method is used to write a new row in DataBase
+        Takes 3 arguments - request, operation type(int) and operated_object(object)
+        """
 
+        # checking user for authentication and setting variables depending on it
         if request.user.is_authenticated:
             user_id = request.user.id
             user_email = request.user.email
@@ -24,6 +29,7 @@ class EventLogMixin:
             user_id = None
             user_email = "Anonymous"
 
+        # creating a new row in database
         EventLog.objects.create(
             user_id=user_id,
             user_email=user_email,
@@ -31,12 +37,17 @@ class EventLogMixin:
             operation_type=operation_type,
         )
 
+    # validation for value is not None
     def _validate(self, value):
         if value is None:
             return ValueError(f"{value} is None")
         return value
 
     def log_event(self, request, operated_object):
+        """
+        This method is used for logging event and must be implemented in your code after successfully writing to DB
+        Takes two arguments - request and operated_object (object)
+        """
 
         request = self._validate(request)
         operated_object = self._validate(operated_object)
@@ -46,6 +57,7 @@ class EventLogMixin:
             "request_data": request.data,
         }
 
+        # checking request method and setting operation type depending on it
         match request.method.upper():
             case "POST":
                 operation_type = OperationType.CREATE
@@ -56,4 +68,5 @@ class EventLogMixin:
             case _:
                 raise ValueError(f"Unsupported HTTP method: {request.method}")
 
+        # writing to Database
         self._write_to_db(request, operation_type, instance)

@@ -30,14 +30,20 @@ class CustomTokenVerifyView(TokenVerifyView):
 
 
 class UserLogoutView(APIView):
+    """
+    For authenticated users only
+    This view is for adding refresh token to a blacklist, so user cannot refresh his access token,
+    Access token is still valid and user can continue using the app until access token is expired
+    """
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         try:
+            # getting refresh token from request and adding it to a blacklist
             refresh_token = request.data["refresh_token"]
             token = RefreshToken(refresh_token)
             token.blacklist()
 
             return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
         except Exception as e:
-            return handle_error(e)
+            return handle_error(e)  # returns full traceback only if DEBUG = True in settings.py
