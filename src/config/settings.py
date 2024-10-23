@@ -201,6 +201,9 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "users.validators.NoSpacePasswordValidator",
     },
     {
+        "NAME": "users.validators.MaximumLengthValidator",
+    },
+    {
         "NAME": "users.validators.LatinOnlyPasswordValidator",
     },
     {
