@@ -7,7 +7,7 @@ from eventlogs.models import EventLog
 from eventlogs.serializers import EventLogSerializer
 
 
-@extend_schema(tags=['eventlog'])
+@extend_schema(tags=["eventlog"])
 class EventLogListAPIView(ListAPIView):
     permission_classes = [IsAdminUser]
     queryset = EventLog.objects.all()
@@ -15,7 +15,7 @@ class EventLogListAPIView(ListAPIView):
     pagination_class = PageNumberPagination
 
 
-@extend_schema(tags=['eventlog'])
+@extend_schema(tags=["eventlog"])
 class EventLogRetrieveAPIView(RetrieveAPIView):
     permission_classes = [IsAdminUser]
     serializer_class = EventLogSerializer

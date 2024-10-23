@@ -13,6 +13,7 @@ User = get_user_model()
 
 
 class Tourist(TimestampMixin):
+    id = models.PositiveIntegerField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(
         null=True,

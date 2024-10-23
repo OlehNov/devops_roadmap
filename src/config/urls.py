@@ -34,6 +34,13 @@ urlpatterns = [
         ),
     ),
     path(
+        f"{ROOT_API}/glamp-owners/",
+        include(
+            ("glamp_owners.urls", "glamp-owners"),
+            namespace="glamp-owners",
+        ),
+    ),
+    path(
         f"{ROOT_API}/tourists/",
         include(("tourists.urls", "tourists"), namespace="tourists"),
     ),

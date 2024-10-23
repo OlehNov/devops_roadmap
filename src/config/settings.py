@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "roles",
     "tourists",
     "users",
+    "glamp_owners",
 ]
 
 AUTH_USER_MODEL = "users.User"
@@ -200,6 +201,9 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "users.validators.NoSpacePasswordValidator",
     },
     {
+        "NAME": "users.validators.MaximumLengthValidator",
+    },
+    {
         "NAME": "users.validators.LatinOnlyPasswordValidator",
     },
     {
@@ -324,6 +328,7 @@ JAZZMIN_SETTINGS = {
         "users",
         "administrators",
         "tourists",
+        "glamp_owners",
     ],
     "icons": {
         "glamps.glamp": "fas fa-campground",
@@ -332,6 +337,7 @@ JAZZMIN_SETTINGS = {
         "tourists.tourist": "fas fa-hiking",
         "administrators.administrator": "fas fa-user-cog",
         "glamps.picture": "fas fa-images",
+        "glamp_owners.glampowner": "fas fa-house-user",
     },
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",

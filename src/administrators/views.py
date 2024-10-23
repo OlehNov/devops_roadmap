@@ -61,7 +61,7 @@ class AdministratorRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
 
     def get_object(self):
         administrator = get_object_or_404(
-            User.objects.filter(role=1), id=self.kwargs.get("admin_id")
+            User.objects.filter(role=Role.ADMIN), id=self.kwargs.get("admin_id")
         )
         return administrator
 

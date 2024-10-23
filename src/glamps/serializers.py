@@ -12,7 +12,7 @@ User = get_user_model()
 class PictureSerializer(ModelSerializer):
     class Meta:
         model = Picture
-        fields = "pic"
+        fields = ["pic"]
 
 
 class GlampSerializer(ModelSerializer):
