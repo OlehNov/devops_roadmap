@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
     TokenVerifyView,
 )
+from drf_spectacular.utils import extend_schema
 
 from authentication.serializers import (
     CustomTokenObtainPairSerializer,
@@ -17,18 +18,22 @@ from authentication.serializers import (
 from handlers.errors import handle_error
 
 
+@extend_schema(tags=["token"])
 class CustomObtainTokenPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
+@extend_schema(tags=["token"])
 class CustomTokenRefreshView(TokenRefreshView):
     serializer_class = CustomTokenRefreshSerializer
 
 
+@extend_schema(tags=["token"])
 class CustomTokenVerifyView(TokenVerifyView):
     serializer_class = CustomTokenVerifySerializer
 
 
+@extend_schema(tags=["logout"])
 class UserLogoutView(APIView):
     """
     For authenticated users only
@@ -44,6 +49,9 @@ class UserLogoutView(APIView):
             token = RefreshToken(refresh_token)
             token.blacklist()
 
-            return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
+            return Response(
+                {"message": "Successfully logged out."},
+                status=status.HTTP_200_OK,
+            )
         except Exception as e:
             return handle_error(e)  # returns full traceback only if DEBUG = True in settings.py

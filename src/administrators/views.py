@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from drf_spectacular.utils import extend_schema
 from django.db import transaction
 from rest_framework.generics import (
     ListAPIView,
@@ -7,11 +8,15 @@ from rest_framework.generics import (
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_204_NO_CONTENT,
+    HTTP_400_BAD_REQUEST,
+)
 
 from administrators.serializers import (
     AdministratorDeactivateSerializer,
-    AdministratorSerializer
+    AdministratorSerializer,
 )
 from eventlogs.mixins import EventLogMixin
 from roles.constants import Role
@@ -21,6 +26,9 @@ from users.permissions import IsNotDeleted, IsSuperuser
 User = get_user_model()
 
 
+@extend_schema(
+    tags=["administrator"],
+)
 class AdministratorListAPIView(ListAPIView):
     serializer_class = AdministratorSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, IsSuperuser]
@@ -43,6 +51,9 @@ class AdministratorListAPIView(ListAPIView):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
+@extend_schema(
+    tags=["administrator"],
+)
 class AdministratorRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = AdministratorSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, IsSuperuser]
@@ -64,7 +75,9 @@ class AdministratorRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     def update(self, request, *args, **kwargs):
         administrator = self.get_object()
         partial = kwargs.pop("partial", False)
-        serializer = self.get_serializer(administrator, data=request.data, partial=partial)
+        serializer = self.get_serializer(
+            administrator, data=request.data, partial=partial
+        )
 
         if serializer.is_valid():
             self.perform_update(serializer)
@@ -84,4 +97,6 @@ class AdministratorRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
                 {"detail": "User has been deleted"}, status=HTTP_204_NO_CONTENT
             )
 
-        return Response(deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST)
+        return Response(
+            deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST
+        )

@@ -24,7 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
             "is_staff",
             "role",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
         read_only_fields = ["created_at", "updated_at"]
 
@@ -41,14 +41,22 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "is_staff",
             "role",
             "created_at",
-            "updated_at"
+            "updated_at",
         )
-        read_only_fields = ("is_active", "is_staff", "role", "created_at", "updated_at")
+        read_only_fields = (
+            "is_active",
+            "is_staff",
+            "role",
+            "created_at",
+            "updated_at",
+        )
         write_only_fields = ("password",)
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(max_length=255, required=True, allow_blank=False)
+    email = serializers.EmailField(
+        max_length=255, required=True, allow_blank=False
+    )
     password = serializers.CharField(
         max_length=255, write_only=True, validators=[validate_password]
     )
@@ -74,7 +82,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
                 "refresh_token": str(refresh),
             }
 
-        msg = 'Must include "username" and "password".'
+        msg = 'Must include "username" and "password".'  # TODO: change username to email
         raise serializers.ValidationError(msg, code="authorization")
 
 
@@ -87,7 +95,9 @@ class PasswordResetRequestSerializer(serializers.Serializer):
 
 
 class PasswordResetConfirmSerializer(serializers.Serializer):
-    new_password = serializers.CharField(required=True, validators=[validate_password])
+    new_password = serializers.CharField(
+        required=True, validators=[validate_password]
+    )
     confirm_password = serializers.CharField(required=True)
 
     def __init__(self, *args, **kwargs):

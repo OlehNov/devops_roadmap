@@ -312,13 +312,32 @@ JAZZMIN_SETTINGS = {
     "hide_models": [
         "auth.group",
         "sites.site",
+        "django_celery_results.TaskResult",
+        "django_celery_results.ChordCounter",
+        "django_celery_results.GroupResult",
+        "django_celery_beat.SolarSchedule",
+        "django_celery_beat.IntervalSchedule",
+        "django_celery_beat.ClockedSchedule",
+        "django_celery_beat.CrontabSchedule",
+        "django_celery_beat.PeriodicTasks",
+        "django_celery_beat.PeriodicTask",
+        "token_blacklist.BlacklistedToken",
+        "token_blacklist.OutstandingToken",
     ],
     "order_with_respect_to": [
         "users",
-        "profiles",
+        "administrators",
+        "tourists",
+        "glamp_owners",
     ],
     "icons": {
         "glamps.glamp": "fas fa-campground",
+        "users.user": "fas fa-users",
+        "categories.category": "fas fa-table",
+        "tourists.tourist": "fas fa-hiking",
+        "administrators.administrator": "fas fa-user-cog",
+        "glamps.picture": "fas fa-images",
+        "glamp_owners.glampowner": "fas fa-house-user",
     },
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",
@@ -388,6 +407,12 @@ if DEBUG:
         ],
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
         "PAGE_SIZE": 10,
+    }
+    INSTALLED_APPS += ['debug_toolbar']
+    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+
+    DEBUG_TOOLBAR_CONFIG = {
+        'SHOW_TOOLBAR_CALLBACK': lambda request: True,
     }
 
 LOGGING = {
