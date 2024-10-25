@@ -6,6 +6,7 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
+import debug_toolbar
 
 from config import api
 
@@ -13,6 +14,7 @@ ROOT_API = settings.ROOT_API
 
 
 urlpatterns = [
+    path('__debug__/', include(debug_toolbar.urls)),
     path("admin/", admin.site.urls),
     path("", api.ping_pong_view, name="ping"),
     path("api/schema/", SpectacularJSONAPIView.as_view(), name="schema"),
