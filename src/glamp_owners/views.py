@@ -83,7 +83,7 @@ class GlampOwnerListAPIView(ListAPIView):
     permission_classes = [IsAuthenticated, IsNotDeleted]
     filter_backends = [CustomBaseFilterBackend]
     lookup_url_kwarg = "glampowner_id"
-    pagination_class = CustomListViewPagination
+
 
     def get_queryset(self):
         user = self.request.user

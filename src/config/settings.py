@@ -363,33 +363,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
 
-try:
-    from .settings_local import *
-except ImportError:
-    pass
-
-if DEBUG:
-    REST_FRAMEWORK = {
-        "DEFAULT_FILTER_BACKENDS": [
-            "django_filters.rest_framework.DjangoFilterBackend"
-        ],
-        "DEFAULT_AUTHENTICATION_CLASSES": [
-            "rest_framework_simplejwt.authentication.JWTAuthentication",
-            # 'rest_framework.authentication.SessionAuthentication',
-            "rest_framework.authentication.BasicAuthentication",
-        ],
-        "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-        "DEFAULT_PERMISSION_CLASSES": (
-            "rest_framework.permissions.IsAuthenticated",
-        ),
-        "DEFAULT_RENDERER_CLASSES": [
-            "rest_framework.renderers.JSONRenderer",
-            "rest_framework.renderers.BrowsableAPIRenderer",
-        ],
-        "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-        "PAGE_SIZE": 10,
-    }
-
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -428,3 +401,30 @@ LOGGING = {
         },
     },
 }
+
+try:
+    from .settings_local import *
+except ImportError:
+    pass
+
+if DEBUG:
+    REST_FRAMEWORK = {
+        "DEFAULT_FILTER_BACKENDS": [
+            "django_filters.rest_framework.DjangoFilterBackend"
+        ],
+        "DEFAULT_AUTHENTICATION_CLASSES": [
+            "rest_framework_simplejwt.authentication.JWTAuthentication",
+            # 'rest_framework.authentication.SessionAuthentication',
+            "rest_framework.authentication.BasicAuthentication",
+        ],
+        "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+        "DEFAULT_PERMISSION_CLASSES": (
+            "rest_framework.permissions.IsAuthenticated",
+        ),
+        "DEFAULT_RENDERER_CLASSES": [
+            "rest_framework.renderers.JSONRenderer",
+            "rest_framework.renderers.BrowsableAPIRenderer",
+        ],
+        "DEFAULT_PAGINATION_CLASS": "paginators.custom_list_view_paginator.CustomListViewPagination",
+        "PAGE_SIZE": 10,
+    }

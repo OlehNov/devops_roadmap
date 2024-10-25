@@ -11,7 +11,6 @@ class EventLogListAPIView(ListAPIView):
     permission_classes = [IsAdminUser]
     queryset = EventLog.objects.all()
     serializer_class = EventLogSerializer
-    pagination_class = CustomListViewPagination
 
 class EventLogRetrieveAPIView(RetrieveAPIView):
     permission_classes = [IsAdminUser]

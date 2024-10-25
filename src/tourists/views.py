@@ -40,7 +40,6 @@ class TouristListAPIView(ListAPIView):
     serializer_class = TouristSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted]
     lookup_url_kwarg = "tourist_id"
-    pagination_class = CustomListViewPagination
 
     def get_queryset(self):
         user = self.request.user

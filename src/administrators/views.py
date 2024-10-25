@@ -26,7 +26,6 @@ class AdministratorListAPIView(ListAPIView):
     serializer_class = AdministratorSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, IsSuperuser]
     lookup_url_kwarg = "administrator_id"
-    pagination_class = CustomListViewPagination
 
     def get_queryset(self):
         user = self.request.user

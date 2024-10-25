@@ -37,7 +37,6 @@ class UserViewSet(ModelViewSet, EventLogMixin):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
     lookup_url_kwarg = "user_id"
-    pagination_class = CustomListViewPagination
 
     def get_queryset(self):
         user = self.request.user
