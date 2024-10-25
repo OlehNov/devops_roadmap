@@ -14,6 +14,7 @@ from administrators.serializers import (
     AdministratorSerializer
 )
 from eventlogs.mixins import EventLogMixin
+from paginators.custom_list_view_paginator import CustomListViewPagination
 from roles.constants import Role
 from users.permissions import IsNotDeleted, IsSuperuser
 
@@ -25,6 +26,7 @@ class AdministratorListAPIView(ListAPIView):
     serializer_class = AdministratorSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, IsSuperuser]
     lookup_url_kwarg = "administrator_id"
+    pagination_class = CustomListViewPagination
 
     def get_queryset(self):
         user = self.request.user

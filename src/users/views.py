@@ -16,6 +16,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from yaml import serialize
 
 from eventlogs.mixins import EventLogMixin
+from paginators.custom_list_view_paginator import CustomListViewPagination
 from roles.constants import Role
 from users.permissions import IsAuthenticatedOrForbidden
 from users.serializers import (
@@ -36,6 +37,7 @@ class UserViewSet(ModelViewSet, EventLogMixin):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
     lookup_url_kwarg = "user_id"
+    pagination_class = CustomListViewPagination
 
     def get_queryset(self):
         user = self.request.user
