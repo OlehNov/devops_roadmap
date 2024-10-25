@@ -7,10 +7,14 @@ def role_check(func):
 
     @wraps(func)
     def wrapper(instance, *args, **kwargs):
-        previous_role = get_user_model().objects.get(id=instance.id)
+        User = get_user_model()
+        if User.DoesNotExist:
+            return func(instance, *args, **kwargs)
 
-        if previous_role.role != instance.role:
-            match previous_role.role:
+        user = User.objects.get(id=instance.id)
+
+        if user.role != instance.role:
+            match user.role:
                 case Role.ADMIN:
                     from administrators.models import Administrator
 
@@ -35,7 +39,6 @@ def role_check(func):
                     glamp_owner_instance.save()
 
         match instance.role:
-
             case Role.ADMIN:
                 from administrators.models import Administrator
 
@@ -60,7 +63,7 @@ def role_check(func):
                 owner_obj, created = GlampOwner.objects.get_or_create(
                     id=instance.id, user=instance
                 )
-                tourist_obj.status = ProfileStatus.ACTIVATED
+                owner_obj.status = ProfileStatus.ACTIVATED
                 owner_obj.save()
 
         return func(instance, *args, **kwargs)
