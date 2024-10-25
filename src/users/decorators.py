@@ -11,60 +11,44 @@ def role_check(func):
         if User.DoesNotExist:
             return func(instance, *args, **kwargs)
 
+        def __deactivate_profile(model, user_instance):
+            profile_instance = model.objects.get(user=user_instance)
+            profile_instance.status = ProfileStatus.DEACTIVATED
+            profile_instance.save()
+
+        def __activate_profile(model, user_instance):
+            profile_instance = model.objects.get(user=user_instance)
+            profile_instance.status = ProfileStatus.ACTIVATED
+            profile_instance.save()
+
         user = User.objects.get(id=instance.id)
 
         if user.role != instance.role:
             match user.role:
                 case Role.ADMIN:
                     from administrators.models import Administrator
-
-                    admin_instance = Administrator.objects.get(user=instance)
-                    admin_instance.status = ProfileStatus.DEACTIVATED
-                    admin_instance.save()
+                    __deactivate_profile(Administrator, instance)
 
                 case Role.TOURIST:
                     from tourists.models import Tourist
-
-                    tourist_instance = Tourist.objects.get(user=instance)
-                    tourist_instance.status = ProfileStatus.DEACTIVATED
-                    tourist_instance.save()
+                    __deactivate_profile(Tourist, instance)
 
                 case Role.OWNER:
                     from glamp_owners.models import GlampOwner
-
-                    glamp_owner_instance = GlampOwner.objects.get(
-                        user=instance
-                    )
-                    glamp_owner_instance.status = ProfileStatus.DEACTIVATED
-                    glamp_owner_instance.save()
+                    __deactivate_profile(GlampOwner, instance)
 
         match instance.role:
             case Role.ADMIN:
                 from administrators.models import Administrator
-
-                admin_obj, created = Administrator.objects.get_or_create(
-                    id=instance.id, user=instance
-                )
-                admin_obj.status = ProfileStatus.ACTIVATED
-                admin_obj.save()
+                __activate_profile(Administrator, instance)
 
             case Role.TOURIST:
                 from tourists.models import Tourist
-
-                tourist_obj, created = Tourist.objects.get_or_create(
-                    id=instance.id, user=instance
-                )
-                tourist_obj.status = ProfileStatus.ACTIVATED
-                tourist_obj.save()
+                __activate_profile(Tourist, instance)
 
             case Role.OWNER:
                 from glamp_owners.models import GlampOwner
-
-                owner_obj, created = GlampOwner.objects.get_or_create(
-                    id=instance.id, user=instance
-                )
-                owner_obj.status = ProfileStatus.ACTIVATED
-                owner_obj.save()
+                __activate_profile(GlampOwner, instance)
 
         return func(instance, *args, **kwargs)
 
