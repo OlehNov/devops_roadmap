@@ -23,6 +23,7 @@ from glamp_owners.serializers import (
     GlampOwnerDeactivateSerializer,
 )
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
@@ -38,7 +39,9 @@ from users.tasks import verify_email
 
 User = get_user_model()
 
-
+@extend_schema(
+    tags=["glamp-owner"],
+)
 class GlampOwnerRegisterView(CreateAPIView, EventLogMixin):
     """GlampOwner registration class"""
 
@@ -76,7 +79,9 @@ class GlampOwnerRegisterView(CreateAPIView, EventLogMixin):
 
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
-
+@extend_schema(
+    tags=["glamp-owner"],
+)
 class GlampOwnerListAPIView(ListAPIView):
     serializer_class = GlampOwnerSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted]
@@ -106,7 +111,9 @@ class GlampOwnerListAPIView(ListAPIView):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=HTTP_200_OK)
 
-
+@extend_schema(
+    tags=["glamp-owner"],
+)
 class GlampOwnerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
     serializer_class = GlampOwnerSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, IsAdminOrSuperuser]
