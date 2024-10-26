@@ -22,4 +22,12 @@ class EventLogRetrieveAPIView(RetrieveAPIView):
     lookup_url_kwarg = "event_id"
 
     def get_queryset(self):
-        return EventLog.objects.get(id=self.kwargs.get("id"))
+        user = self.request.user
+
+        if user.is_anonymous:
+            return EventLog.objects.none()
+
+        if user.is_staff and user.is_superuser:
+            return EventLog.objects.get(id=self.kwargs.get("event_id"))
+
+        return EventLog.objects.none()
