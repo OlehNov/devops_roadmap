@@ -8,6 +8,7 @@
 2. All features that are used in more than one app have been moved to addons.
 3. Categories api endpoints added.
 4. Washed the Cat))).
-5. CHANGELOG.md added
+5. CHANGELOG.md added.
+6. Eventlog fixed.
 
 ---
