@@ -4,6 +4,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -98,6 +99,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
+# Pagination settings
+MAX_PAGE_SIZE = 50
+DEFAULT_PAGE_SIZE = 10
+
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
@@ -141,8 +147,8 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
-    "DEFAULT_PAGINATION_CLASS": "addons.paginators.custom_list_paginator.CustomListViewPageNumberPagination",
-    "PAGE_SIZE": 10,
+    "DEFAULT_PAGINATION_CLASS": "addons.paginators.custom_list_view_paginator.CustomListViewPageNumberPagination",
+    "PAGE_SIZE": DEFAULT_PAGE_SIZE,
 }
 
 # Simple JWT Settings
@@ -382,9 +388,8 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
 
-# Pagination settings
-MAX_PAGE_SIZE = 50
 
+# Logging settings
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -447,8 +452,8 @@ if DEBUG:
             "rest_framework.renderers.JSONRenderer",
             "rest_framework.renderers.BrowsableAPIRenderer",
         ],
-        "DEFAULT_PAGINATION_CLASS": "addons.paginators.custom_list_paginator.CustomListViewPageNumberPagination",
-        "PAGE_SIZE": 10,
+        "DEFAULT_PAGINATION_CLASS": "addons.paginators.custom_list_view_paginator.CustomListViewPageNumberPagination",
+        "PAGE_SIZE": DEFAULT_PAGE_SIZE,
     }
     INSTALLED_APPS += ['debug_toolbar']
     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
