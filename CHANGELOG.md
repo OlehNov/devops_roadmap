@@ -17,3 +17,6 @@
 1. GET Administrator by id request fixed.
 
 ---
+
+## 27.10.2024 23:03. Users fixed.
+1. User permissions fixed.
