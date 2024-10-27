@@ -143,6 +143,7 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "paginators.custom_list_view_paginator.CustomListViewPagination",
     "PAGE_SIZE": 10,
+    "MAX_PAGE_SIZE": 50,
 }
 
 # Simple JWT Settings
