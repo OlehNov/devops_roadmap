@@ -19,7 +19,6 @@ from rest_framework.status import (
 
 from eventlogs.mixins import EventLogMixin
 from handlers.errors import validate_birthday_error, validate_phone_error
-from paginators.custom_list_view_paginator import CustomListViewPagination
 from roles.constants import Role
 from roles.permissions import RoleIsAdmin
 from tourists.models import Tourist

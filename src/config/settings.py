@@ -143,7 +143,6 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "paginators.custom_list_view_paginator.CustomListViewPagination",
     "PAGE_SIZE": 10,
-    "MAX_PAGE_SIZE": 50,
 }
 
 # Simple JWT Settings
@@ -403,6 +402,9 @@ LOGGING = {
     },
 }
 
+# for CustomListViewPageNumberPagination
+MAX_PAGE_SIZE = 50
+
 try:
     from .settings_local import *
 except ImportError:
@@ -428,5 +430,4 @@ if DEBUG:
         ],
         "DEFAULT_PAGINATION_CLASS": "paginators.custom_list_view_paginator.CustomListViewPageNumberPagination",
         "PAGE_SIZE": 10,
-        "MAX_PAGE_SIZE": 50,
     }
