@@ -4,7 +4,6 @@ from rest_framework.permissions import IsAdminUser
 
 from eventlogs.models import EventLog
 from eventlogs.serializers import EventLogSerializer
-from paginators.custom_list_view_paginator import CustomListViewPagination
 
 
 class EventLogListAPIView(ListAPIView):

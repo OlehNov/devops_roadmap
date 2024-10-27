@@ -4,7 +4,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from eventlogs.mixins import EventLogMixin
 from glamps.filters import CustomBaseFilterBackend
-from paginators.custom_list_view_paginator import CustomListViewPagination
 from users.permissions import IsNotDeleted
 from django.db import transaction
 from roles.constants import Role
@@ -83,7 +82,6 @@ class GlampOwnerListAPIView(ListAPIView):
     permission_classes = [IsAuthenticated, IsNotDeleted]
     filter_backends = [CustomBaseFilterBackend]
     lookup_url_kwarg = "glampowner_id"
-
 
     def get_queryset(self):
         user = self.request.user

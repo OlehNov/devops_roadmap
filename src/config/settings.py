@@ -425,6 +425,7 @@ if DEBUG:
             "rest_framework.renderers.JSONRenderer",
             "rest_framework.renderers.BrowsableAPIRenderer",
         ],
-        "DEFAULT_PAGINATION_CLASS": "paginators.custom_list_view_paginator.CustomListViewPagination",
+        "DEFAULT_PAGINATION_CLASS": "paginators.custom_list_view_paginator.CustomListViewPageNumberPagination",
         "PAGE_SIZE": 10,
+        "MAX_PAGE_SIZE": 50,
     }

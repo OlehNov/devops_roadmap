@@ -14,7 +14,6 @@ from administrators.serializers import (
     AdministratorSerializer
 )
 from eventlogs.mixins import EventLogMixin
-from paginators.custom_list_view_paginator import CustomListViewPagination
 from roles.constants import Role
 from users.permissions import IsNotDeleted, IsSuperuser
 
