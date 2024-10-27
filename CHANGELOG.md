@@ -12,3 +12,8 @@
 6. Eventlog fixed.
 
 ---
+
+## 27.10.2024 13:16. Administrator by id fixed.
+1. GET Administrator by id request fixed.
+
+---
