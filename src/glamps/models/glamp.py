@@ -7,12 +7,9 @@ from django.db.models import (
     SET_NULL,
     BooleanField,
     CharField,
-    DateTimeField,
     DecimalField,
     FloatField,
     ForeignKey,
-    Model,
-    PositiveIntegerField,
     PositiveSmallIntegerField,
     UUIDField,
 )
@@ -20,7 +17,7 @@ from django.utils.translation import gettext as _
 
 from categories.models import Category
 from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
-from mixins.timestamps import TimestampMixin
+from addons.mixins.timestamps import TimestampMixin
 
 
 User = get_user_model()
@@ -93,7 +90,9 @@ class Glamp(TimestampMixin):
         _("Apartment"), max_length=25, null=True, blank=True, default=None
     )
     city = CharField(_("City"), max_length=255, null=False, blank=False)
-    region = CharField(_("Region"), max_length=255, null=True, blank=True, default=None)
+    region = CharField(
+        _("Region"), max_length=255, null=True, blank=True, default=None
+    )
 
     latitude = FloatField(
         _("Latitude"),
@@ -160,7 +159,9 @@ class Glamp(TimestampMixin):
     number_of_bedrooms = PositiveSmallIntegerField(
         _("Number Of Bedrooms"), default=None
     )
-    number_of_beds = PositiveSmallIntegerField(_("Number Of Beds"), default=None)
+    number_of_beds = PositiveSmallIntegerField(
+        _("Number Of Beds"), default=None
+    )
     cot_for_babies = BooleanField(_("Cot For Babies"), default=False)
     number_of_bathrooms = PositiveSmallIntegerField(
         _("Number Of Bathrooms"), default=None
@@ -173,9 +174,13 @@ class Glamp(TimestampMixin):
     microwave = BooleanField(_("Microwave"), default=False)
     plate = BooleanField(_("Plate"), default=False)
     refrigerator = BooleanField(_("Refrigerator"), default=False)
-    kitchen_on_territory = BooleanField(_("Kitchen On The Territory"), default=False)
+    kitchen_on_territory = BooleanField(
+        _("Kitchen On The Territory"), default=False
+    )
     no_kitchen = BooleanField(_("No Kitchen"), default=False)
-    breakfast_included = BooleanField(_("Breakfast Is Included"), default=False)
+    breakfast_included = BooleanField(
+        _("Breakfast Is Included"), default=False
+    )
     lunch_included = BooleanField(_("Lunch Is Included"), default=False)
     dinner_included = BooleanField(_("Dinner Is Included"), default=False)
     all_inclusive = BooleanField(_("All Inclusive"), default=False)
@@ -189,17 +194,27 @@ class Glamp(TimestampMixin):
     free_cancellation = BooleanField(_("Free cancellation"), default=False)
 
     # Conditions Of Sstay
-    allowed_with_animals = BooleanField(_("Allowed With Animals"), default=False)
-    suitable_for_children = BooleanField(_("Suitable For Children"), default=False)
+    allowed_with_animals = BooleanField(
+        _("Allowed With Animals"), default=False
+    )
+    suitable_for_children = BooleanField(
+        _("Suitable For Children"), default=False
+    )
     suitable_for_groups = BooleanField(_("Suitable For Groups"), default=False)
 
     # Transport
-    can_order_transfer = BooleanField(_("You Can Order A Transfer"), default=False)
-    car_charging_station = BooleanField(_("Car Charging Station"), default=False)
+    can_order_transfer = BooleanField(
+        _("You Can Order A Transfer"), default=False
+    )
+    car_charging_station = BooleanField(
+        _("Car Charging Station"), default=False
+    )
     place_for_car = BooleanField(_("A Place For A Car"), default=False)
 
     # Business and events
-    projector_and_screen = BooleanField(_("Projector And Screen"), default=False)
+    projector_and_screen = BooleanField(
+        _("Projector And Screen"), default=False
+    )
     area_for_events = BooleanField(_("Area For Events"), default=False)
 
     # Security
@@ -212,7 +227,9 @@ class Glamp(TimestampMixin):
     without_thresholds = BooleanField(_("Without Thresholds"), default=False)
     no_ladder = BooleanField(_("No Ladder"), default=False)
     bath_with_handrails = BooleanField(_("Bath With Handrails"), default=False)
-    toilet_with_handrails = BooleanField(_("Toilet With Handrails"), default=False)
+    toilet_with_handrails = BooleanField(
+        _("Toilet With Handrails"), default=False
+    )
     shower_chair = BooleanField(_("Shower Chair"), default=False)
     suitable_for_guests_in_wheelchairs = BooleanField(
         _("Suitable For Guests In Wheelchairs"), default=False

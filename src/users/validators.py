@@ -63,7 +63,6 @@ class MaximumLengthValidator:
         if len(password) > 255:
             raise ValidationError("The password must contain no more than 255 characters")
 
-
 def validate_role(value):
     if value not in [role.value for role in Role]:
         raise ValidationError(

@@ -1,9 +1,9 @@
 from rest_framework.routers import DefaultRouter
 
-from glamps.views import GlampModelViewSet
+from categories.views import CategoryViewSet
 
 
 router = DefaultRouter()
-router.register("", GlampModelViewSet, basename="glamp")
+router.register("", CategoryViewSet, basename="categories")
 
 urlpatterns = [] + router.urls

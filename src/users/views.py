@@ -1,7 +1,6 @@
-from crontab import current_user
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.db import transaction
+from drf_spectacular.utils import extend_schema
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -12,10 +11,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework_simplejwt.tokens import RefreshToken
-from yaml import serialize
 
-from eventlogs.mixins import EventLogMixin
+from addons.mixins.eventlog import EventLogMixin
 from roles.constants import Role
 from users.permissions import IsAuthenticatedOrForbidden
 from users.serializers import (
@@ -25,12 +22,15 @@ from users.serializers import (
     PasswordResetRequestSerializer,
     UserSerializer,
 )
-from users.tasks import send_reset_password_email, verify_email
-from users.utils import TokenGenerator
+from users.tasks import send_reset_password_email
+
 
 User = get_user_model()
 
 
+@extend_schema(
+    tags=["user"],
+)
 class UserViewSet(ModelViewSet, EventLogMixin):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -65,6 +65,9 @@ class UserViewSet(ModelViewSet, EventLogMixin):
         return super().perform_destroy(model)
 
 
+@extend_schema(
+    tags=["activate user"],
+)
 class ActivateUserAPIView(APIView):
     """User activate class"""
 
@@ -99,6 +102,9 @@ class ActivateUserAPIView(APIView):
         )
 
 
+@extend_schema(
+    tags=["password"],
+)
 class PasswordResetRequestView(APIView):
     permission_classes = [IsAuthenticatedOrForbidden]
     serializer_class = PasswordResetRequestSerializer
@@ -108,7 +114,9 @@ class PasswordResetRequestView(APIView):
 
         if serializer.is_valid():
 
-            user = get_object_or_404(User, email=serializer.validated_data["email"])
+            user = get_object_or_404(
+                User, email=serializer.validated_data["email"]
+            )
             token_generator = PasswordResetTokenGenerator()
             token = token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -129,6 +137,9 @@ class PasswordResetRequestView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    tags=["password"],
+)
 class PasswordResetConfirmView(APIView):
     permission_classes = [IsAuthenticatedOrForbidden]
     serializer_class = PasswordResetConfirmSerializer
@@ -146,10 +157,12 @@ class PasswordResetConfirmView(APIView):
             if serializer.is_valid():
                 serializer.save()
                 return Response(
-                    {"detail": "Password has been reset."}, status=status.HTTP_200_OK
+                    {"detail": "Password has been reset."},
+                    status=status.HTTP_200_OK,
                 )
-            else:
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
 
         return Response(
             {"detail": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST

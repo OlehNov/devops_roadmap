@@ -3,7 +3,7 @@ from django.db.models import CASCADE, FileField, ForeignKey
 from django.utils.translation import gettext as _
 
 from glamps.utils import folder_path
-from mixins.timestamps import TimestampMixin
+from addons.mixins.timestamps import TimestampMixin
 
 
 class Picture(TimestampMixin):

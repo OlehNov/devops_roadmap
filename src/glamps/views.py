@@ -1,9 +1,10 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from glamps.filters import CustomBaseFilterBackend
+from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from glamps.models import Glamp
 from glamps.permissions import (
     IsAnonymousUser,
@@ -24,6 +25,7 @@ class GlampModelViewSet(ModelViewSet):
         "owner", "category"
     ).prefetch_related("picture")
     serializer_class = GlampSerializer
+    pagination_class = PageNumberPagination
     filter_backends = [CustomBaseFilterBackend]
 
     def get_permissions(self):

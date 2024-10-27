@@ -1,16 +1,10 @@
-from django.db.models import QuerySet
-from django.http import HttpRequest
 from rest_framework.filters import BaseFilterBackend
-from rest_framework.views import View
-from rest_framework.viewsets import ViewSet
 
-from glamps.constants import FILTER_PATTERN, LOOKUP_SEP, OPERATORS
+from addons.backend_filters.constants import FILTER_PATTERN, LOOKUP_SEP, OPERATORS
 
 
 class CustomBaseFilterBackend(BaseFilterBackend):
-    def filter_queryset(
-        self, request: HttpRequest, queryset: QuerySet, view: ViewSet | View
-    ) -> QuerySet:
+    def filter_queryset(self, request, queryset, view):
         filter_params = {}
 
         for field, value in request.query_params.items():

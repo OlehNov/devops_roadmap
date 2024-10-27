@@ -1,15 +1,14 @@
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from eventlogs.mixins import EventLogMixin
-from glamps.filters import CustomBaseFilterBackend
+from addons.mixins.eventlog import EventLogMixin
+from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from users.permissions import IsNotDeleted
 from django.db import transaction
 from roles.constants import Role
 from tourists.validators import validate_phone
 from django.core.exceptions import ValidationError
-from handlers.errors import validate_phone_error, handle_error
+from addons.handlers.errors import validate_phone_error, handle_error
 from rest_framework.generics import (
     CreateAPIView,
     ListAPIView,
@@ -23,6 +22,7 @@ from glamp_owners.serializers import (
     GlampOwnerDeactivateSerializer,
 )
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
@@ -30,15 +30,16 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_404_NOT_FOUND,
 )
-from roles.permissions import (
-    IsAdminOrSuperuser
-)
+from roles.permissions import IsAdminOrSuperuser
 from users.tasks import verify_email
 
 
 User = get_user_model()
 
 
+@extend_schema(
+    tags=["glamp-owner"],
+)
 class GlampOwnerRegisterView(CreateAPIView, EventLogMixin):
     """GlampOwner registration class"""
 
@@ -77,6 +78,9 @@ class GlampOwnerRegisterView(CreateAPIView, EventLogMixin):
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
+@extend_schema(
+    tags=["glamp-owner"],
+)
 class GlampOwnerListAPIView(ListAPIView):
     serializer_class = GlampOwnerSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted]
@@ -107,6 +111,9 @@ class GlampOwnerListAPIView(ListAPIView):
         return Response(serializer.data, status=HTTP_200_OK)
 
 
+@extend_schema(
+    tags=["glamp-owner"],
+)
 class GlampOwnerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
     serializer_class = GlampOwnerSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, IsAdminOrSuperuser]

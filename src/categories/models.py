@@ -1,14 +1,12 @@
 from django.db.models import (
     BooleanField,
     CharField,
-    DateTimeField,
-    Model,
     SlugField,
     TextField,
 )
 from django.utils.translation import gettext as _
 
-from mixins.timestamps import TimestampMixin
+from addons.mixins.timestamps import TimestampMixin
 
 
 class Category(TimestampMixin):

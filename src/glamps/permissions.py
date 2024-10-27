@@ -46,7 +46,7 @@ class RoleIsOwner(BasePermission):
 class IsGlampOwner(BasePermission):
     def has_permission(self, request, view):
         user_authenticated(user=request.user)
-        return True
+        return request.user.role == Role.OWNER
 
     def has_object_permission(self, request, view, obj: Glamp):
         return obj.owner == request.user
