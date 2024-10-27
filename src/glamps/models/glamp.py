@@ -17,7 +17,7 @@ from django.utils.translation import gettext as _
 
 from categories.models import Category
 from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
-from mixins.timestamps import TimestampMixin
+from addons.mixins.timestamps import TimestampMixin
 
 
 User = get_user_model()

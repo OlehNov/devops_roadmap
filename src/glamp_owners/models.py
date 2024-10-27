@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
-from mixins.timestamps import TimestampMixin
+from addons.mixins.timestamps import TimestampMixin
 from django.db import models
 from tourists.validators import validate_phone
 from glamp_owners.validators import vip_status_validator
+
 
 User = get_user_model()
 
@@ -16,14 +17,15 @@ class GlampOwner(TimestampMixin):
         null=True, blank=True, default=None,
         validators=[validate_phone]
     )
+
     vip_status = models.PositiveSmallIntegerField(
         null=True, blank=True, default=None,
         validators=[vip_status_validator]
     )
+
     status = models.PositiveSmallIntegerField(
         null=True, blank=True, default=None
     )
-
 
     objects = models.Manager()
 

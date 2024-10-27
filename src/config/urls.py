@@ -10,6 +10,7 @@ import debug_toolbar
 
 from config import api
 
+
 ROOT_API = settings.ROOT_API
 
 
@@ -44,7 +45,9 @@ urlpatterns = [
     ),
     path(
         f"{ROOT_API}/tourists/",
-        include(("tourists.urls", "tourists"), namespace="tourists"),
+        include(
+            ("tourists.urls", "tourists"),
+            namespace="tourists"),
     ),
     path(
         f"{ROOT_API}/administrators/",
@@ -55,14 +58,30 @@ urlpatterns = [
     ),
     path(
         f"{ROOT_API}/users/",
-        include(("users.urls", "users"), namespace="users"),
+        include(
+            ("users.urls", "users"),
+            namespace="users"
+        ),
+    ),
+    path(
+        f"{ROOT_API}/glamps/categories/",
+        include(
+            ("categories.urls", "categories"),
+            namespace="categories"
+        ),
     ),
     path(
         f"{ROOT_API}/glamps/",
-        include(("glamps.urls", "glamps"), namespace="glamps"),
+        include(
+            ("glamps.urls", "glamps"),
+            namespace="glamps"
+        ),
     ),
     path(
         f"{ROOT_API}/eventlogs/",
-        include(("eventlogs.urls", "eventlogs"), namespace="eventlogs"),
+        include(
+            ("eventlogs.urls", "eventlogs"),
+            namespace="eventlogs"
+        ),
     ),
 ]

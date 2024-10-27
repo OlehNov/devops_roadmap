@@ -1,4 +1,3 @@
-from django.conf import settings
 from drf_spectacular.utils import extend_schema
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -18,9 +17,9 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
 )
 
-from handlers.errors import handle_error
-from eventlogs.mixins import EventLogMixin
-from handlers.errors import validate_birthday_error, validate_phone_error
+from addons.handlers.errors import handle_error
+from addons.mixins.eventlog import EventLogMixin
+from addons.handlers.errors import validate_birthday_error, validate_phone_error
 from roles.constants import Role
 from roles.permissions import RoleIsAdmin
 from tourists.models import Tourist

@@ -18,7 +18,7 @@ from administrators.serializers import (
     AdministratorDeactivateSerializer,
     AdministratorSerializer,
 )
-from eventlogs.mixins import EventLogMixin
+from addons.mixins.eventlog import EventLogMixin
 from roles.constants import Role
 from users.permissions import IsNotDeleted, IsSuperuser
 

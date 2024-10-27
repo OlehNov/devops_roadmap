@@ -15,7 +15,7 @@ from authentication.serializers import (
     CustomTokenRefreshSerializer,
     CustomTokenVerifySerializer,
 )
-from handlers.errors import handle_error
+from addons.handlers.errors import handle_error
 
 
 @extend_schema(tags=["token"])

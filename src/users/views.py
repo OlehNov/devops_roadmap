@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
-from eventlogs.mixins import EventLogMixin
+from addons.mixins.eventlog import EventLogMixin
 from roles.constants import Role
 from users.permissions import IsAuthenticatedOrForbidden
 from users.serializers import (
@@ -23,6 +23,7 @@ from users.serializers import (
     UserSerializer,
 )
 from users.tasks import send_reset_password_email
+
 
 User = get_user_model()
 

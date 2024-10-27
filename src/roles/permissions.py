@@ -39,6 +39,7 @@ class RoleIsOwner(BasePermission):
 
 class IsAdminOrSuperuser(BasePermission):
     def has_permission(self, request, view):
+        user_authenticated(user=request.user)
         if request.user.is_superuser or request.user.is_staff:
             return True
         return request.user.role == Role.ADMIN
