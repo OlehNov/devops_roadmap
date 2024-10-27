@@ -28,9 +28,7 @@ from users.tasks import send_reset_password_email
 User = get_user_model()
 
 
-@extend_schema(
-    tags=["user"],
-)
+@extend_schema(tags=["user"])
 class UserViewSet(ModelViewSet, EventLogMixin):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -40,7 +38,10 @@ class UserViewSet(ModelViewSet, EventLogMixin):
     def get_queryset(self):
         user = self.request.user
 
-        if user.role == Role.ADMIN:
+        if user.is_anonymous:
+            return User.objects.none()
+
+        if user.role == Role.ADMIN or user.is_staff:
             return User.objects.all()
 
         return User.objects.filter(id=user.id)
@@ -65,9 +66,7 @@ class UserViewSet(ModelViewSet, EventLogMixin):
         return super().perform_destroy(model)
 
 
-@extend_schema(
-    tags=["activate user"],
-)
+@extend_schema(tags=["activate-user"])
 class ActivateUserAPIView(APIView):
     """User activate class"""
 
@@ -102,9 +101,7 @@ class ActivateUserAPIView(APIView):
         )
 
 
-@extend_schema(
-    tags=["password"],
-)
+@extend_schema(tags=["password"])
 class PasswordResetRequestView(APIView):
     permission_classes = [IsAuthenticatedOrForbidden]
     serializer_class = PasswordResetRequestSerializer
@@ -137,9 +134,7 @@ class PasswordResetRequestView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@extend_schema(
-    tags=["password"],
-)
+@extend_schema(tags=["password"])
 class PasswordResetConfirmView(APIView):
     permission_classes = [IsAuthenticatedOrForbidden]
     serializer_class = PasswordResetConfirmSerializer
