@@ -17,6 +17,10 @@
 1. GET Administrator by id request fixed.
 
 ---
-
 ## 27.10.2024 23:03. Users fixed.
 1. User permissions fixed.
+
+---
+
+## 28.10.2024 09:13. Create manager app.
+1. Create model for manager profile
