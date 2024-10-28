@@ -7,7 +7,7 @@ from roles.constants import HELP_TEXT_PROFILE_STATUS
 User = get_user_model()
 
 
-class Manager(TimestampMixin):
+class GlampManager(TimestampMixin):
     id = models.PositiveIntegerField(primary_key=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(

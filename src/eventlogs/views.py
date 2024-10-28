@@ -12,8 +12,6 @@ class EventLogListAPIView(ListAPIView):
     permission_classes = [IsAdminUser]
     queryset = EventLog.objects.all()
     serializer_class = EventLogSerializer
-    pagination_class = PageNumberPagination
-
 
 @extend_schema(tags=["eventlog"])
 class EventLogRetrieveAPIView(RetrieveAPIView):
