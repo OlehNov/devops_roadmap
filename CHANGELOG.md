@@ -25,3 +25,7 @@
 ## 29.10.2024 09:57. Fixed wrong database writing for Eventlogs
 1. Changed dockerfile - added command for eventlogs migrations
 2. created manager for EventLog model
+## 29.10.2024 18:27. Add slug.
+1. Add slug for glamps.
+2. Add slug for categories.
+---

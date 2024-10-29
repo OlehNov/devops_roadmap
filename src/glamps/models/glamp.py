@@ -12,7 +12,9 @@ from django.db.models import (
     ForeignKey,
     PositiveSmallIntegerField,
     UUIDField,
+    SlugField,
 )
+from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
 from categories.models import Category
@@ -38,6 +40,9 @@ class Glamp(TimestampMixin):
 
     name = CharField(
         _("Glamp Name"), max_length=225, null=False, blank=False, default=None
+    )
+    slug = SlugField(
+        _("Slug"), max_length=225, null=False, blank=False, unique=True,
     )
     description = CharField(
         _("Description"), max_length=5000, null=True, blank=True, default=None
@@ -249,3 +254,14 @@ class Glamp(TimestampMixin):
 
     def __repr__(self) -> str:
         return f"<GlampModel>: {self.name}"
+
+    def save(self, *args, **kwargs):
+        if not self.uuid:
+            super().save(*args, **kwargs)
+
+        if not self.slug or not self.slug.startswith(f"{self.uuid}-"):
+            base_slug = slugify(self.name)
+
+            self.slug = f"{self.uuid}-{base_slug}"
+
+        super().save(*args, **kwargs)
