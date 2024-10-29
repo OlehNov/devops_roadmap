@@ -17,3 +17,7 @@
 1. GET Administrator by id request fixed.
 
 ---
+
+## 29.10.2024 09:57. Fixed wrong database writing for Eventlogs
+1. Changed dockerfile - added command for eventlogs migrations
+2. created manager for EventLog model

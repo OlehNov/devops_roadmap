@@ -141,7 +141,7 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
-    "DEFAULT_PAGINATION_CLASS": "addons.paginators.custom_list_paginator.CustomListViewPageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": "addons.paginators.custom_list_view_paginator.CustomListViewPageNumberPagination",
     "PAGE_SIZE": 10,
 }
 
@@ -447,7 +447,7 @@ if DEBUG:
             "rest_framework.renderers.JSONRenderer",
             "rest_framework.renderers.BrowsableAPIRenderer",
         ],
-        "DEFAULT_PAGINATION_CLASS": "addons.paginators.custom_list_paginator.CustomListViewPageNumberPagination",
+        "DEFAULT_PAGINATION_CLASS": "addons.paginators.custom_list_view_paginator.CustomListViewPageNumberPagination",
         "PAGE_SIZE": 10,
     }
     INSTALLED_APPS += ['debug_toolbar']
