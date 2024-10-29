@@ -27,7 +27,7 @@ class GlampModelViewSet(ModelViewSet):
     serializer_class = GlampSerializer
     pagination_class = PageNumberPagination
     filter_backends = [CustomBaseFilterBackend]
-    lookup_field = 'slug'
+    lookup_field = "slug"
 
     def get_permissions(self):
         match self.action:
