@@ -21,7 +21,7 @@
 ---
 ## 29.10.2024 01:00. Categories fixed.
 1. Categories permissions fixed.
-
+---
 ## 29.10.2024 19:50. Settings fixed.
 1. DEBUG settings fixed.
-2. 
+---
