@@ -28,7 +28,7 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampMixin):
     is_deleted = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["password"]
+    REQUIRED_FIELDS = []
 
     objects = UserManager()
 

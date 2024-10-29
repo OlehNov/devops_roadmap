@@ -21,36 +21,35 @@ class UserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "is_active",
-            "is_staff",
             "role",
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["created_at", "updated_at"]
+        read_only_fields = ["created_at", "updated_at", "is_staff"]
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = (
+        fields = [
             "id",
             "email",
             "first_name",
             "last_name",
             "is_active",
-            "is_staff",
             "role",
             "created_at",
-            "updated_at",
-        )
-        read_only_fields = (
+            "updated_at"
+        ]
+        read_only_fields = [
+            "id",
+            "email"
             "is_active",
-            "is_staff",
             "role",
             "created_at",
-            "updated_at",
-        )
-        write_only_fields = ("password",)
+            "updated_at"
+        ]
+        write_only_fields = ["password"]
 
 
 class UserLoginSerializer(serializers.ModelSerializer):

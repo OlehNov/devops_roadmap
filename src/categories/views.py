@@ -8,9 +8,8 @@ from roles.permissions import IsAdminOrSuperuser, RoleIsManager
 
 
 @extend_schema(tags=["glamp-categories"])
-class CategoryViewSet(EventLogMixin, ModelViewSet):
+class CategoryViewSet(ModelViewSet, EventLogMixin):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = (IsAdminOrSuperuser, RoleIsManager)
-    # lookup_field = "category_id"
+    permission_classes = (RoleIsManager | IsAdminOrSuperuser, )
     lookup_url_kwarg = "category_id"
