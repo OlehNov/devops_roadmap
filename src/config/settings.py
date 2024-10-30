@@ -430,10 +430,6 @@ LOGGING = {
     },
 }
 
-try:
-    from .settings_local import *
-except ImportError:
-    pass
 
 if DEBUG:
     REST_FRAMEWORK = {
@@ -457,8 +453,13 @@ if DEBUG:
         "PAGE_SIZE": DEFAULT_PAGE_SIZE,
     }
     INSTALLED_APPS += ['debug_toolbar']
-    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
 
     DEBUG_TOOLBAR_CONFIG = {
         'SHOW_TOOLBAR_CALLBACK': lambda request: True,
     }
+
+try:
+    from .settings_local import *
+except ImportError:
+    pass
