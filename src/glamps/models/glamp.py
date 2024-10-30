@@ -256,9 +256,6 @@ class Glamp(TimestampMixin):
         return f"<GlampModel>: {self.name}"
 
     def save(self, *args, **kwargs):
-        if not self.uuid:
-            super().save(*args, **kwargs)
-
         if not self.slug or not self.slug.startswith(f"{self.uuid}-"):
             base_slug = slugify(self.name)
 

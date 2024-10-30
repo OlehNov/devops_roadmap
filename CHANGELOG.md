@@ -25,3 +25,7 @@
 ## 29.10.2024 19:50. Settings fixed.
 1. DEBUG settings fixed.
 ---
+## 30.10.2024 18:27. Add slug.
+1. Add slug for glamps.
+2. Add slug for categories.
+---
