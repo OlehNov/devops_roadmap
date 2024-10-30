@@ -13,11 +13,14 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, validators=[validate_password])
+
     class Meta:
         model = User
         fields = [
             "id",
             "email",
+            "password",
             "first_name",
             "last_name",
             "is_active",
@@ -26,6 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
         read_only_fields = ["created_at", "updated_at", "is_staff"]
+        write_only_fields = ["password"]
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
