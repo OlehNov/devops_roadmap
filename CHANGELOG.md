@@ -28,5 +28,6 @@
 ## 30.10.20024 15:28. Users fixed.
 1. Password field visible and able to write.
 ---
-## 30.10.2024 15:40. Categories fixed.
+## 30.10.2024 15:40. Role check fixed.
 1. Refactored user role_check decorator
+---
