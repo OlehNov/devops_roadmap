@@ -25,3 +25,5 @@
 ## 29.10.2024 19:50. Settings fixed.
 1. DEBUG settings fixed.
 ---
+## 30.10.20024 15:28. Users fixed.
+1. Password field visible and able to write.
