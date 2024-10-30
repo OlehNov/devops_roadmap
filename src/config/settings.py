@@ -334,6 +334,7 @@ JAZZMIN_SETTINGS = {
     "order_with_respect_to": [
         "users",
         "administrators",
+        "managers",
         "tourists",
         "glamp_owners",
     ],
@@ -345,6 +346,7 @@ JAZZMIN_SETTINGS = {
         "administrators.administrator": "fas fa-user-cog",
         "glamps.picture": "fas fa-images",
         "glamp_owners.glampowner": "fas fa-house-user",
+        "managers.glampmanager": "fas fa-sitemap",
     },
     "show_ui_builder": True,
     "changeform_format": "horizontal_tabs",

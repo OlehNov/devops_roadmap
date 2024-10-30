@@ -21,3 +21,6 @@
 ---
 ## 29.10.2024 01:00. Categories fixed.
 1. Categories permissions fixed.
+---
+## 30.10.2024 15:40. Categories fixed.
+1. Refactored user role_check decorator
