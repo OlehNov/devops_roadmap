@@ -31,6 +31,10 @@
 ## 30.10.2024 15:40. Role check fixed.
 1. Refactored user role_check decorator.
 ---
+## 30.10.2024 18:27. Add slug.
+1. Add slug for glamps.
+2. Add slug for categories.
+---
 ## 30.10.2024 19:19. Bug fixed.
 1. user.signals deleted.
 ---

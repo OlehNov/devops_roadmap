@@ -12,4 +12,5 @@ class CategoryViewSet(ModelViewSet, EventLogMixin):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = (RoleIsManager | IsAdminOrSuperuser, )
+    lookup_field = "slug"
     lookup_url_kwarg = "category_id"
