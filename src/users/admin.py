@@ -13,7 +13,10 @@ User = get_user_model()
 class UserAdmin(admin.ModelAdmin):
     exclude = ["groups", "user_permissions", "password"]
     list_filter = [
+        "id",
         "email",
+        "first_name",
+        "last_name",
         "role",
         "is_active",
         "is_staff",
@@ -22,6 +25,7 @@ class UserAdmin(admin.ModelAdmin):
         "updated_at",
     ]
     list_display = [
+        "id",
         "email",
         "first_name",
         "last_name",
@@ -33,6 +37,7 @@ class UserAdmin(admin.ModelAdmin):
         "updated_at",
     ]
     search_fields = [
+        "id",
         "email",
         "first_name",
         "last_name",
