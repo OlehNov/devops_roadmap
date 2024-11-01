@@ -42,7 +42,7 @@ class Glamp(TimestampMixin):
         _("Glamp Name"), max_length=225, null=False, blank=False, default=None
     )
     slug = SlugField(
-        _("Slug"), max_length=225, null=False, blank=False, unique=True,
+        _("Slug"), max_length=225, null=True, blank=True, unique=True, default=None
     )
     description = CharField(
         _("Description"), max_length=5000, null=True, blank=True, default=None

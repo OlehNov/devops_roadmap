@@ -38,3 +38,7 @@
 ## 30.10.2024 19:19. Bug fixed.
 1. user.signals deleted.
 ---
+## 01.11.2024 14:43. Slug field fixed.
+1. Model glamp default value equals None for slug field added.
+2. Dockerfile fixed.
+---
