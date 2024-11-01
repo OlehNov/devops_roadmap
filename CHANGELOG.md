@@ -42,3 +42,6 @@
 1. Model glamp default value equals None for slug field added.
 2. Dockerfile fixed.
 ---
+## 01.11.2024 15:15. Admin changes.
+1. user id field displayed in admin.
+---
