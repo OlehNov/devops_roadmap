@@ -19,7 +19,10 @@ from rest_framework.status import (
 
 from addons.handlers.errors import handle_error
 from addons.mixins.eventlog import EventLogMixin
-from addons.handlers.errors import validate_birthday_error, validate_phone_error
+from addons.handlers.errors import (
+    validate_birthday_error,
+    validate_phone_error,
+)
 from roles.constants import Role
 from roles.permissions import RoleIsAdmin
 from tourists.models import Tourist
@@ -31,6 +34,7 @@ from tourists.serializers import (
 from tourists.validators import validate_birthday, validate_phone
 from users.permissions import IsNotDeleted
 from users.tasks import verify_email
+from roles.constants import ProfileStatus
 
 
 User = get_user_model()
@@ -84,7 +88,16 @@ class UserTouristRegisterView(CreateAPIView, EventLogMixin):
                     user.is_active = False
                     user.save()
 
-                    tourist = Tourist.objects.create(user=user)
+                    tourist = Tourist.objects.create(
+                        id=user.id,
+                        user=user,
+                        email=serializer.validated_data["email"],
+                        first_name=serializer.validated_data["first_name"],
+                        last_name=serializer.validated_data["last_name"],
+                    )
+                    tourist.status = ProfileStatus.ACTIVATED
+                    tourist.save()
+
                     self.log_event(request=request, operated_object=user)
                     self.log_event(request=request, operated_object=tourist)
 

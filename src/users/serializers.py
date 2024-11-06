@@ -5,6 +5,7 @@ from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
+from users.validators import validate_first_name_last_name
 
 from users.utils import TokenGenerator
 
@@ -13,23 +14,59 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, validators=[validate_password])
 
     class Meta:
         model = User
         fields = [
             "id",
             "email",
-            "password",
             "first_name",
             "last_name",
             "is_active",
+            "is_staff",
             "role",
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["created_at", "updated_at", "is_staff"]
-        write_only_fields = ["password"]
+        read_only_fields = [
+            "email",
+            "role",
+            "is_active",
+            "is_staff",
+            "created_at",
+            "updated_at",
+        ]
+
+
+class UserRegisterSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password]
+    )
+    confirm_password = serializers.CharField(
+        write_only=True, required=True, validators=[validate_password]
+    )
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "password",
+            "confirm_password",
+            "is_active",
+            "is_staff",
+            "role",
+        )
+        read_only_fields = [
+            "id",
+            "created_at",
+            "updated_at",
+            "is_active",
+            "is_staff",
+            "role",
+        ]
 
 
 class CurrentUserSerializer(serializers.ModelSerializer):
@@ -43,15 +80,14 @@ class CurrentUserSerializer(serializers.ModelSerializer):
             "is_active",
             "role",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
         read_only_fields = [
             "id",
-            "email"
-            "is_active",
+            "email" "is_active",
             "role",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
         write_only_fields = ["password"]
 

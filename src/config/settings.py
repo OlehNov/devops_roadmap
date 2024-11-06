@@ -455,7 +455,9 @@ if DEBUG:
         "PAGE_SIZE": DEFAULT_PAGE_SIZE,
     }
     INSTALLED_APPS += ['debug_toolbar']
-    MIDDLEWARE = ['debug_toolbar.middleware.DebugToolbarMiddleware'] + MIDDLEWARE
+    MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware'
+    ] + MIDDLEWARE
 
     DEBUG_TOOLBAR_CONFIG = {
         'SHOW_TOOLBAR_CALLBACK': lambda request: True,

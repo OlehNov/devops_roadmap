@@ -12,6 +12,9 @@ User = get_user_model()
 
 class Tourist(TimestampMixin):
     id = models.PositiveIntegerField(primary_key=True)
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=255, null=True, default=None)
+    last_name = models.CharField(max_length=255, null=True, default=None)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(
         null=True,

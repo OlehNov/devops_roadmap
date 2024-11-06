@@ -1,4 +1,3 @@
-from typing import Iterable
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.mail import send_mail
@@ -7,7 +6,7 @@ from django.db import models
 from users.managers import UserManager
 from users.validators import validate_role
 from addons.mixins.timestamps import TimestampMixin
-from roles.constants import HELP_TEXT_ROLE, ProfileStatus
+from roles.constants import HELP_TEXT_ROLE
 from users.decorators import role_check
 
 

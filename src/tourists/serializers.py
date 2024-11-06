@@ -35,14 +35,18 @@ class TouristSerializer(serializers.ModelSerializer):
             "status",
             "role",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
         read_only_fields = ["created_at", "updated_at"]
 
     def update(self, instance, validated_data):
         # Update User fields
-        instance.first_name = validated_data.get("first_name", instance.first_name)
-        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.first_name = validated_data.get(
+            "first_name", instance.first_name
+        )
+        instance.last_name = validated_data.get(
+            "last_name", instance.last_name
+        )
         instance.role = validated_data.get("role", instance.role)
         instance.save()
 
@@ -52,6 +56,7 @@ class TouristSerializer(serializers.ModelSerializer):
 
         if "status" in tourist_data:
             tourist_profile.status = tourist_data["status"]
+
         if "phone" in tourist_data:
             phone = tourist_data["phone"]
             try:
@@ -59,6 +64,7 @@ class TouristSerializer(serializers.ModelSerializer):
             except ValidationError as e:
                 raise serializers.ValidationError({"phone": str(e)})
             tourist_profile.phone = phone
+
         if "birthday" in tourist_data:
             birthday = tourist_data["birthday"]
             try:
@@ -73,8 +79,12 @@ class TouristSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
-        ret["status"] = instance.tourist.status if hasattr(instance, "tourist") else ""
-        ret["phone"] = instance.tourist.phone if hasattr(instance, "tourist") else ""
+        ret["status"] = (
+            instance.tourist.status if hasattr(instance, "tourist") else ""
+        )
+        ret["phone"] = (
+            instance.tourist.phone if hasattr(instance, "tourist") else ""
+        )
         ret["birthday"] = (
             instance.tourist.birthday if hasattr(instance, "tourist") else ""
         )
@@ -94,7 +104,7 @@ class UserTouristRegistrationSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "password",
-            "confirm_password"
+            "confirm_password",
         )
 
     def validate(self, attrs):

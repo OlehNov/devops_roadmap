@@ -55,6 +55,13 @@ urlpatterns = [
         ),
     ),
     path(
+        f"{ROOT_API}/managers/",
+        include(
+            ("managers.urls", "managers"),
+            namespace="managers",
+        ),
+    ),
+    path(
         f"{ROOT_API}/users/",
         include(("users.urls", "users"), namespace="users"),
     ),
