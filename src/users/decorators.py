@@ -1,8 +1,6 @@
 from functools import wraps
 from django.contrib.auth import get_user_model
-from addons.handlers.errors import handle_error
 from roles.constants import Role, ProfileStatus
-from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
 

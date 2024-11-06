@@ -36,6 +36,12 @@ class UserAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     ]
+    list_display_links = [
+        "id",
+        "email",
+        "first_name",
+        "last_name",
+    ]
     search_fields = [
         "id",
         "email",

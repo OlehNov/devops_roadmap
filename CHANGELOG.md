@@ -49,3 +49,6 @@
 ## 01.11.2024 15:15. Admin changes.
 1. user id field displayed in admin.
 ---
+## 06.11.2024 11:35. managers app.
+1. Create CRUD for managers app.
+---
