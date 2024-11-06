@@ -1,6 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
 from managers.models import GlampManager
-from rest_framework.pagination import PageNumberPagination
 from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from managers.serializers import ManagerSerializer, ManagerRegisterSerializer
 from managers.permissions import IsAdminOrManager
@@ -8,25 +7,26 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from roles.constants import ProfileStatus
 from rest_framework import status
+from rest_framework.permissions import IsAdminUser
 
 
 @extend_schema(tags=["manager"])
 class ManagerModelViewSet(ModelViewSet):
     queryset = GlampManager.objects.select_related("user")
     serializer_class = ManagerSerializer
-    permission_classes = [IsAdminOrManager]
-    pagination_class = PageNumberPagination
+    permission_classes = [IsAdminOrManager, IsAdminUser]
     filter_backends = [CustomBaseFilterBackend]
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        if self.action == "create":
             return ManagerRegisterSerializer
         return ManagerSerializer
 
     def update(self, request, *args, **kwargs):
+        partial = kwargs.get("partial", False)
         instance = self.get_object()
         serializer = self.get_serializer(
-            instance, data=request.data, partial=False
+            instance, data=request.data, partial=partial
         )
         serializer.is_valid(raise_exception=True)
 

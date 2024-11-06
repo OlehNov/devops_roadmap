@@ -50,7 +50,7 @@ class ManagerRegisterSerializer(ModelSerializer):
             password=user_data.get("password"),
             role=Role.MANAGER,
             is_active=True,
-            is_staff=True,
+            is_staff=False,
         )
 
         manager, _ = GlampManager.objects.get_or_create(

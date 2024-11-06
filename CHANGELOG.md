@@ -34,3 +34,6 @@
 ## 30.10.2024 19:19. Bug fixed.
 1. user.signals deleted.
 ---
+## 06.11.2024 11:35. managers app.
+1. Create CRUD for managers app.
+---
