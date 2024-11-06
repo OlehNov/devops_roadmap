@@ -15,6 +15,8 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = [
         "id",
         "email",
+        "first_name",
+        "last_name",
         "role",
         "is_active",
         "is_staff",

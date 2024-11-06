@@ -4,6 +4,7 @@ from django.db.models import (
     SlugField,
     TextField,
 )
+from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
 from addons.mixins.timestamps import TimestampMixin

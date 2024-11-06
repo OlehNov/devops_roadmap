@@ -22,6 +22,10 @@
 ## 29.10.2024 01:00. Categories fixed.
 1. Categories permissions fixed.
 ---
+## 29.10.2024 09:57. Fixed wrong database writing for Eventlogs
+1. Changed dockerfile - added command for eventlogs migrations
+2. created manager for EventLog model
+---
 ## 29.10.2024 19:50. Settings fixed.
 1. DEBUG settings fixed.
 ---
@@ -31,8 +35,19 @@
 ## 30.10.2024 15:40. Role check fixed.
 1. Refactored user role_check decorator.
 ---
+## 30.10.2024 18:27. Add slug.
+1. Add slug for glamps.
+2. Add slug for categories.
+---
 ## 30.10.2024 19:19. Bug fixed.
 1. user.signals deleted.
+---
+## 01.11.2024 14:43. Slug field fixed.
+1. Model glamp default value equals None for slug field added.
+2. Dockerfile fixed.
+---
+## 01.11.2024 15:15. Admin changes.
+1. user id field displayed in admin.
 ---
 ## 06.11.2024 11:35. managers app.
 1. Create CRUD for managers app.
