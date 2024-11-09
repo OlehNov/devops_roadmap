@@ -256,6 +256,6 @@ class Glamp(TimestampMixin):
         if not self.slug or not self.slug.startswith(f"{self.id}-"):
             base_slug = slugify(self.name)
             self.slug = f"{self.id}-{base_slug}"
-            kwargs['force_insert'] = False
+            kwargs["force_insert"] = False
 
         super().save(*args, **kwargs)
