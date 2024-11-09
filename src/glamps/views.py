@@ -4,6 +4,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from addons.mixins.eventlog import EventLogMixin
+
 from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from glamps.models import Glamp
 from glamps.permissions import (
@@ -20,10 +22,10 @@ from glamps.serializers import GlampSerializer
 @extend_schema(
     tags=["glamp"],
 )
-class GlampModelViewSet(ModelViewSet):
+class GlampModelViewSet(ModelViewSet, EventLogMixin):
     queryset = Glamp.objects.select_related(
         "owner", "category"
-    ).prefetch_related("picture")
+    )
     serializer_class = GlampSerializer
     pagination_class = PageNumberPagination
     filter_backends = [CustomBaseFilterBackend]
