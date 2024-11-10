@@ -44,8 +44,13 @@ class GlampSerializer(ModelSerializer):
         category = validated_data.pop("category", None)
 
         if category:
-            category_obj = Category.objects.get(id=category["id"])
-            instance.category = category_obj
+            if isinstance(category, Category):
+                instance.category = category
+            else:
+                instance.category = Category.objects.get(id=category)
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
 
         # if pic:
         #     instance.picture.clear()

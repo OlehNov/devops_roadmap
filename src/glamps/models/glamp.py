@@ -1,4 +1,5 @@
 from uuid import uuid4
+from wsgiref.validate import validator
 
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -21,7 +22,7 @@ from django.utils.translation import gettext as _
 from categories.models import Category
 from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
 from addons.mixins.timestamps import TimestampMixin
-
+from glamps.validators import validate_type
 
 User = get_user_model()
 
@@ -29,7 +30,7 @@ User = get_user_model()
 class Glamp(TimestampMixin):
     # General info
     glamp_type = PositiveSmallIntegerField(
-        _("Glamp Type"), help_text=HELP_TEXT_TYPE_GLAMPS, default=None
+        _("Glamp Type"), help_text=HELP_TEXT_TYPE_GLAMPS, default=None, validators=[validate_type]
     )
 
     name = CharField(
