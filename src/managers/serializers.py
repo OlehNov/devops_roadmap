@@ -69,12 +69,12 @@ class ManagerSerializer(ModelSerializer):
 
     @transaction.atomic()
     def update(self, instance, validated_data):
-        user_role = validated_data.pop("user")
+        user_role = validated_data.pop("user", None)
 
         instance.first_name = validated_data.get("first_name")
         instance.last_name = validated_data.get("last_name")
 
-        if validated_data.get("user"):
+        if user_role:
             instance.user.role = user_role.get("role")
             instance.user.save()
 

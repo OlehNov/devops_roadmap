@@ -1,9 +1,6 @@
-import logging
 from rest_framework.permissions import BasePermission
 from roles.constants import Role
 from glamps.permissions import user_authenticated
-
-logger = logging.getLogger(__name__)
 
 
 class IsAdminOrManager(BasePermission):

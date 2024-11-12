@@ -5,19 +5,18 @@ from administrators.serializers import (
     AdministratorSerializer,
     AdministratorRegisterSerializer,
 )
-from managers.permissions import IsAdminOrManager
+from administrators.permissions import IsAdmin
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from roles.constants import ProfileStatus
 from rest_framework import status
-from rest_framework.permissions import IsAdminUser
 
 
 @extend_schema(tags=["administrator"])
 class AdministratorModelViewSet(ModelViewSet):
     queryset = Administrator.objects.select_related("user")
     serializer_class = AdministratorSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdmin]
     filter_backends = [CustomBaseFilterBackend]
 
     def get_serializer_class(self):
