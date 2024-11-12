@@ -14,7 +14,7 @@ from rest_framework.permissions import IsAdminUser
 class ManagerModelViewSet(ModelViewSet):
     queryset = GlampManager.objects.select_related("user")
     serializer_class = ManagerSerializer
-    permission_classes = [IsAdminOrManager, IsAdminUser]
+    permission_classes = [IsAdminOrManager]
     filter_backends = [CustomBaseFilterBackend]
 
     def get_serializer_class(self):

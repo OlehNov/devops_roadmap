@@ -6,7 +6,9 @@ from django.db import transaction
 
 def __deactivate_profile(model, user_instance):
     profile_instance = model.objects.get(
-        id=user_instance.id, user=user_instance
+        id=user_instance.id,
+        user=user_instance,
+        email=user_instance.email,
     )
     if profile_instance:
         profile_instance.status = ProfileStatus.DEACTIVATED
@@ -15,7 +17,9 @@ def __deactivate_profile(model, user_instance):
 
 def __activate_profile(model, user_instance):
     profile_instance, created = model.objects.get_or_create(
-        id=user_instance.id, user=user_instance
+        id=user_instance.id,
+        user=user_instance,
+        email=user_instance.email,
     )
     if profile_instance and profile_instance.status != ProfileStatus.ACTIVATED:
         profile_instance.status = ProfileStatus.ACTIVATED
@@ -35,10 +39,6 @@ def role_check(func):
             func(instance, *args, **kwargs)
 
             match instance.role:
-                case Role.ADMIN:
-                    from administrators.models import Administrator
-
-                    __activate_profile(Administrator, instance)
 
                 case Role.TOURIST:
                     from tourists.models import Tourist
@@ -50,12 +50,18 @@ def role_check(func):
 
                     __activate_profile(GlampOwner, instance)
 
-        if user is not None and user.role != instance.role:
-            match user.role:
                 case Role.ADMIN:
                     from administrators.models import Administrator
 
-                    __deactivate_profile(Administrator, instance)
+                    __activate_profile(Administrator, instance)
+
+                case Role.MANAGER:
+                    from managers.models import GlampManager
+
+                    __activate_profile(GlampManager, instance)
+
+        if user is not None and user.role != instance.role:
+            match user.role:
 
                 case Role.TOURIST:
                     from tourists.models import Tourist
@@ -67,11 +73,17 @@ def role_check(func):
 
                     __deactivate_profile(GlampOwner, instance)
 
-        match instance.role:
-            case Role.ADMIN:
-                from administrators.models import Administrator
+                case Role.ADMIN:
+                    from administrators.models import Administrator
 
-                __activate_profile(Administrator, instance)
+                    __deactivate_profile(Administrator, instance)
+
+                case Role.MANAGER:
+                    from managers.models import GlampManager
+
+                    __deactivate_profile(GlampManager, instance)
+
+        match instance.role:
 
             case Role.TOURIST:
                 from tourists.models import Tourist
@@ -82,6 +94,16 @@ def role_check(func):
                 from glamp_owners.models import GlampOwner
 
                 __activate_profile(GlampOwner, instance)
+
+            case Role.ADMIN:
+                from administrators.models import Administrator
+
+                __activate_profile(Administrator, instance)
+
+            case Role.MANAGER:
+                from managers.models import GlampManager
+
+                __activate_profile(GlampManager, instance)
 
         return func(instance, *args, **kwargs)
 

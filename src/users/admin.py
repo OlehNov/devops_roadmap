@@ -11,7 +11,10 @@ User = get_user_model()
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    exclude = ["groups", "user_permissions", "password"]
+    exclude = [
+        "groups",
+        "user_permissions",
+    ]
     list_filter = [
         "id",
         "email",
@@ -25,8 +28,6 @@ class UserAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "email",
-        "first_name",
-        "last_name",
         "role",
         "is_active",
         "is_staff",
@@ -37,14 +38,10 @@ class UserAdmin(admin.ModelAdmin):
     list_display_links = [
         "id",
         "email",
-        "first_name",
-        "last_name",
     ]
     search_fields = [
         "id",
         "email",
-        "first_name",
-        "last_name",
         "role",
         "is_active",
         "is_staff",

@@ -5,7 +5,6 @@ from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
 from rest_framework.generics import get_object_or_404
 from rest_framework_simplejwt.tokens import RefreshToken
-from users.validators import validate_first_name_last_name
 
 from users.utils import TokenGenerator
 
@@ -20,17 +19,12 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "email",
-            "first_name",
-            "last_name",
             "is_active",
             "is_staff",
-            "role",
             "created_at",
             "updated_at",
         ]
         read_only_fields = [
-            "email",
-            "role",
             "is_active",
             "is_staff",
             "created_at",
@@ -51,8 +45,6 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "email",
-            "first_name",
-            "last_name",
             "password",
             "confirm_password",
             "is_active",
@@ -75,16 +67,17 @@ class CurrentUserSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "email",
-            "first_name",
-            "last_name",
             "is_active",
+            "is_staff",
             "role",
             "created_at",
             "updated_at",
         ]
         read_only_fields = [
             "id",
-            "email" "is_active",
+            "email",
+            "is_active",
+            "is_staff",
             "role",
             "created_at",
             "updated_at",
@@ -121,7 +114,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
                 "refresh_token": str(refresh),
             }
 
-        msg = 'Must include "username" and "password".'  # TODO: change username to email
+        msg = 'Must include "email" and "password".'
         raise serializers.ValidationError(msg, code="authorization")
 
 

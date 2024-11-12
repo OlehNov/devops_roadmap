@@ -1,15 +1,9 @@
-from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-from administrators.views import (
-    AdministratorListAPIView,
-    AdministratorRetrieveUpdateDestroyAPIView
-)
+from administrators.views import AdministratorModelViewSet
 
 
-urlpatterns = [
-    path("", AdministratorListAPIView.as_view()),
-    path(
-        "<int:administrator_id>/",
-        AdministratorRetrieveUpdateDestroyAPIView.as_view()
-    ),
-]
+router = DefaultRouter()
+router.register("", AdministratorModelViewSet, basename="administrators")
+
+urlpatterns = [] + router.urls

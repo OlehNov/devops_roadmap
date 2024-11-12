@@ -1,102 +1,55 @@
-from django.contrib.auth import get_user_model
-from drf_spectacular.utils import extend_schema
-from django.db import transaction
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveUpdateDestroyAPIView,
-    get_object_or_404,
-)
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.status import (
-    HTTP_200_OK,
-    HTTP_204_NO_CONTENT,
-    HTTP_400_BAD_REQUEST,
-)
-
+from rest_framework.viewsets import ModelViewSet
+from administrators.models import Administrator
+from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from administrators.serializers import (
-    AdministratorDeactivateSerializer,
     AdministratorSerializer,
+    AdministratorRegisterSerializer,
 )
-from addons.mixins.eventlog import EventLogMixin
-from roles.constants import Role
-from users.permissions import IsNotDeleted, IsSuperuser
+from managers.permissions import IsAdminOrManager
+from drf_spectacular.utils import extend_schema
+from rest_framework.response import Response
+from roles.constants import ProfileStatus
+from rest_framework import status
+from rest_framework.permissions import IsAdminUser
 
 
-User = get_user_model()
-
-
-@extend_schema(
-    tags=["administrator"],
-)
-class AdministratorListAPIView(ListAPIView):
+@extend_schema(tags=["administrator"])
+class AdministratorModelViewSet(ModelViewSet):
+    queryset = Administrator.objects.select_related("user")
     serializer_class = AdministratorSerializer
-    permission_classes = [IsAuthenticated, IsNotDeleted, IsSuperuser]
-    lookup_url_kwarg = "administrator_id"
+    permission_classes = [IsAdminUser]
+    filter_backends = [CustomBaseFilterBackend]
 
-    def get_queryset(self):
-        user = self.request.user
+    def get_serializer_class(self):
+        if self.action == "create":
+            return AdministratorRegisterSerializer
+        return AdministratorSerializer
 
-        if user.is_anonymous:
-            return User.objects.none()
-
-        if user.role == Role.ADMIN or user.is_staff:
-            return User.objects.filter(role=Role.ADMIN)
-
-        return User.objects.none()
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data, status=HTTP_200_OK)
-
-
-@extend_schema(
-    tags=["administrator"],
-)
-class AdministratorRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
-    serializer_class = AdministratorSerializer
-    permission_classes = [IsAuthenticated, IsNotDeleted, IsSuperuser]
-    lookup_url_kwarg = "administrator_id"
-
-    def get_object(self):
-        administrator = get_object_or_404(
-            User.objects.filter(role=Role.ADMIN), id=self.kwargs.get("administrator_id")
-        )
-        return administrator
-
-    def patch(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
-
-    @transaction.atomic
     def update(self, request, *args, **kwargs):
-        administrator = self.get_object()
         partial = kwargs.pop("partial", False)
+        instance = self.get_object()
         serializer = self.get_serializer(
-            administrator, data=request.data, partial=partial
+            instance, data=request.data, partial=partial
         )
-
         if serializer.is_valid():
             self.perform_update(serializer)
-            return Response(serializer.data, status=HTTP_200_OK)
-
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-
-    def destroy(self, request, *args, **kwargs):
-        administrator = self.get_object()
-        deactivate_serializer = AdministratorDeactivateSerializer(
-            administrator, data={"is_deleted": True, "is_active": False}
-        )
-
-        if deactivate_serializer.is_valid():
-            deactivate_serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
             return Response(
-                {"detail": "User has been deleted"}, status=HTTP_204_NO_CONTENT
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
 
+    def partial_update(self, request, *args, **kwargs):
+        kwargs["partial"] = True
+        return self.update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        instance.status = ProfileStatus.DEACTIVATED
+
+        instance.save()
+
         return Response(
-            deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST
+            {"detail": "Object deactivated successfully."},
+            status=status.HTTP_204_NO_CONTENT,
         )

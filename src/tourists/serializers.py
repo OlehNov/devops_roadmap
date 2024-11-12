@@ -28,8 +28,6 @@ class TouristSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "email",
-            "first_name",
-            "last_name",
             "phone",
             "birthday",
             "status",
@@ -101,8 +99,6 @@ class UserTouristRegistrationSerializer(serializers.ModelSerializer):
         model = User
         fields = (
             "email",
-            "first_name",
-            "last_name",
             "password",
             "confirm_password",
         )
