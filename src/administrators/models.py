@@ -9,16 +9,19 @@ User = get_user_model()
 
 class Administrator(TimestampMixin):
     id = models.PositiveIntegerField(primary_key=True)
+
+    email = models.EmailField(unique=True)
+    first_name = models.CharField(max_length=255, null=True, default=None)
+    last_name = models.CharField(max_length=255, null=True, default=None)
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(
         null=True, default=None, help_text=HELP_TEXT_PROFILE_STATUS
     )
-
-    objects = models.Manager()
 
     class Meta:
         db_table = "administrator"
         ordering = ("-id",)
 
     def __str__(self):
-        return str(self.user)
+        return f"{self.user}"

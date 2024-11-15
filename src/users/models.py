@@ -12,8 +12,6 @@ from users.decorators import role_check
 
 class User(AbstractBaseUser, PermissionsMixin, TimestampMixin):
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=255, null=True, default=None)
-    last_name = models.CharField(max_length=255, null=True, default=None)
     role = models.PositiveSmallIntegerField(
         null=True,
         default=None,

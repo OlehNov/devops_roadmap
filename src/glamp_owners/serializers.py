@@ -20,13 +20,7 @@ class GlampOwnerRegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = (
-            "email",
-            "first_name",
-            "last_name",
-            "password",
-            "confirm_password"
-        )
+        fields = ("email", "password", "confirm_password")
 
     def validate(self, attrs):
         if attrs["password"] != attrs["confirm_password"]:
@@ -42,7 +36,10 @@ class GlampOwnerRegistrationSerializer(serializers.ModelSerializer):
 
 class GlampOwnerSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(
-        source="glampowner.phone", required=True, allow_blank=True, max_length=15
+        source="glampowner.phone",
+        required=True,
+        allow_blank=True,
+        max_length=15,
     )
     status = serializers.IntegerField(
         source="glampowner.status", required=False, allow_null=True
@@ -63,8 +60,6 @@ class GlampOwnerSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "email",
-            "first_name",
-            "last_name",
             "phone",
             "status",
             "is_hidden",
@@ -72,21 +67,26 @@ class GlampOwnerSerializer(serializers.ModelSerializer):
             "vip_status",
             "role",
             "created_at",
-            "updated_at"
+            "updated_at",
         ]
         read_only_fields = ["created_at", "updated_at"]
 
     def update(self, instance, validated_data):
         # Update User fields
-        instance.first_name = validated_data.get("first_name", instance.first_name)
-        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.first_name = validated_data.get(
+            "first_name", instance.first_name
+        )
+        instance.last_name = validated_data.get(
+            "last_name", instance.last_name
+        )
         instance.role = validated_data.get("role", instance.role)
         instance.save()
 
         # Update GlampOwner profile fields
         glamp_owner_data = validated_data.pop("glampowner", {})
-        glamp_owner_profile, created = GlampOwner.objects.get_or_create(user=instance)
-
+        glamp_owner_profile, created = GlampOwner.objects.get_or_create(
+            user=instance
+        )
 
         if "phone" in glamp_owner_data:
             phone = glamp_owner_data["phone"]
@@ -116,11 +116,31 @@ class GlampOwnerSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         ret = super().to_representation(instance)
-        ret["phone"] = instance.glampowner.phone if hasattr(instance, "glampowner") else None
-        ret["status"] = instance.glampowner.status if hasattr(instance, "glampowner") else None
-        ret["is_hidden"] = instance.glampowner.is_hidden if hasattr(instance, "glampowner") else False
-        ret["is_verified"] = instance.glampowner.is_verified if hasattr(instance, "glampowner") else False
-        ret["vip_status"] = instance.glampowner.vip_status if hasattr(instance, "glampowner") else None
+        ret["phone"] = (
+            instance.glampowner.phone
+            if hasattr(instance, "glampowner")
+            else None
+        )
+        ret["status"] = (
+            instance.glampowner.status
+            if hasattr(instance, "glampowner")
+            else None
+        )
+        ret["is_hidden"] = (
+            instance.glampowner.is_hidden
+            if hasattr(instance, "glampowner")
+            else False
+        )
+        ret["is_verified"] = (
+            instance.glampowner.is_verified
+            if hasattr(instance, "glampowner")
+            else False
+        )
+        ret["vip_status"] = (
+            instance.glampowner.vip_status
+            if hasattr(instance, "glampowner")
+            else None
+        )
 
         return ret
 
