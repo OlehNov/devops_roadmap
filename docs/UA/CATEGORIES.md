@@ -42,13 +42,13 @@
 }
 ```
 
-## Отримання конкретної категорії (за слагом)
+## Отримання конкретної категорії (за id)
 
-```Url``` - http://localhost:8181/api/v1/glamps/categories/{slug} замість slug вставляєм слаг тієї категорії що хочем отримати.
+```Url``` - http://localhost:8181/api/v1/glamps/categories/{category_id} замість category_id вставляєм id тієї категорії що хочем отримати.
 
 ### Запит GET
 
-#### Приклад відповіді на ```Url``` - http://localhost:8181/api/v1/glamps/categories/bobr-kurwa
+#### Приклад відповіді на ```Url``` - http://localhost:8181/api/v1/glamps/categories/3
 
 ```
 {

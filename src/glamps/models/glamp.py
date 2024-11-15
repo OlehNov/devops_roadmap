@@ -22,7 +22,7 @@ from django.utils.translation import gettext as _
 from categories.models import Category
 from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
 from addons.mixins.timestamps import TimestampMixin
-from glamps.validators import validate_type
+from glamps.validators import validate_type, validate_status
 
 User = get_user_model()
 
@@ -63,7 +63,7 @@ class Glamp(TimestampMixin):
         help_text=_("Price for one night"),
     )
     status = PositiveSmallIntegerField(
-        _("Status"), help_text=HELP_TEXT_STATUSES, default=None
+        _("Status"), help_text=HELP_TEXT_STATUSES, default=None, validators=[validate_status]
     )
 
     owner = ForeignKey(
