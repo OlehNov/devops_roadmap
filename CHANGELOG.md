@@ -52,3 +52,7 @@
 ## 06.11.2024 11:35. managers app.
 1. Create CRUD for managers app.
 ---
+## 09.11.2024 22:10. create glamp.
+1. Commited picture in glamps.
+2. Replaced uuid with id.
+---

@@ -1,6 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 
 from categories.serializers import CategorySerializer
+from rest_framework import serializers
 from glamps.models import Glamp, Picture
 from categories.models import Category
 from users.serializers import UserSerializer
@@ -16,49 +17,46 @@ class PictureSerializer(ModelSerializer):
 
 
 class GlampSerializer(ModelSerializer):
-    picture = PictureSerializer(many=True)
-    category = CategorySerializer()
-    owner = UserSerializer()
+    # picture = PictureSerializer(many=True)
+    category = serializers.SlugRelatedField(
+        slug_field="slug", queryset=Category.objects.all()
+    )
+    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = Glamp
         fields = "__all__"
 
     def create(self, validated_data):
-        pic = validated_data.pop("picture")
-        category = validated_data.pop("category")
-        owner = validated_data.pop("owner")
-
-        category_obj = Category.objects.get(id=category["id"])
-        owner_obj = User.objects.get(id=owner["id"])
+        #pic = validated_data.pop("picture")
 
         glamp_obj = Glamp.objects.create(
-            category=category_obj, owner=owner_obj, **validated_data
+            owner=self.context["request"].user, **validated_data
         )
 
-        for picture_data in pic:
-            Picture.objects.create(glamp=glamp_obj, **picture_data)
+        # for picture_data in pic:
+        #     Picture.objects.create(glamp=glamp_obj, **picture_data)
 
         return glamp_obj
 
     def update(self, instance, validated_data):
-        pic = validated_data.pop("picture", None)
+        # pic = validated_data.pop("picture", None)
         category = validated_data.pop("category", None)
-        owner = validated_data.pop("owner", None)
 
         if category:
-            category_obj = Category.objects.get(id=category["id"])
-            instance.category = category_obj
+            if isinstance(category, Category):
+                instance.category = category
+            else:
+                instance.category = Category.objects.get(id=category)
 
-        if owner:
-            owner_obj = User.objects.get(id=owner["id"])
-            instance.owner = owner_obj
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
 
-        if pic:
-            instance.picture.clear()
-
-            for picture_data in pic:
-                Picture.objects.get_or_create(glamp=instance, **picture_data)
+        # if pic:
+        #     instance.picture.clear()
+        #
+        #     for picture_data in pic:
+        #         Picture.objects.get_or_create(glamp=instance, **picture_data)
 
         instance.save()
 

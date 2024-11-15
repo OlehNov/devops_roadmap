@@ -1,4 +1,5 @@
 from uuid import uuid4
+from wsgiref.validate import validator
 
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -13,6 +14,7 @@ from django.db.models import (
     PositiveSmallIntegerField,
     UUIDField,
     SlugField,
+    TextField,
 )
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
@@ -20,22 +22,15 @@ from django.utils.translation import gettext as _
 from categories.models import Category
 from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
 from addons.mixins.timestamps import TimestampMixin
-
+from glamps.validators import validate_type, validate_status
 
 User = get_user_model()
 
 
 class Glamp(TimestampMixin):
-    uuid = UUIDField(
-        unique=True,
-        default=uuid4,
-        primary_key=True,
-        editable=False,
-    )
-
     # General info
     glamp_type = PositiveSmallIntegerField(
-        _("Glamp Type"), help_text=HELP_TEXT_TYPE_GLAMPS, default=None
+        _("Glamp Type"), help_text=HELP_TEXT_TYPE_GLAMPS, default=None, validators=[validate_type]
     )
 
     name = CharField(
@@ -44,8 +39,8 @@ class Glamp(TimestampMixin):
     slug = SlugField(
         _("Slug"), max_length=225, null=True, blank=True, unique=True, default=None
     )
-    description = CharField(
-        _("Description"), max_length=5000, null=True, blank=True, default=None
+    description = TextField(
+        _("Description"), max_length=5000, null=False, blank=False, default=None
     )
     category = ForeignKey(
         Category,
@@ -68,7 +63,7 @@ class Glamp(TimestampMixin):
         help_text=_("Price for one night"),
     )
     status = PositiveSmallIntegerField(
-        _("Status"), help_text=HELP_TEXT_STATUSES, default=None
+        _("Status"), help_text=HELP_TEXT_STATUSES, default=None, validators=[validate_status]
     )
 
     owner = ForeignKey(
@@ -256,9 +251,12 @@ class Glamp(TimestampMixin):
         return f"<GlampModel>: {self.name}"
 
     def save(self, *args, **kwargs):
-        if not self.slug or not self.slug.startswith(f"{self.uuid}-"):
-            base_slug = slugify(self.name)
+        if not self.id:
+            super().save(*args, **kwargs)
 
-            self.slug = f"{self.uuid}-{base_slug}"
+        if not self.slug or not self.slug.startswith(f"{self.id}-"):
+            base_slug = slugify(self.name)
+            self.slug = f"{self.id}-{base_slug}"
+            kwargs["force_insert"] = False
 
         super().save(*args, **kwargs)
