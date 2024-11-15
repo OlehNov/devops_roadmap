@@ -16,6 +16,12 @@
 
 #### ➡️ **URL**: [http://localhost:8181/api/v1/managers/](http://localhost:8181/api/v1/managers/)
 
+### Request Requirements:
+ - Authentication Bearer token
+ - User with ADMIN role
+ - User with MANAGER role
+ - User stuff
+
 
 #### Output
 
