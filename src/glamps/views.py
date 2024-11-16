@@ -28,7 +28,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
     )
     serializer_class = GlampSerializer
     filter_backends = [CustomBaseFilterBackend]
-    lookup_url_kwarg = "id"
+    lookup_url_kwarg = "glamp_id"
 
     def get_permissions(self):
         match self.action:

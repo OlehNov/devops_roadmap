@@ -63,3 +63,7 @@
 ## 16.11.2024 15:24. User fixed.
 1. Fields first_name and last_name in models and admin commented.
 ---
+## 16.11.2024 16:36. Endpoint format fixed.
+1. {glamp_id} instead {id}
+2. {category_id} instead {id}
+---
