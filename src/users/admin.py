@@ -9,7 +9,6 @@ from tourists.models import Tourist
 User = get_user_model()
 
 
-@admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     exclude = [
         "groups",
@@ -30,6 +29,8 @@ class UserAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "email",
+        "first_name",
+        "last_name",
         "role",
         "is_active",
         "is_staff",
@@ -51,3 +52,6 @@ class UserAdmin(admin.ModelAdmin):
         "created_at",
         "updated_at",
     ]
+
+
+admin.site.register(User, UserAdmin)

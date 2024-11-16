@@ -56,3 +56,7 @@
 1. Commited picture in glamps.
 2. Replaced uuid with id.
 ---
+## 16.11.2024 14:16. User fixed.
+1. Fields first_name and last_name in models added.
+2. Defaults values for first_name and last_name added.
+---
