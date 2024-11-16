@@ -19,8 +19,8 @@ class User(AbstractBaseUser, PermissionsMixin, TimestampMixin):
         help_text=HELP_TEXT_ROLE,
     )
 
-    first_name = models.CharField(null=True, max_length=255, default=None)
-    last_name = models.CharField(null=True, max_length=255, default=None)
+    # first_name = models.CharField(null=True, max_length=255, default=None)
+    # last_name = models.CharField(null=True, max_length=255, default=None)
 
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)

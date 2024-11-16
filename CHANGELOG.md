@@ -60,3 +60,6 @@
 1. Fields first_name and last_name in models added.
 2. Defaults values for first_name and last_name added.
 ---
+## 16.11.2024 15:24. User fixed.
+1. Fields first_name and last_name in models and admin commented.
+---

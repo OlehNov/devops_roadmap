@@ -17,8 +17,8 @@ class UserAdmin(admin.ModelAdmin):
     list_filter = [
         "id",
         "email",
-        "first_name",
-        "last_name",
+        # "first_name",
+        # "last_name",
         "role",
         "is_active",
         "is_staff",
@@ -29,8 +29,8 @@ class UserAdmin(admin.ModelAdmin):
     list_display = [
         "id",
         "email",
-        "first_name",
-        "last_name",
+        # "first_name",
+        # "last_name",
         "role",
         "is_active",
         "is_staff",
