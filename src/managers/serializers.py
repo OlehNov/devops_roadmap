@@ -60,23 +60,16 @@ class ManagerRegisterSerializer(ModelSerializer):
 
 class ManagerSerializer(ModelSerializer):
     user = UserSerializer(read_only=True)
-    role = IntegerField(source="user.role")
 
     class Meta:
         model = GlampManager
-        fields = ["user", "first_name", "last_name", "status", "role"]
+        fields = ["user", "first_name", "last_name", "status"]
         read_only_fields = ["status"]
 
     @transaction.atomic()
     def update(self, instance, validated_data):
-        user_role = validated_data.pop("user", None)
-
         instance.first_name = validated_data.get("first_name")
         instance.last_name = validated_data.get("last_name")
-
-        if user_role:
-            instance.user.role = user_role.get("role")
-            instance.user.save()
 
         instance.status = ProfileStatus.ACTIVATED
         instance.save()

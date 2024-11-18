@@ -18,7 +18,7 @@ class AdministratorRegisterSerializer(ModelSerializer):
 
     class Meta:
         model = Administrator
-        fields = ["user", "status"]
+        fields = ["user", "status", "first_name", "last_name"]
         read_only_fields = ["status"]
 
     def validate(self, attrs):
