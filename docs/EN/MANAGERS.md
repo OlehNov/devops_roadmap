@@ -23,7 +23,7 @@
     - User stuff
 
 
-#### Output
+#### Response
 
 ```
 {
@@ -58,7 +58,7 @@
 
 ### Request Requirements:
  - Authentication Bearer token
- - User with ADMIN role:
+ - User with ADMIN role or:
     - User with MANAGER role and same object id
     - User stuff
 
