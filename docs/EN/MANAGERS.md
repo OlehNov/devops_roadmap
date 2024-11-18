@@ -18,9 +18,9 @@
 
 ### Request Requirements:
  - Authentication Bearer token
- - User with ADMIN role
- - User with MANAGER role
- - User stuff
+ - User with ADMIN role or:
+    - User with MANAGER role
+    - User stuff
 
 
 #### Output
@@ -37,15 +37,15 @@
             "user": {
                 "id": 12,
                 "email": "a@gmail.com",
+                "role": 2,
                 "is_active": true,
                 "is_staff": false,
-                "created_at": "2024-11-12T13:02:51.156186+02:00",
-                "updated_at": "2024-11-12T13:02:51.185555+02:00"
+                "created_at": "2024-11-18T10:45:57.571374+02:00",
+                "updated_at": "2024-11-18T10:45:57.580688+02:00"
             },
-            "first_name": "aaa",
-            "last_name": "bbb",
-            "status": 1,
-            "role": 2
+            "first_name": "avs",
+            "last_name": "vgs",
+            "status": 1
         }
     ]
 }
@@ -58,9 +58,9 @@
 
 ### Request Requirements:
  - Authentication Bearer token
- - User with ADMIN role
- - User with MANAGER role and same object id
- - User stuff
+ - User with ADMIN role:
+    - User with MANAGER role and same object id
+    - User stuff
 
 #### Response
 ```
@@ -68,15 +68,15 @@
     "user": {
         "id": 12,
         "email": "a@gmail.com",
+        "role": 2,
         "is_active": true,
         "is_staff": false,
-        "created_at": "2024-11-12T15:10:12.433051+02:00",
-        "updated_at": "2024-11-12T15:10:12.442579+02:00"
+        "created_at": "2024-11-18T10:45:57.571374+02:00",
+        "updated_at": "2024-11-18T10:45:57.580688+02:00"
     },
-    "first_name": "aaa",
-    "last_name": "bbb",
-    "status": 1,
-    "role": 2
+    "first_name": "avs",
+    "last_name": "vgs",
+    "status": 1
 }
 ```
 ---
@@ -86,8 +86,8 @@
 
 ### Request Requirements:
  - Authentication Bearer token
- - User with ADMIN role
- - User stuff
+ - User with ADMIN role or:
+    - User stuff
 
 #### Request Body
 
@@ -109,13 +109,13 @@
     "user": {
         "id": 12,
         "email": "a@gmail.com",
+        "role": 2
         "is_active": true,
         "is_staff": false,
-        "role": 2
     },
-    "status": 1,
     "first_name": "aaa",
     "last_name": "bbb"
+    "status": 1,
 }
 ```
 ---
@@ -124,13 +124,12 @@
 #### ➡️ **URL**: [http://localhost:8181/api/v1/managers/12/](http://localhost:8181/api/v1/managers/)
 ### Request Requirements:
  - Authentication Bearer token
- - User with ADMIN role
- - User stuff
+ - User with ADMIN role or:
+    - User stuff
 
 ### Request Body
 ```
 {
-    "role": 2,
     "first_name": "aaa",
     "last_name": "sss"
 }
@@ -142,6 +141,7 @@
     "user": {
         "id": 12,
         "email": "a@gmail.com",
+        "role": 2,
         "is_active": true,
         "is_staff": false,
         "created_at": "2024-11-12T15:10:12.433051+02:00",
@@ -150,20 +150,16 @@
     "first_name": "aaa",
     "last_name": "sss",
     "status": 1,
-    "role": 2
 }
 ```
-
-## ❗Warnings❗
-*If role has been changed, user will be automatically deactivated and created with new profile role*
 ---
 ## ![текст](https://img.shields.io/badge/PATCH-%23DDA0DD)
 #### ➡️ **URL**: [http://localhost:8181/api/v1/managers/12/](http://localhost:8181/api/v1/managers/)
 ### Request Requirements:
  - Authentication Bearer token
- - User with ADMIN role
- - User with MANAGER role and same object id
- - User stuff
+ - User with ADMIN role or:
+    - User with MANAGER role and same object id
+    - User stuff
 
 ## Request Body
 ```
@@ -179,6 +175,7 @@
     "user": {
         "id": 12,
         "email": "a@gmail.com",
+        "role": 2,
         "is_active": true,
         "is_staff": false,
         "created_at": "2024-11-12T15:10:12.433051+02:00",
@@ -187,7 +184,6 @@
     "first_name": "qwer",
     "last_name": "rewq",
     "status": 1,
-    "role": 2
 }
 ```
 ---
@@ -195,9 +191,9 @@
 #### ➡️ **URL**: [http://localhost:8181/api/v1/managers/12/](http://localhost:8181/api/v1/managers/)
 ### Request Requirements:
  - Authentication Bearer token
- - User with ADMIN role
- - User with MANAGER role and same object id
- - User stuff
+ - User with ADMIN role or:
+    - User with MANAGER role and same object id
+    - User stuff
 
 ## Request Body
 ```
