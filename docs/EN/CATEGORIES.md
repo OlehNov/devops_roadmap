@@ -70,7 +70,9 @@
 
 ### Request POST
 
-To create a category, you need to specify the following fields: 
+#### There are 2 ways to create a slug:
+
+*The first one is when the user enters their custom slug*
 
 ```
 {
@@ -81,11 +83,7 @@ To create a category, you need to specify the following fields:
 }
 ```
 
-***Slug explanation is a field that is used to search for a specific category (see above). The slug must be unique and meet certain requirements. It can only consist of Latin characters, numbers, hyphens, and underscores.***
-
-*Another point, if you create a category through the admin panel, the slug will be automatically generated in real time, but you can change it (it's just a convenience). However, if you create through Postman, as I showed earlier, the slug field must be written with handles.*
-
-#### An example of a response
+#### Sample answer
 
 ```
 {
@@ -100,3 +98,31 @@ To create a category, you need to specify the following fields:
     "is_hidden": false
 }
 ```
+
+*The second is when the user does not specify a slug at all, in which case the slug is generated automatically based on the category name.*
+
+```
+{
+    "name": "testname2",
+    "title": "testtitle",
+    "description": "testdescription"
+}
+```
+
+#### Sample answer
+
+```
+{
+    "id": 6,
+    "created_at": "2024-10-31T14:11:56.531689+02:00",
+    "updated_at": "2024-10-31T14:11:56.531721+02:00",
+    "name": "testname2",
+    "slug": "testname2",
+    "title": "testtitle",
+    "description": "testdescription",
+    "is_active": false,
+    "is_hidden": false
+}
+```
+
+***Explanation for Slug, it must be unique and meet certain requirements. It can only consist of Latin characters, numbers, hyphens and underscores.***
