@@ -19,7 +19,7 @@ class AdministratorRegisterSerializer(ModelSerializer):
     class Meta:
         model = Administrator
         fields = ["user", "status", "first_name", "last_name"]
-        read_only_fields = ["status"]
+        read_only_fields = ["id", "status"]
 
     def validate(self, attrs):
         user_data = attrs.get("user")
@@ -64,8 +64,8 @@ class AdministratorSerializer(ModelSerializer):
 
     class Meta:
         model = Administrator
-        fields = ["user", "first_name", "last_name", "status"]
-        read_only_fields = ["status"]
+        fields = "__all__"
+        read_only_fields = ["id", "status"]
 
     @transaction.atomic()
     def update(self, instance, validated_data):

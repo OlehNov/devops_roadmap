@@ -8,7 +8,6 @@ def __deactivate_profile(model, user_instance):
     profile_instance = model.objects.get(
         id=user_instance.id,
         user=user_instance,
-        email=user_instance.email,
     )
     if profile_instance:
         profile_instance.status = ProfileStatus.DEACTIVATED
@@ -19,7 +18,6 @@ def __activate_profile(model, user_instance):
     profile_instance, created = model.objects.get_or_create(
         id=user_instance.id,
         user=user_instance,
-        email=user_instance.email,
     )
     if profile_instance and profile_instance.status != ProfileStatus.ACTIVATED:
         profile_instance.status = ProfileStatus.ACTIVATED

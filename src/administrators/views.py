@@ -10,6 +10,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from roles.constants import ProfileStatus
 from rest_framework import status
+from managers.permissions import IsAdministrator, IsManager
 
 
 @extend_schema(tags=["administrator"])
@@ -18,11 +19,21 @@ class AdministratorModelViewSet(ModelViewSet):
     serializer_class = AdministratorSerializer
     permission_classes = [IsAdmin]
     filter_backends = [CustomBaseFilterBackend]
+    lookup_url_kwarg = "administrator_id"
 
     def get_serializer_class(self):
         if self.action == "create":
             return AdministratorRegisterSerializer
         return AdministratorSerializer
+
+    def get_permissions(self):
+        match self.action:
+            case "create":
+                permission_classes = [IsAdministrator]
+            case _:
+                permission_classes = [IsAdministrator | IsManager]
+
+        return [permission() for permission in permission_classes]
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)

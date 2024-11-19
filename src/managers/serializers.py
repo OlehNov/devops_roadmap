@@ -63,8 +63,8 @@ class ManagerSerializer(ModelSerializer):
 
     class Meta:
         model = GlampManager
-        fields = ["user", "first_name", "last_name", "status"]
-        read_only_fields = ["status"]
+        fields = "__all__"
+        read_only_fields = ["id", "status"]
 
     @transaction.atomic()
     def update(self, instance, validated_data):

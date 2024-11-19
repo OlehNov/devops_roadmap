@@ -2,25 +2,33 @@ from rest_framework.viewsets import ModelViewSet
 from managers.models import GlampManager
 from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from managers.serializers import ManagerSerializer, ManagerRegisterSerializer
-from managers.permissions import IsAdminOrManager
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from roles.constants import ProfileStatus
 from rest_framework import status
-from rest_framework.permissions import IsAdminUser
+from managers.permissions import IsAdministrator, IsManager
 
 
 @extend_schema(tags=["manager"])
 class ManagerModelViewSet(ModelViewSet):
     queryset = GlampManager.objects.select_related("user")
     serializer_class = ManagerSerializer
-    permission_classes = [IsAdminOrManager]
     filter_backends = [CustomBaseFilterBackend]
+    lookup_url_kwarg = "manager_id"
 
     def get_serializer_class(self):
         if self.action == "create":
             return ManagerRegisterSerializer
         return ManagerSerializer
+
+    def get_permissions(self):
+        match self.action:
+            case "create":
+                permission_classes = [IsAdministrator]
+            case _:
+                permission_classes = [IsAdministrator | IsManager]
+
+        return [permission() for permission in permission_classes]
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
