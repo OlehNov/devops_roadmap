@@ -7,7 +7,7 @@ from django.db.models import (
 from django.utils.translation import gettext as _
 
 from addons.mixins.timestamps import TimestampMixin
-from categories.validators import validate_first_name_last_name
+from categories.validators import validate_name_category
 
 
 class Category(TimestampMixin):
@@ -17,7 +17,7 @@ class Category(TimestampMixin):
         null=False,
         blank=False,
         unique=True,
-        validators=[validate_first_name_last_name]
+        validators=[validate_name_category]
     )
     slug = SlugField(
         _("Slug"),

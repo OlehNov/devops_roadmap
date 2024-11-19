@@ -3,7 +3,7 @@ import re
 from django.core.exceptions import ValidationError
 
 
-def validate_first_name_last_name(value):
+def validate_name_category(value):
     if len(value) < 5:
         raise ValidationError("The name must have more than two characters.")
 
