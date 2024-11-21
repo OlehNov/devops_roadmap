@@ -4,10 +4,10 @@ from django.db.models import (
     SlugField,
     TextField,
 )
-from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
 from addons.mixins.timestamps import TimestampMixin
+from categories.validators import validate_name_category
 
 
 class Category(TimestampMixin):
@@ -17,12 +17,13 @@ class Category(TimestampMixin):
         null=False,
         blank=False,
         unique=True,
+        validators=[validate_name_category]
     )
     slug = SlugField(
         _("Slug"),
         max_length=120,
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         unique=True,
     )
     title = CharField(_("Title"), max_length=120, null=True, default=None)

@@ -67,3 +67,6 @@
 1. {glamp_id} instead {id}
 2. {category_id} instead {id}
 ---
+## 18.11.2024 16:36. Generate category slug.
+1. The user can enter a slug for their category manually or the slug will be automatically generated based on the category name.
+---

@@ -7,13 +7,15 @@ from rest_framework.response import Response
 from roles.constants import ProfileStatus
 from rest_framework import status
 from managers.permissions import IsAdministrator, IsManager
+from addons.mixins.eventlog import EventLogMixin
+from rest_framework.filters import SearchFilter
 
 
 @extend_schema(tags=["manager"])
-class ManagerModelViewSet(ModelViewSet):
+class ManagerModelViewSet(ModelViewSet, EventLogMixin):
     queryset = GlampManager.objects.select_related("user")
     serializer_class = ManagerSerializer
-    filter_backends = [CustomBaseFilterBackend]
+    filter_backends = [CustomBaseFilterBackend, SearchFilter]
     lookup_url_kwarg = "manager_id"
 
     def get_serializer_class(self):
@@ -38,6 +40,8 @@ class ManagerModelViewSet(ModelViewSet):
         )
         if serializer.is_valid():
             self.perform_update(serializer)
+            self.log_event(request, operated_object=instance)
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(
@@ -53,6 +57,8 @@ class ManagerModelViewSet(ModelViewSet):
         instance.status = ProfileStatus.DEACTIVATED
 
         instance.save()
+
+        self.log_event(request, operated_object=instance)
 
         return Response(
             {"detail": "Object deactivated successfully."},

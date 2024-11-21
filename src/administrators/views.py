@@ -11,10 +11,11 @@ from rest_framework.response import Response
 from roles.constants import ProfileStatus
 from rest_framework import status
 from managers.permissions import IsAdministrator, IsManager
+from addons.mixins.eventlog import EventLogMixin
 
 
 @extend_schema(tags=["administrator"])
-class AdministratorModelViewSet(ModelViewSet):
+class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
     queryset = Administrator.objects.select_related("user")
     serializer_class = AdministratorSerializer
     permission_classes = [IsAdmin]
@@ -43,6 +44,8 @@ class AdministratorModelViewSet(ModelViewSet):
         )
         if serializer.is_valid():
             self.perform_update(serializer)
+            self.log_event(request, operated_object=instance)
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(
@@ -58,6 +61,8 @@ class AdministratorModelViewSet(ModelViewSet):
         instance.status = ProfileStatus.DEACTIVATED
 
         instance.save()
+
+        self.log_event(request, operated_object=instance)
 
         return Response(
             {"detail": "Object deactivated successfully."},
