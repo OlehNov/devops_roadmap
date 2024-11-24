@@ -70,3 +70,7 @@
 ## 18.11.2024 16:36. Generate category slug.
 1. The user can enter a slug for their category manually or the slug will be automatically generated based on the category name.
 ---
+## 24.11.2024 23:09. Filters refactored.
+1. QueryParamFilter refactored.
+2. SortingFilter added.
+---
