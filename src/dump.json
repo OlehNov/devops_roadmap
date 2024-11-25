@@ -289,12 +289,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "04b8b9c7-1291-4697-b73e-5f709632d29b",
+        "pk": "1",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 3,
             "name": "Гламп 'Зоряна ніч'",
+            "slug": "1-glamp-zoriana-nich",
             "description": "Ночівля під відкритим небом.",
             "category": 3,
             "capacity": 2,
@@ -389,12 +390,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "1bb12c02-8f51-4e4e-aef8-6d2ea464b641",
+        "pk": "2",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 5,
             "name": "Гламп 'Сонце і Місяць'",
+            "slug": "2-glamp-sontse-i-misiats",
             "description": "Глампінг з комфортом під зірковим небом.",
             "category": 5,
             "capacity": 6,
@@ -489,12 +491,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "2cd4016e-bb36-4f9c-a460-7c5e848df4c3",
+        "pk": "3",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 2,
             "name": "Гламп 'Лісова хатинка'",
+            "slug": "3-glamp-lisova-khatinka",
             "description": "Комфортна хатинка серед лісу.",
             "category": 6,
             "capacity": 4,
@@ -589,12 +592,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "3d57f644-92d3-4113-b208-07b062aa5030",
+        "pk": "4",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 2,
             "name": "Гламп 'Печера'",
+            "slug": "4-glamp-pechera",
             "description": "Екзотичний відпочинок у печері.",
             "category": 2,
             "capacity": 2,
@@ -689,12 +693,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "409f8e99-0b26-4f98-b02f-1876efeb41b4",
+        "pk": "5",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 3,
             "name": "Гламп 'Річковий відпочинок'",
+            "slug": "5-glamp-richkovii-vidpochinok",
             "description": "Глампінг на березі річки з можливістю риболовлі.",
             "category": 3,
             "capacity": 3,
@@ -789,12 +794,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "48255c25-8c3f-4e5c-973c-c6343b5b637f",
+        "pk": "6",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 1,
             "name": "Гламп 'Тепле місце'",
+            "slug": "6-glamp-teple-mistse",
             "description": "Глампінг з комфортом.",
             "category": 10,
             "capacity": 5,
@@ -889,12 +895,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "4b69c32b-0453-4090-9ee5-c3f672e71c73",
+        "pk": "7",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 2,
             "name": "Гламп 'Лісовий відпочинок'",
+            "slug": "7-glamp-lisovii-vidpochinok",
             "description": "Відпочинок в лісі.",
             "category": 10,
             "capacity": 6,
@@ -989,12 +996,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "5b8f7096-c33c-4e08-b3d2-e16031b90724",
+        "pk": "8",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 1,
             "name": "Гламп 'Морський берег'",
+            "slug": "8-glamp-mors-kii-bereg",
             "description": "Відпочинок на морському узбережжі.",
             "category": 6,
             "capacity": 4,
@@ -1089,12 +1097,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "5d5e456d-5d40-40e5-9638-bd11aaed4f47",
+        "pk": "9",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 1,
             "name": "Гламп 'Лісова казка'",
+            "slug": "9-glamp-lisova-kazka",
             "description": "Відпочинок серед лісу.",
             "category": 7,
             "capacity": 2,
@@ -1189,12 +1198,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "6cb64a3b-7b6e-46e5-943e-4de94d8a6e8b",
+        "pk": "10",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 1,
             "name": "Гламп 'Зіркова ніч'",
+            "slug": "10-glamp-zirkova-nich",
             "description": "Насолоджуйтесь зірками під відкритим небом.",
             "category": 8,
             "capacity": 4,
@@ -1289,12 +1299,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "77559bd2-2ef4-4701-b38c-d6eb84ed3d7c",
+        "pk": "11",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 2,
             "name": "Гламп 'Секретний куточок'",
+            "slug": "11-glamp-sekretnii-kutochok",
             "description": "Тихе місце для медитацій і відпочинку.",
             "category": 8,
             "capacity": 2,
@@ -1389,12 +1400,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "7a8d176e-632e-4f9c-bf86-6e91e27f74d6",
+        "pk": "12",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 3,
             "name": "Гламп 'Берег мрій'",
+            "slug": "12-glamp-bereg-mrii",
             "description": "Глампінг на березі річки для сімейного відпочинку.",
             "category": 9,
             "capacity": 5,
@@ -1489,12 +1501,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "7e912008-9e5e-4d4b-b245-e1a930b5d4f5",
+        "pk": "13",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 3,
             "name": "Гламп 'Зимова казка'",
+            "slug": "13-glamp-zimova-kazka",
             "description": "Глампінг в зимовій атмосфері.",
             "category": 6,
             "capacity": 3,
@@ -1589,12 +1602,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "92b2d7cf-dc44-4092-985f-14373f3b0bda",
+        "pk": "14",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 2,
             "name": "Гламп 'Зоряний'",
+            "slug": "14-glamp-zorianii",
             "description": "Глампінг з видом на нічне небо, ідеальний для спостереження за зірками.",
             "category": 3,
             "capacity": 2,
@@ -1689,12 +1703,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "a5c75a40-39c5-4c79-b2ed-79b74ef98dce",
+        "pk": "15",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 1,
             "name": "Гламп 'Сонячний захід'",
+            "slug": "15-glamp-soniachnii-zakhid",
             "description": "Відпочинок на свіжому повітрі з прекрасним видом на захід сонця.",
             "category": 7,
             "capacity": 4,
@@ -1789,12 +1804,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "b1fcb9c4-1584-45f9-8c36-5dc3cf0f7490",
+        "pk": "16",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 2,
             "name": "Гламп 'Сонячний ранок'",
+            "slug": "16-glamp-soniachnii-ranok",
             "description": "Сонячні ранки з видом на гори.",
             "category": 5,
             "capacity": 3,
@@ -1889,12 +1905,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "bcbfda3f-1c92-49c5-85f2-1bc5f7e8a7e8",
+        "pk": "17",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 2,
             "name": "Гламп 'Тихе місце'",
+            "slug": "17-glamp-tikhe-mistse",
             "description": "Відпочинок у тиші серед природи.",
             "category": 4,
             "capacity": 3,
@@ -1989,12 +2006,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "be214d61-72bc-4d7f-9b84-0703e87e074e",
+        "pk": "18",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 2,
             "name": "Гламп 'Гірський відпочинок'",
+            "slug": "18-glamp-girs-kii-vidpochinok",
             "description": "Відпочинок на гірському курорті.",
             "category": 1,
             "capacity": 5,
@@ -2089,12 +2107,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "c87e50b1-56f5-41ea-8a79-f68cb511489b",
+        "pk": "19",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 3,
             "name": "Гламп 'Водяна привабливість'",
+            "slug": "19-glamp-vodiana-privablivist",
             "description": "Відпочинок біля водойми.",
             "category": 1,
             "capacity": 6,
@@ -2189,12 +2208,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "cfa71a84-b124-4a15-b9c9-09f07ebf88f4",
+        "pk": "20",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 1,
             "name": "Гламп 'Сонячний'",
+            "slug": "20-glamp-soniachnii",
             "description": "Гламп з чудовим видом на гори.",
             "category": 1,
             "capacity": 4,
@@ -2289,12 +2309,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "e07a43be-5b38-4f02-82c6-ec42d18e2072",
+        "pk": "21",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 2,
             "name": "Гламп 'Квітковий рай'",
+            "slug": "21-glamp-kvitkovii-rai",
             "description": "Глампінг серед квітів з можливістю занять садівництвом.",
             "category": 2,
             "capacity": 2,
@@ -2389,12 +2410,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "e4e58cd1-5f9c-44d0-a15f-e61f1a91d0a1",
+        "pk": "22",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 1,
             "name": "Гламп 'Зелений оазис'",
+            "slug": "22-glamp-zelenii-oazis",
             "description": "Відпочинок на природі серед зелені.",
             "category": 4,
             "capacity": 5,
@@ -2489,12 +2511,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "ea89af0b-79f8-4743-bb6c-7b5d046fe2b0",
+        "pk": "23",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 4,
-            "name": "Гламп 'Лісова казка'",
+            "name": "Гламп 'Лісова мрія'",
+            "slug": "23-glamp-lisova-mriia",
             "description": "Глампінг в лісі з можливістю прогулянок по природі.",
             "category": 2,
             "capacity": 5,
@@ -2589,12 +2612,13 @@
     },
     {
         "model": "glamps.glamp",
-        "pk": "ff2f9253-6a7a-40e9-a041-9c6fdcb72974",
+        "pk": "24",
         "fields": {
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "glamp_type": 1,
             "name": "Гламп 'Лісова галявина'",
+            "slug": "24-glamp-lisova-galiavina",
             "description": "Затишний глампінг у лісі з усіма зручностями.",
             "category": 7,
             "capacity": 4,
@@ -2694,7 +2718,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Синевир-1_pnrzaa",
-            "glamp": "04b8b9c7-1291-4697-b73e-5f709632d29b"
+            "glamp": "1"
         }
     },
     {
@@ -2704,7 +2728,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Синевир-11_wtip9a",
-            "glamp": "04b8b9c7-1291-4697-b73e-5f709632d29b"
+            "glamp": "1"
         }
     },
     {
@@ -2714,7 +2738,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Синевир-6_kghpyx",
-            "glamp": "04b8b9c7-1291-4697-b73e-5f709632d29b"
+            "glamp": "1"
         }
     },
     {
@@ -2724,7 +2748,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Будиночок_у_Лісі-1_gxslgu",
-            "glamp": "be214d61-72bc-4d7f-9b84-0703e87e074e"
+            "glamp": "18"
         }
     },
     {
@@ -2734,7 +2758,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Будиночок_у_Лісі-2_m6nawg",
-            "glamp": "be214d61-72bc-4d7f-9b84-0703e87e074e"
+            "glamp": "18"
         }
     },
     {
@@ -2744,7 +2768,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Будиночок_у_Лісі-9_qesjqn",
-            "glamp": "be214d61-72bc-4d7f-9b84-0703e87e074e"
+            "glamp": "18"
         }
     },
     {
@@ -2754,7 +2778,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Геокупол_Верховина-1_qiihbk",
-            "glamp": "1bb12c02-8f51-4e4e-aef8-6d2ea464b641"
+            "glamp": "2"
         }
     },
     {
@@ -2764,7 +2788,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Геокупол_Верховина-2_radevs",
-            "glamp": "1bb12c02-8f51-4e4e-aef8-6d2ea464b641"
+            "glamp": "2"
         }
     },
     {
@@ -2774,7 +2798,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Геокупол_Верховина-4_drqbvh",
-            "glamp": "1bb12c02-8f51-4e4e-aef8-6d2ea464b641"
+            "glamp": "2"
         }
     },
     {
@@ -2784,7 +2808,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Глемпінг_Пташка-1_mujfnf",
-            "glamp": "2cd4016e-bb36-4f9c-a460-7c5e848df4c3"
+            "glamp": "3"
         }
     },
     {
@@ -2794,7 +2818,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Глемпінг_Пташка-3_mxxsq0",
-            "glamp": "2cd4016e-bb36-4f9c-a460-7c5e848df4c3"
+            "glamp": "3"
         }
     },
     {
@@ -2804,7 +2828,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Глемпінг_Пташка-6_bmdesm",
-            "glamp": "2cd4016e-bb36-4f9c-a460-7c5e848df4c3"
+            "glamp": "3"
         }
     },
     {
@@ -2814,7 +2838,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Еко-будинок_Затишок-1_znintl",
-            "glamp": "3d57f644-92d3-4113-b208-07b062aa5030"
+            "glamp": "4"
         }
     },
     {
@@ -2824,7 +2848,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Еко-будинок_Затишок-2_jqlids",
-            "glamp": "3d57f644-92d3-4113-b208-07b062aa5030"
+            "glamp": "4"
         }
     },
     {
@@ -2834,7 +2858,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Еко-глемп_Бакота-2_osj40w",
-            "glamp": "409f8e99-0b26-4f98-b02f-1876efeb41b4"
+            "glamp": "5"
         }
     },
     {
@@ -2844,7 +2868,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Еко-глемп_Бакота-1_fmubpp",
-            "glamp": "409f8e99-0b26-4f98-b02f-1876efeb41b4"
+            "glamp": "5"
         }
     },
     {
@@ -2854,7 +2878,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Еко-глемп_Бакота-5_jljhbx",
-            "glamp": "409f8e99-0b26-4f98-b02f-1876efeb41b4"
+            "glamp": "5"
         }
     },
     {
@@ -2864,7 +2888,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Еко-Куточок_Покуття-1_vp1e6m",
-            "glamp": "48255c25-8c3f-4e5c-973c-c6343b5b637f"
+            "glamp": "6"
         }
     },
     {
@@ -2874,7 +2898,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Еко-Куточок_Покуття-2_xkgjdu",
-            "glamp": "48255c25-8c3f-4e5c-973c-c6343b5b637f"
+            "glamp": "6"
         }
     },
     {
@@ -2884,7 +2908,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Еко-Куточок_Покуття-5_dd5n8s",
-            "glamp": "48255c25-8c3f-4e5c-973c-c6343b5b637f"
+            "glamp": "6"
         }
     },
     {
@@ -2894,7 +2918,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Полісся_Комфорт-1_ziogb4",
-            "glamp": "4b69c32b-0453-4090-9ee5-c3f672e71c73"
+            "glamp": "7"
         }
     },
     {
@@ -2904,7 +2928,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Полісся_Комфорт-2_wrljqg",
-            "glamp": "4b69c32b-0453-4090-9ee5-c3f672e71c73"
+            "glamp": "7"
         }
     },
     {
@@ -2914,7 +2938,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Рибальський_Будиночок_Синє_Озеро-1_qooap0",
-            "glamp": "5b8f7096-c33c-4e08-b3d2-e16031b90724"
+            "glamp": "8"
         }
     },
     {
@@ -2924,7 +2948,7 @@
             "created_at": "2024-09-03T09:15:00Z",
             "updated_at": "2024-09-07T09:15:00Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Рибальський_Будиночок_Синє_Озеро-2_xqk60w",
-            "glamp": "5b8f7096-c33c-4e08-b3d2-e16031b90724"
+            "glamp": "8"
         }
     },
     {
@@ -2934,7 +2958,7 @@
             "created_at": "2024-10-16T13:52:25.540Z",
             "updated_at": "2024-10-16T13:52:25.540Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/A-frame_Glamp_Карпати-1_guhlir",
-            "glamp": "7a8d176e-632e-4f9c-bf86-6e91e27f74d6"
+            "glamp": "12"
         }
     },
     {
@@ -2944,7 +2968,7 @@
             "created_at": "2024-10-16T13:52:48.152Z",
             "updated_at": "2024-10-16T13:52:48.152Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/A-frame_Glamp_Карпати-7_ccftgv",
-            "glamp": "7a8d176e-632e-4f9c-bf86-6e91e27f74d6"
+            "glamp": "12"
         }
     },
     {
@@ -2954,7 +2978,7 @@
             "created_at": "2024-10-16T13:53:01.081Z",
             "updated_at": "2024-10-16T13:53:01.081Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/A-frame_Glamp_Карпати-14_i56qmb",
-            "glamp": "7a8d176e-632e-4f9c-bf86-6e91e27f74d6"
+            "glamp": "12"
         }
     },
     {
@@ -2964,7 +2988,7 @@
             "created_at": "2024-10-16T13:53:48.859Z",
             "updated_at": "2024-10-16T13:53:48.859Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Tiny_House_Lyman-1_hhkvpk",
-            "glamp": "c87e50b1-56f5-41ea-8a79-f68cb511489b"
+            "glamp": "19"
         }
     },
     {
@@ -2974,7 +2998,7 @@
             "created_at": "2024-10-16T13:54:18.461Z",
             "updated_at": "2024-10-16T13:54:18.461Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Tiny_House_Lyman-8_hv4dyf",
-            "glamp": "c87e50b1-56f5-41ea-8a79-f68cb511489b"
+            "glamp": "19"
         }
     },
     {
@@ -2984,7 +3008,7 @@
             "created_at": "2024-10-16T13:54:44.603Z",
             "updated_at": "2024-10-16T13:54:44.603Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Tiny_House_Lyman-9_l5h3ls",
-            "glamp": "c87e50b1-56f5-41ea-8a79-f68cb511489b"
+            "glamp": "19"
         }
     },
     {
@@ -2994,7 +3018,7 @@
             "created_at": "2024-10-16T13:56:08.681Z",
             "updated_at": "2024-10-16T13:56:08.681Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Рибальський_Будиночок_Синє_Озеро-1_vqziyg",
-            "glamp": "e4e58cd1-5f9c-44d0-a15f-e61f1a91d0a1"
+            "glamp": "22"
         }
     },
     {
@@ -3004,7 +3028,7 @@
             "created_at": "2024-10-16T13:56:26.279Z",
             "updated_at": "2024-10-16T13:56:26.279Z",
             "pic": "glamp_pic/07811dc6c422334ce36a09ff5cd6fe71/d3d9446802a44259755d38e6d163e820/Рибальський_Будиночок_Синє_Озеро-5_wpmyzx",
-            "glamp": "e4e58cd1-5f9c-44d0-a15f-e61f1a91d0a1"
+            "glamp": "22"
         }
     },
     {

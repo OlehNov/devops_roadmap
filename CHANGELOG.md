@@ -70,3 +70,6 @@
 ## 18.11.2024 16:36. Generate category slug.
 1. The user can enter a slug for their category manually or the slug will be automatically generated based on the category name.
 ---
+## 25.11.2024 20:31. Adapting dump.json.
+1. Adapting dump.json to slug in categories and glamps.
+---
