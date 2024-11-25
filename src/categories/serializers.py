@@ -1,11 +1,15 @@
 from rest_framework.serializers import ModelSerializer, ValidationError
 from slugify import slugify
 from unidecode import unidecode
+from categories.validators import validate_slug_category
+from rest_framework import serializers
+
 
 from categories.models import Category
 
 
 class CategorySerializer(ModelSerializer):
+    name = serializers.CharField(max_length=120, required=True, validators=[validate_slug_category])
 
     class Meta:
         model = Category
@@ -15,7 +19,9 @@ class CategorySerializer(ModelSerializer):
     def validate(self, attrs):
         if not attrs.get("slug") and attrs.get("name"):
             transliterated_name = unidecode(attrs["name"])
-            attrs["slug"] = slugify(transliterated_name)
+            slug = slugify(transliterated_name)
+            validate_slug_category(slug)  # Check that the slug has more than 0 characters.
+            attrs["slug"] = slug
 
         slug = attrs.get("slug")
         if slug and Category.objects.filter(slug=slug).exists():

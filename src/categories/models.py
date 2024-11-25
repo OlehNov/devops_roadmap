@@ -14,9 +14,10 @@ class Category(TimestampMixin):
     name = CharField(
         _("Name"),
         max_length=120,
-        null=False,
-        blank=False,
+        null=True,
+        blank=True,
         unique=True,
+        default=None,
         validators=[validate_name_category]
     )
     slug = SlugField(
