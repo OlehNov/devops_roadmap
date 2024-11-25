@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from administrators.models import Administrator
-from addons.backend_filters.filter_backend import CustomBaseFilterBackend
+# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from administrators.serializers import (
     AdministratorSerializer,
     AdministratorRegisterSerializer,
@@ -17,7 +17,7 @@ class AdministratorModelViewSet(ModelViewSet):
     queryset = Administrator.objects.select_related("user")
     serializer_class = AdministratorSerializer
     permission_classes = [IsAdmin]
-    filter_backends = [CustomBaseFilterBackend]
+    # filter_backends = [CustomBaseFilterBackend]
 
     def get_serializer_class(self):
         if self.action == "create":
