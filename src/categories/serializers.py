@@ -9,7 +9,7 @@ from categories.models import Category
 
 
 class CategorySerializer(ModelSerializer):
-    name = serializers.CharField(required=True)
+    name = serializers.CharField(max_length=120, required=True, validators=[validate_slug_category])
 
     class Meta:
         model = Category
