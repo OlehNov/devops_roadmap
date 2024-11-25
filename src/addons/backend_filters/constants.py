@@ -1,28 +1,16 @@
-import re
-
-
-LOOKUP_SEP = "__"
-
-FILTER_PATTERN = re.compile(r"filters\[(.*?)\]\[(.*?)\]=([^&]*)")
-
-OPERATORS = {
+OPERATOR_MAPPING = {
     "$eq": "exact",
     "$eqi": "iexact",
     "$lt": "lt",
     "$lte": "lte",
     "$gt": "gt",
     "$gte": "gte",
-    "$in": "in",
-    "$is": "iexact",
-    "$null": "isnull",
-    "$notnull": "isnull",
+    # "$in": "in",
     "$contains": "contains",
-    "$containsi": "icontains",
-    "$between": "range",
+    "$icontains": "icontains",
+    # "$null": "isnull",
     "$startsWith": "startswith",
-    "$startsWithi": "istartswith",
+    "$istartsWith": "istartswith",
     "$endsWith": "endswith",
-    "$endsWithi": "iendswith",
-    "$regex": "regex",
-    "$regexi": "iregex",
+    "$iendsWith": "iendswith",
 }

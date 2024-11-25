@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from addons.mixins.eventlog import EventLogMixin
-from addons.backend_filters.filter_backend import CustomBaseFilterBackend
+# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from users.permissions import IsNotDeleted
 from django.db import transaction
 from roles.constants import Role
@@ -84,7 +84,7 @@ class GlampOwnerRegisterView(CreateAPIView, EventLogMixin):
 class GlampOwnerListAPIView(ListAPIView):
     serializer_class = GlampOwnerSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted]
-    filter_backends = [CustomBaseFilterBackend]
+    # filter_backends = [CustomBaseFilterBackend]
     lookup_url_kwarg = "glampowner_id"
 
     def get_queryset(self):
@@ -117,7 +117,7 @@ class GlampOwnerListAPIView(ListAPIView):
 class GlampOwnerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
     serializer_class = GlampOwnerSerializer
     permission_classes = [IsAuthenticated, IsNotDeleted, IsAdminOrSuperuser]
-    filter_backends = [CustomBaseFilterBackend]
+    # filter_backends = [CustomBaseFilterBackend]
     lookup_url_kwarg = "glampowner_id"
 
     def _validate_phone_number(self, phone_number=None):

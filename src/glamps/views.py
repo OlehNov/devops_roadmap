@@ -1,12 +1,12 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
+# from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from addons.mixins.eventlog import EventLogMixin
 
-from addons.backend_filters.filter_backend import CustomBaseFilterBackend
+# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from glamps.models import Glamp
 from glamps.permissions import (
     IsAnonymousUser,
@@ -27,7 +27,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
         "owner", "category"
     )
     serializer_class = GlampSerializer
-    filter_backends = [CustomBaseFilterBackend]
+    # filter_backends = [CustomBaseFilterBackend]
     lookup_url_kwarg = "glamp_id"
 
     def get_permissions(self):
