@@ -1,6 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from administrators.models import Administrator
-from addons.backend_filters.filter_backend import CustomBaseFilterBackend
+
 from administrators.serializers import (
     AdministratorSerializer,
     AdministratorRegisterSerializer,

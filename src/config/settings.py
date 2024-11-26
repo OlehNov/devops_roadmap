@@ -134,7 +134,9 @@ DATABASES = {
 # REST FRAMEWORK Settings
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
-        "django_filters.rest_framework.DjangoFilterBackend"
+        # "django_filters.rest_framework.DjangoFilterBackend",
+        "addons.backend_filters.filter_backend.QueryParamFilterBackend",
+        "addons.backend_filters.filter_backend.SortingFilterBackend",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
@@ -436,7 +438,9 @@ EMAIL_ADMIN = EMAIL_HOST_USER
 if DEBUG:
     REST_FRAMEWORK = {
         "DEFAULT_FILTER_BACKENDS": [
-            "django_filters.rest_framework.DjangoFilterBackend"
+            # "django_filters.rest_framework.DjangoFilterBackend",
+            "addons.backend_filters.filter_backend.QueryParamFilterBackend",
+            "addons.backend_filters.filter_backend.SortingFilterBackend",
         ],
         "DEFAULT_AUTHENTICATION_CLASSES": [
             "rest_framework_simplejwt.authentication.JWTAuthentication",

@@ -1,5 +1,4 @@
 from rest_framework.viewsets import ModelViewSet
-from addons.handlers.errors import handle_error
 from managers.models import GlampManager
 from managers.serializers import ManagerSerializer, ManagerRegisterSerializer
 from drf_spectacular.utils import extend_schema
@@ -9,7 +8,6 @@ from rest_framework import status
 from managers.permissions import IsAdministrator, IsManager
 from addons.mixins.eventlog import EventLogMixin
 from rest_framework.serializers import ValidationError
-from rest_framework.filters import SearchFilter
 from users.validators import validate_first_name_last_name
 from django.db import transaction
 from django.contrib.auth import get_user_model
