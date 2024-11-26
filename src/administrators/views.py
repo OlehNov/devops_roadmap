@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from administrators.models import Administrator
+# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 
 from administrators.serializers import (
     AdministratorSerializer,
@@ -20,6 +21,7 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
     serializer_class = AdministratorSerializer
     permission_classes = [IsAdmin]
     lookup_url_kwarg = "administrator_id"
+    # filter_backends = [CustomBaseFilterBackend]
 
     def get_serializer_class(self):
         if self.action == "create":

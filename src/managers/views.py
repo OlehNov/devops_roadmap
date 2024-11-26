@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from managers.models import GlampManager
+# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from managers.serializers import ManagerSerializer, ManagerRegisterSerializer
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
@@ -14,6 +15,7 @@ from django.contrib.auth import get_user_model
 
 
 User = get_user_model()
+# from rest_framework.permissions import IsAdminUser
 
 
 @extend_schema(tags=["manager"])
@@ -21,6 +23,8 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
     queryset = GlampManager.objects.select_related("user")
     serializer_class = ManagerSerializer
     lookup_url_kwarg = "manager_id"
+    permission_classes = [IsAdminOrManager]
+    # filter_backends = [CustomBaseFilterBackend]
 
     def get_serializer_class(self):
         if self.action == "create":
