@@ -26,7 +26,15 @@ class CategorySerializer(ModelSerializer):
         slug = attrs.get("slug")
         if slug and Category.objects.filter(slug=slug).exists():
             raise ValidationError(
-                {"slug": "A record with this value already exists."}
+                {"slug": "Category with this slug already exists."}
+            )
+
+        name = attrs.get("name")
+        if name and Category.objects.filter(name=name).exists():
+            raise ValidationError(
+                {"name": "Category with this Name already exists."}
             )
 
         return attrs
+
+

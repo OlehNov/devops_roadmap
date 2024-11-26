@@ -79,3 +79,6 @@
 ## 26.11.2024 20:43. Permissions fixed.
 1. Permissions for manager view fixed
 ---
+## 26.11.2024 20:43. Categories name fixed.
+1. Name in Categories fixed
+---
