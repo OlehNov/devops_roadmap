@@ -76,3 +76,6 @@
 ## 25.11.2024 20:31. Adapting dump.json.
 1. Adapting dump.json to slug in categories and glamps.
 ---
+## 26.11.2024 20:43. Permissions fixed.
+1. Permissions for manager view fixed
+---
