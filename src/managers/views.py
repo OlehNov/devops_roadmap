@@ -1,7 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from addons.handlers.errors import handle_error
 from managers.models import GlampManager
-from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from managers.serializers import ManagerSerializer, ManagerRegisterSerializer
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
@@ -23,7 +22,6 @@ User = get_user_model()
 class ManagerModelViewSet(ModelViewSet, EventLogMixin):
     queryset = GlampManager.objects.select_related("user")
     serializer_class = ManagerSerializer
-    filter_backends = [CustomBaseFilterBackend, SearchFilter]
     lookup_url_kwarg = "manager_id"
 
     def get_serializer_class(self):
@@ -50,7 +48,7 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
             first_name = serializer.validated_data["first_name"]
             last_name = serializer.validated_data["last_name"]
 
-            password = user_data.pop("password")
+            password = user_data.get("password")
             confirm_password = user_data.pop("confirm_password")
             if password != confirm_password:
                 raise ValidationError(

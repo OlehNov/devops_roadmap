@@ -19,7 +19,6 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
     queryset = Administrator.objects.select_related("user")
     serializer_class = AdministratorSerializer
     permission_classes = [IsAdmin]
-    filter_backends = [CustomBaseFilterBackend]
     lookup_url_kwarg = "administrator_id"
 
     def get_serializer_class(self):
