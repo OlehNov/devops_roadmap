@@ -19,12 +19,14 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "email",
+            "role",
             "is_active",
             "is_staff",
             "created_at",
             "updated_at",
         ]
         read_only_fields = [
+            "role",
             "is_active",
             "is_staff",
             "created_at",

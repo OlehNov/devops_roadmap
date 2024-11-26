@@ -1,7 +1,7 @@
 # MANAGERS
 
 
-### Available methods
+### Доступні методи
 
 
 - ![текст](https://img.shields.io/badge/GET-%2390EE90)
@@ -16,14 +16,14 @@
 
 #### ➡️ **URL**: [http://localhost:8181/api/v1/managers/](http://localhost:8181/api/v1/managers/)
 
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMIN role or:
-    - User with MANAGER role
-    - User stuff
+### Вимоги до запиту:
+ - Токен Bearer token
+ - Користувач із роллю АДМІНІСТРАТОРА або:
+    - Користувач із роллю МЕНЕДЖЕР
+    - Адміністратор
 
 
-#### Response
+#### Відповідь
 
 ```
 {
@@ -56,13 +56,13 @@
 #### ➡️ **URL**: [http://localhost:8181/api/v1/managers/12/](http://localhost:8181/api/v1/managers/12/)
 
 
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMIN role or:
-    - User with MANAGER role and same object id
-    - User stuff
+### Вимоги до запиту:
+ - Токен Bearer token
+ - Користувач із роллю АДМІНІСТРАТОРА або:
+    - Користувач із роллю МЕНЕДЖЕР та тим самим ідентифікатором об’єкта
+    - Адміністратор
 
-#### Response
+#### Відповідь
 ```
 {
     "user": {
@@ -84,12 +84,12 @@
 
 #### ➡️ **URL**: [http://localhost:8181/api/v1/managers/](http://localhost:8181/api/v1/managers/)
 
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMIN role or:
-    - User stuff
+### Вимоги до запиту:
+ - Токен Bearer token
+ - Користувач із роллю АДМІНІСТРАТОРА або:
+     - Адміністратор
 
-#### Request Body
+#### Тіло запиту
 
 ```
 {
@@ -103,7 +103,7 @@
 }
 ```
 
-#### Response
+#### Відповідь
 ```
 {
     "user": {
@@ -122,12 +122,13 @@
 ## ![текст](https://img.shields.io/badge/PUT-%230000FF)
 
 #### ➡️ **URL**: [http://localhost:8181/api/v1/managers/12/](http://localhost:8181/api/v1/managers/)
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMIN role or:
-    - User stuff
 
-### Request Body
+### Вимоги до запиту:
+ - Токен Bearer token
+ - Користувач із роллю АДМІНІСТРАТОРА або:
+    - Адміністратор
+
+### Тіло запиту
 ```
 {
     "first_name": "aaa",
@@ -135,7 +136,7 @@
 }
 ```
 
-### Response
+### Відповідь
 ```
 {
     "user": {
@@ -155,13 +156,14 @@
 ---
 ## ![текст](https://img.shields.io/badge/PATCH-%23DDA0DD)
 #### ➡️ **URL**: [http://localhost:8181/api/v1/managers/12/](http://localhost:8181/api/v1/managers/)
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMIN role or:
-    - User with MANAGER role and same object id
-    - User stuff
 
-## Request Body
+### Вимоги до запиту:
+ - Токен Bearer token
+ - Користувач із роллю АДМІНІСТРАТОРА або:
+    - Користувач із роллю МЕНЕДЖЕР та тим самим ідентифікатором об’єкта
+    - Адміністратор
+
+## Тіло запиту
 ```
 {
     "first_name": "qwer",
@@ -169,7 +171,7 @@
 }
 ```
 
-## Response
+## Відповідь
 ```
 {
     "user": {
@@ -189,18 +191,19 @@
 ---
 ## ![текст](https://img.shields.io/badge/DELETE-%23FF0000)
 #### ➡️ **URL**: [http://localhost:8181/api/v1/managers/12/](http://localhost:8181/api/v1/managers/)
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMIN role or:
-    - User with MANAGER role and same object id
-    - User stuff
 
-## Request Body
+### Вимоги до запиту:
+ - Токен Bearer token
+ - Користувач із роллю АДМІНІСТРАТОРА або:
+    - Користувач із роллю МЕНЕДЖЕР та тим самим ідентифікатором об’єкта
+    - Адміністратор
+
+## Тіло запиту
 ```
 None
 ```
 
-## Response
+## Відповідь
 ```
 {
     "detail": "Object deactivated successfully."

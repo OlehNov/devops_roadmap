@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from administrators.models import Administrator
 # from addons.backend_filters.filter_backend import CustomBaseFilterBackend
+
 from administrators.serializers import (
     AdministratorSerializer,
     AdministratorRegisterSerializer,
@@ -10,19 +11,31 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from roles.constants import ProfileStatus
 from rest_framework import status
+from managers.permissions import IsAdministrator, IsManager
+from addons.mixins.eventlog import EventLogMixin
 
 
 @extend_schema(tags=["administrator"])
-class AdministratorModelViewSet(ModelViewSet):
+class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
     queryset = Administrator.objects.select_related("user")
     serializer_class = AdministratorSerializer
     permission_classes = [IsAdmin]
+    lookup_url_kwarg = "administrator_id"
     # filter_backends = [CustomBaseFilterBackend]
 
     def get_serializer_class(self):
         if self.action == "create":
             return AdministratorRegisterSerializer
         return AdministratorSerializer
+
+    def get_permissions(self):
+        match self.action:
+            case "create":
+                permission_classes = [IsAdministrator]
+            case _:
+                permission_classes = [IsAdministrator | IsManager]
+
+        return [permission() for permission in permission_classes]
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
@@ -32,6 +45,8 @@ class AdministratorModelViewSet(ModelViewSet):
         )
         if serializer.is_valid():
             self.perform_update(serializer)
+            self.log_event(request, operated_object=instance)
+
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(
@@ -47,6 +62,8 @@ class AdministratorModelViewSet(ModelViewSet):
         instance.status = ProfileStatus.DEACTIVATED
 
         instance.save()
+
+        self.log_event(request, operated_object=instance)
 
         return Response(
             {"detail": "Object deactivated successfully."},

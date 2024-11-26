@@ -10,7 +10,6 @@ User = get_user_model()
 class Administrator(TimestampMixin):
     id = models.PositiveIntegerField(primary_key=True)
 
-    email = models.EmailField(unique=True, null=True, default=None)
     first_name = models.CharField(max_length=255, null=True, default=None)
     last_name = models.CharField(max_length=255, null=True, default=None)
 

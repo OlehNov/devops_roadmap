@@ -73,7 +73,6 @@
 ## 24.11.2024 23:09. Filters refactored.
 1. QueryParamFilter refactored.
 2. SortingFilter added.
----
 ## 25.11.2024 20:31. Adapting dump.json.
 1. Adapting dump.json to slug in categories and glamps.
 ---
