@@ -118,6 +118,7 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
         kwargs["partial"] = True
         return self.update(request, *args, **kwargs)
 
+    @transaction.atomic()
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
