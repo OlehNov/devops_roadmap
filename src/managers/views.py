@@ -1,5 +1,6 @@
 from rest_framework.viewsets import ModelViewSet
 from managers.models import GlampManager
+
 # from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from managers.serializers import ManagerSerializer, ManagerRegisterSerializer
 from drf_spectacular.utils import extend_schema
@@ -117,6 +118,7 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
         kwargs["partial"] = True
         return self.update(request, *args, **kwargs)
 
+    @transaction.atomic()
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
