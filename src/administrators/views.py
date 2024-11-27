@@ -1,18 +1,25 @@
 from rest_framework.viewsets import ModelViewSet
 from administrators.models import Administrator
-# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 
 from administrators.serializers import (
     AdministratorSerializer,
     AdministratorRegisterSerializer,
 )
+from users.validators import validate_first_name_last_name
+from django.db import transaction
+from django.contrib.auth import get_user_model
+
 from administrators.permissions import IsAdmin
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
-from roles.constants import ProfileStatus
+from roles.constants import ProfileStatus, Role
 from rest_framework import status
 from managers.permissions import IsAdministrator, IsManager
 from addons.mixins.eventlog import EventLogMixin
+from rest_framework.serializers import ValidationError
+
+
+User = get_user_model()
 
 
 @extend_schema(tags=["administrator"])
@@ -21,21 +28,55 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
     serializer_class = AdministratorSerializer
     permission_classes = [IsAdmin]
     lookup_url_kwarg = "administrator_id"
-    # filter_backends = [CustomBaseFilterBackend]
 
     def get_serializer_class(self):
         if self.action == "create":
             return AdministratorRegisterSerializer
         return AdministratorSerializer
 
-    def get_permissions(self):
-        match self.action:
-            case "create":
-                permission_classes = [IsAdministrator]
-            case _:
-                permission_classes = [IsAdministrator | IsManager]
+    @transaction.atomic()
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
 
-        return [permission() for permission in permission_classes]
+        if serializer.is_valid():
+
+            user_data = serializer.validated_data["user"]
+            first_name = serializer.validated_data["first_name"]
+            last_name = serializer.validated_data["last_name"]
+
+            password = user_data.get("password")
+            confirm_password = user_data.pop("confirm_password")
+            if password != confirm_password:
+                raise ValidationError(
+                    {"password": "Password fields do not match."}
+                )
+
+            validate_first_name_last_name(first_name)
+            validate_first_name_last_name(last_name)
+
+            user = User.objects.create_user(
+                email=user_data.get("email"),
+                password=password,
+                role=Role.ADMIN,
+                is_active=True,
+                is_staff=False,
+            )
+
+            administrator = Administrator.objects.get(id=user.id, user=user)
+
+            administrator.first_name = first_name
+            administrator.last_name = last_name
+            administrator.save()
+
+            self.log_event(request, operated_object=user)
+            self.log_event(request, operated_object=administrator)
+
+            return Response(
+                AdministratorSerializer(administrator).data,
+                status=status.HTTP_201_CREATED,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
