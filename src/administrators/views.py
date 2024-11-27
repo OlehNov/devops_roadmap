@@ -14,7 +14,6 @@ from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from roles.constants import ProfileStatus, Role
 from rest_framework import status
-from managers.permissions import IsAdministrator, IsManager
 from addons.mixins.eventlog import EventLogMixin
 from rest_framework.serializers import ValidationError
 
@@ -78,6 +77,7 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @transaction.atomic()
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
@@ -100,13 +100,20 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        instance.status = ProfileStatus.DEACTIVATED
 
-        instance.save()
+        if instance.status == ProfileStatus.DEACTIVATED:
+            return Response(
+                {"detail": "Not Found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
-        self.log_event(request, operated_object=instance)
+        else:
+            instance.status = ProfileStatus.DEACTIVATED
+            instance.save()
 
-        return Response(
-            {"detail": "Object deactivated successfully."},
-            status=status.HTTP_204_NO_CONTENT,
-        )
+            self.log_event(request, operated_object=instance)
+
+            return Response(
+                {"detail": "Object deactivated successfully."},
+                status=status.HTTP_204_NO_CONTENT,
+            )
