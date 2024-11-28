@@ -12,9 +12,10 @@ User = get_user_model()
 
 class Tourist(TimestampMixin):
     id = models.PositiveIntegerField(primary_key=True)
-    email = models.EmailField(unique=True)
+
     first_name = models.CharField(max_length=255, null=True, default=None)
     last_name = models.CharField(max_length=255, null=True, default=None)
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(
         null=True,
@@ -26,13 +27,13 @@ class Tourist(TimestampMixin):
     birthday = models.DateField(
         null=True, blank=True, validators=[validate_birthday]
     )
-
     phone = models.CharField(
         max_length=15, null=True, blank=True, validators=[validate_phone]
     )
 
-    objects = models.Manager()
-
     class Meta:
         db_table = "tourist"
         ordering = ("-id",)
+
+    def __str__(self) -> str:
+        return f"{self.user}"

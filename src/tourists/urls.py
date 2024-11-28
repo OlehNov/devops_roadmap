@@ -1,15 +1,9 @@
-from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-from tourists.views import (
-    TouristListAPIView,
-    TouristRetrieveUpdateDestroyAPIView,
-    UserTouristRegisterView,
-)
+from tourists.views import TouristViewSet
 
-urlpatterns = [
-    path(
-        "tourist-register/", UserTouristRegisterView.as_view(), name="tourist_register"
-    ),
-    path("", TouristListAPIView.as_view()),
-    path("<int:tourist_id>/", TouristRetrieveUpdateDestroyAPIView.as_view()),
-]
+
+router = DefaultRouter()
+router.register("", TouristViewSet, basename="tourist")
+
+urlpatterns = [] + router.urls
