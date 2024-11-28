@@ -7,7 +7,7 @@ from django.db.models import (
 from django.utils.translation import gettext as _
 
 from addons.mixins.timestamps import TimestampMixin
-from categories.validators import validate_name_category
+from categories.validators import validate_name_category, validate_slug_category
 
 
 class Category(TimestampMixin):
@@ -26,6 +26,7 @@ class Category(TimestampMixin):
         null=True,
         blank=True,
         unique=True,
+        validators=[validate_slug_category]
     )
     title = CharField(_("Title"), max_length=120, null=True, default=None)
     description = TextField(_("Description"), max_length=5000, null=True, default=None)

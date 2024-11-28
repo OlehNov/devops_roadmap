@@ -78,7 +78,7 @@ def validate_first_name_last_name(value):
     if len(value) < 2:
         raise ValidationError("The name must have more than two characters.")
 
-    if re.match(r"^[A-Za-zА-Яа-яєЄїЇіІ`'ʼ-]+$", value) is None:
+    if re.match(r"^[A-Za-zА-Яа-яєЄїЇіІґҐ`'ʼ-]+$", value) is None:
         raise ValidationError(
             "The name must not contain digits or special characters."
         )
