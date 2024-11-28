@@ -1,4 +1,3 @@
-from typing import Any
 from django.contrib import admin
 from managers.models import GlampManager
 from roles.constants import Role
