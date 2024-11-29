@@ -14,7 +14,6 @@ class ManagerAdmin(admin.ModelAdmin):
     search_fields = ["id", "user", "status", "created_at", "updated_at"]
     exclude = ["id"]
 
-    @transaction.atomic
     def save_model(
         self, request: WSGIRequest, obj: Model, form: ModelForm, change: bool
     ) -> None:

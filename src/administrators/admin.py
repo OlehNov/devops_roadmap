@@ -12,7 +12,6 @@ class AdministratorAdmin(admin.ModelAdmin):
     list_display = ["id", "user", "status", "created_at", "updated_at"]
     search_fields = ["id", "user", "status", "created_at", "updated_at"]
 
-    @transaction.atomic
     def save_model(
         self, request: WSGIRequest, obj: Model, form: ModelForm, change: bool
     ) -> None:
