@@ -82,3 +82,6 @@
 ## 26.11.2024 20:43. Categories name fixed.
 1. Name in Categories fixed
 ---
+## 28.11.2024 23:52. Categories name validation.
+1. Name in Categories validation
+---
