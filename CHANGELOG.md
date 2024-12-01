@@ -85,3 +85,7 @@
 ## 28.11.2024 23:52. Categories name validation.
 1. Name in Categories validation
 ---
+## 01.12.2024 16:08. Toutists endpoints permission classes fixed.
+1. Tourists endpoints views permission classes fixed.
+2. Tourists views serializer added.
+---
