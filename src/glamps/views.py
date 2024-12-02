@@ -23,9 +23,7 @@ from glamps.serializers import GlampSerializer
     tags=["glamp"],
 )
 class GlampModelViewSet(ModelViewSet, EventLogMixin):
-    queryset = Glamp.objects.select_related(
-        "owner", "category"
-    )
+    queryset = Glamp.objects.all()
     serializer_class = GlampSerializer
     # filter_backends = [CustomBaseFilterBackend]
     lookup_url_kwarg = "glamp_id"

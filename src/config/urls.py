@@ -66,7 +66,7 @@ urlpatterns = [
         include(("users.urls", "users"), namespace="users"),
     ),
     path(
-        f"{ROOT_API}/glamps/categories/",
+        f"{ROOT_API}/categories/",
         include(("categories.urls", "categories"), namespace="categories"),
     ),
     path(
