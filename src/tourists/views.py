@@ -16,6 +16,7 @@ from rest_framework import status
 from users.tasks import verify_email
 from addons.handlers.errors import handle_error
 from rest_framework.response import Response
+from tourists.permissions import IsAdministrator, IsTourist, IsManager
 
 
 User = get_user_model()
@@ -36,6 +37,16 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
         match self.action:
             case "create":
                 permission_classes = [AllowAny]
+            case "list":
+                permission_classes = [IsAdministrator | IsManager]
+            case "retrieve":
+                permission_classes = [IsTourist | IsManager | IsAdministrator]
+            case "update":
+                permission_classes = [IsTourist | IsManager | IsAdministrator]
+            case "partial_update":
+                permission_classes = [IsTourist | IsManager | IsAdministrator]
+            case "delete":
+                permission_classes = [IsTourist | IsManager | IsAdministrator]
             case _:
                 permission_classes = []
 
