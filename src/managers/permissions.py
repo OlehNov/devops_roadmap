@@ -6,7 +6,7 @@ from glamps.permissions import user_authenticated
 class IsAdministrator(BasePermission):
     def has_permission(self, request, view):
         user_authenticated(user=request.user)
-        return request.user.role == Role.ADMIN
+        return request.user.role == Role.ADMIN or request.user.is_staff
 
     def has_object_permission(self, request, view, obj):
         return self.has_permission(request, view)

@@ -52,6 +52,7 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
 
             password = user_data.get("password")
             confirm_password = user_data.pop("confirm_password")
+
             if password != confirm_password:
                 raise ValidationError(
                     {"password": "Password fields do not match."}
