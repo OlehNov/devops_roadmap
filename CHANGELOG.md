@@ -76,11 +76,20 @@
 ## 25.11.2024 20:31. Adapting dump.json.
 1. Adapting dump.json to slug in categories and glamps.
 ---
+## 25.11.2024 11:17. Fix managers viewset.
+1. Fixing CRUD managers viewset
+---
 ## 26.11.2024 20:43. Permissions fixed.
 1. Permissions for manager view fixed
 ---
 ## 26.11.2024 20:43. Categories name fixed.
 1. Name in Categories fixed
+---
+## 27.11.2024 13:14. Administrator admin panel.
+1. Refactor ADministrator profile admin panel
+---
+## 28.11.2024 15:44. Change save logic.
+1. Change save logic for managers and administrators admin panel
 ---
 ## 28.11.2024 23:52. Categories name validation.
 1. Name in Categories validation
@@ -88,4 +97,7 @@
 ## 01.12.2024 16:08. Toutists endpoints permission classes fixed.
 1. Tourists endpoints views permission classes fixed.
 2. Tourists views serializer added.
+---
+## 03.12.2024 12:03. Create CRUD for tourist profile.
+1. Create full CRUD functionality for tourist profile.
 ---

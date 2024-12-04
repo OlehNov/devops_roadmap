@@ -15,8 +15,9 @@ load_dotenv()
 User = get_user_model()
 
 
-def send_registration_email(user_id):
+def send_registration_email(user_id: int) -> None:
     user_instance = User.objects.get(pk=user_id)
+
     message = render_to_string(
         "emails/registration_email.html",
         context={
