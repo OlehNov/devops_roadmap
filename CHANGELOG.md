@@ -98,3 +98,6 @@
 1. Tourists endpoints views permission classes fixed.
 2. Tourists views serializer added.
 ---
+## 03.12.2024 12:03. Create CRUD for tourist profile.
+1. Create full CRUD functionality for tourist profile.
+---

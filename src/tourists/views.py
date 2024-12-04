@@ -141,10 +141,8 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
             self.log_event(request, operated_object=instance)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
-        else:
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, *args, **kwargs):
         kwargs["partial"] = True
