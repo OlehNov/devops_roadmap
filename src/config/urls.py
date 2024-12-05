@@ -70,7 +70,7 @@ urlpatterns = [
         include(("categories.urls", "categories"), namespace="categories"),
     ),
     path(
-        f"{ROOT_API}/glamps/",
+        f"{ROOT_API}/",
         include(("glamps.urls", "glamps"), namespace="glamps"),
     ),
     path(

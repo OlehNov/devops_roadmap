@@ -1,12 +1,15 @@
-from drf_spectacular.utils import extend_schema
 from rest_framework import status
-# from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import AllowAny
+# from rest_framework.pagination import PageNumberPagination
+
+from drf_spectacular.utils import extend_schema
 
 from addons.mixins.eventlog import EventLogMixin
 
-# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
+from categories.models import Category
+
 from glamps.models import Glamp
 from glamps.permissions import (
     IsAnonymousUser,
@@ -16,7 +19,7 @@ from glamps.permissions import (
     RoleIsOwner,
     RoleIsTourist,
 )
-from glamps.serializers import GlampSerializer
+from glamps.serializers import GlampSerializer, GlampByCategoryViewSet
 
 
 @extend_schema(
@@ -202,6 +205,55 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
 
     def perform_create(self, serializer):
         glamp_instance = serializer.save()
+        self.log_event(self.request, glamp_instance)
+        return glamp_instance
+
+    def perform_update(self, serializer):
+        glamp_instance = serializer.save()
+        self.log_event(self.request, glamp_instance)
+        return glamp_instance
+
+    def perform_destroy(self, glamp_instance):
+        self.log_event(self.request, glamp_instance)
+        return super().perform_destroy(glamp_instance)
+
+
+@extend_schema(
+    tags=["glamp_by_category"],
+)
+class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
+    serializer_class = GlampByCategoryViewSet
+    lookup_url_kwarg = "glamp_id"
+
+    def get_queryset(self):
+        category_id = self.kwargs.get("category_id")
+        return Glamp.objects.filter(category_id=category_id)
+
+    def get_permissions(self):
+        match self.action:
+            case "list":
+                permission_classes = [AllowAny]
+            case "retrieve":
+                permission_classes = [
+                    IsAnonymousUser
+                    | RoleIsAdmin
+                    | RoleIsManager
+                    | RoleIsOwner
+                    | RoleIsTourist
+                ]
+            case "create", "update", "destroy":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | RoleIsOwner
+                ]
+            case _:
+                permission_classes = []
+
+        return [permission() for permission in permission_classes]
+
+    def perform_create(self, serializer):
+        category_id = self.kwargs.get("category_id")
+        category = Category.objects.get(id=category_id)
+        glamp_instance = serializer.save(category=category)
         self.log_event(self.request, glamp_instance)
         return glamp_instance
 
