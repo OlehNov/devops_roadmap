@@ -89,9 +89,11 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
 
                 tourist.first_name = first_name
                 tourist.last_name = last_name
+                tourist.birthday = birthday
+                tourist.phone = phone
                 tourist.save()
 
-                verify_email.apply_async(args=[user.pk])
+                transaction.on_commit(verify_email(user.id))
 
             except Exception as e:
                 handle_error(e)

@@ -1,178 +1,171 @@
+from drf_spectacular.utils import extend_schema
 from django.contrib.auth import get_user_model
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.db import transaction
+from rest_framework.viewsets import ModelViewSet
+from roles.constants import ProfileStatus, Role
 
 from addons.mixins.eventlog import EventLogMixin
-# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
-from users.permissions import IsNotDeleted
-from django.db import transaction
-from roles.constants import Role
-from tourists.validators import validate_phone
-from django.core.exceptions import ValidationError
-from addons.handlers.errors import validate_phone_error, handle_error
-from rest_framework.generics import (
-    CreateAPIView,
-    ListAPIView,
-    RetrieveUpdateDestroyAPIView,
-    get_object_or_404,
-)
 from glamp_owners.models import GlampOwner
-from glamp_owners.serializers import (
-    GlampOwnerRegistrationSerializer,
-    GlampOwnerSerializer,
-    GlampOwnerDeactivateSerializer,
-)
+from rest_framework.permissions import AllowAny
+from users.validators import validate_first_name_last_name
+from tourists.validators import validate_phone
+from rest_framework.serializers import ValidationError
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema
-from rest_framework.status import (
-    HTTP_200_OK,
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_400_BAD_REQUEST,
-    HTTP_404_NOT_FOUND,
+from rest_framework import status
+from glamp_owners.tasks import verify_glamp_owner
+from addons.handlers.errors import handle_error
+from rest_framework.response import Response
+from glamp_owners.serializers import (
+    GlampOwnerRegisterSerializer,
+    GlampOwnerSerializer,
 )
-from roles.permissions import IsAdminOrSuperuser
-from users.tasks import verify_email
+from glamp_owners.permissions import IsAdministrator, IsOwner, IsManager
 
 
 User = get_user_model()
 
 
-@extend_schema(
-    tags=["glamp-owner"],
-)
-class GlampOwnerRegisterView(CreateAPIView, EventLogMixin):
-    """GlampOwner registration class"""
+@extend_schema(tags=["glamp_owner"])
+class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
+    queryset = GlampOwner.objects.select_related("user")
+    serializer_class = GlampOwnerSerializer
+    lookup_url_kwarg = "glamp_owner_id"
 
-    serializer_class = GlampOwnerRegistrationSerializer
-    permission_classes = [AllowAny]
-    lookup_url_kwarg = "glampowner_id"
+    def get_serializer_class(self):
+        if self.action == "create":
+            return GlampOwnerRegisterSerializer
+        return GlampOwnerSerializer
 
+    def get_permissions(self):
+        match self.action:
+            case "create":
+                permission_classes = [AllowAny]
+            case "list":
+                permission_classes = [IsAdministrator | IsManager]
+            case "retrieve":
+                permission_classes = [IsOwner | IsManager | IsAdministrator]
+            case "update":
+                permission_classes = [IsOwner | IsManager | IsAdministrator]
+            case "partial_update":
+                permission_classes = [IsOwner | IsManager | IsAdministrator]
+            case "delete":
+                permission_classes = [IsOwner | IsManager | IsAdministrator]
+            case _:
+                permission_classes = []
+
+        return [permission() for permission in permission_classes]
+
+    @transaction.atomic()
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
 
-            try:
-                with transaction.atomic():
-                    user = User.objects.create_user(
-                        email=serializer.validated_data["email"],
-                        first_name=serializer.validated_data["first_name"],
-                        last_name=serializer.validated_data["last_name"],
-                        password=serializer.validated_data["password"],
-                        role=Role.OWNER,
-                    )
-                    user.is_active = False
-                    user.save()
+            user_data = serializer.validated_data["user"]
+            first_name = serializer.validated_data["first_name"]
+            last_name = serializer.validated_data["last_name"]
+            phone = serializer.validated_data["phone"]
 
-                    glamp_owner = GlampOwner.objects.create(user=user)
-                    self.log_event(request=request, operated_object=user)
-                    self.log_event(request=request, operated_object=glamp_owner)
+            password = user_data.get("password")
+            confirm_password = user_data.pop("confirm_password")
+            if password != confirm_password:
+                raise ValidationError(
+                    {"password": "Password fields do not match."}
+                )
+
+            validate_first_name_last_name(first_name)
+            validate_first_name_last_name(last_name)
+            validate_phone(phone)
+
+            user = User.objects.create_user(
+                email=user_data.get("email"),
+                password=password,
+                role=Role.OWNER,
+                is_active=False,
+                is_staff=False,
+            )
+
+            try:
+                owner = GlampOwner.objects.get(id=user.id, user=user)
+
+                owner.first_name = first_name
+                owner.last_name = last_name
+                owner.phone = phone
+                owner.save()
+
+                transaction.on_commit(verify_glamp_owner(user.id))
 
             except Exception as e:
                 handle_error(e)
 
-            verify_email.apply_async(args=[user.pk])
+                self.log_event(request, operated_object=user)
+                self.log_event(request, operated_object=owner)
 
-            return Response(serializer.data, status=HTTP_201_CREATED)
+            return Response(
+                GlampOwnerSerializer(owner).data,
+                status=status.HTTP_201_CREATED,
+            )
 
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-@extend_schema(
-    tags=["glamp-owner"],
-)
-class GlampOwnerListAPIView(ListAPIView):
-    serializer_class = GlampOwnerSerializer
-    permission_classes = [IsAuthenticated, IsNotDeleted]
-    # filter_backends = [CustomBaseFilterBackend]
-    lookup_url_kwarg = "glampowner_id"
-
-    def get_queryset(self):
-        user = self.request.user
-
-        if user.is_anonymous:
-            return User.objects.none()
-
-        if user.role == Role.ADMIN or user.is_staff or user.is_superuser:
-            return User.objects.filter(role=Role.OWNER)
-
-        if user.role == Role.OWNER:
-            return User.objects.filter(id=user.id)
-
-        return User.objects.none()
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-
-        if not queryset.exists():
-            return Response({"detail": "Not found"}, status=HTTP_404_NOT_FOUND)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data, status=HTTP_200_OK)
-
-
-@extend_schema(
-    tags=["glamp-owner"],
-)
-class GlampOwnerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView, EventLogMixin):
-    serializer_class = GlampOwnerSerializer
-    permission_classes = [IsAuthenticated, IsNotDeleted, IsAdminOrSuperuser]
-    # filter_backends = [CustomBaseFilterBackend]
-    lookup_url_kwarg = "glampowner_id"
-
-    def _validate_phone_number(self, phone_number=None):
-        if phone_number:
-            try:
-                validate_phone(phone_number)
-            except ValidationError as e:
-                validate_phone_error(e)
-
-    def get_object(self):
-        glamp_owner = get_object_or_404(
-            User.objects.all(), id=self.kwargs.get("glampowner_id")
-        )
-        return glamp_owner
-
-    def patch(self, request, *args, **kwargs):
-        phone_number = request.data.get("phone", None)
-
-        self._validate_phone_number(phone_number)
-
-        kwargs["partial"] = True
-
-        return self.update(request, *args, **kwargs)
-
-    def put(self, request, *args, **kwargs):
-        phone_number = request.data.get("phone", None)
-
-        self._validate_phone_number(phone_number)
-
-        return self.update(request, *args, **kwargs)
-
-    @transaction.atomic
+    @transaction.atomic()
     def update(self, request, *args, **kwargs):
-        glamp_owner = self.get_object()
         partial = kwargs.pop("partial", False)
-        serializer = self.get_serializer(glamp_owner, data=request.data, partial=partial)
+        instance = self.get_object()
+
+        data = {
+            "first_name": request.data.get("first_name"),
+            "last_name": request.data.get("last_name"),
+            "phone": request.data.get("phone"),
+        }
+
+        if not partial:
+            missing_fields = []
+
+            for key, value in data.items():
+                if value is None:
+                    missing_fields.append(key)
+
+            if missing_fields:
+                return Response(
+                    {
+                        "detail": f"Fields {', '.join(missing_fields)} is required."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+        serializer = self.get_serializer(
+            instance, data=request.data, partial=partial
+        )
 
         if serializer.is_valid():
             self.perform_update(serializer)
-            self.log_event(request, glamp_owner)
-            return Response(serializer.data, status=HTTP_200_OK)
+            self.log_event(request, operated_object=instance)
 
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs["partial"] = True
+        return self.update(request, *args, **kwargs)
+
+    @transaction.atomic()
     def destroy(self, request, *args, **kwargs):
-        glamp_owner = self.get_object()
-        deactivate_serializer = GlampOwnerDeactivateSerializer(
-            glamp_owner, data={"is_deleted": True, "is_active": False}
-        )
+        instance = self.get_object()
 
-        if deactivate_serializer.is_valid():
-            deactivate_serializer.save()
-            self.log_event(request, glamp_owner)
+        if instance.status == ProfileStatus.DEACTIVATED:
             return Response(
-                {"detail": "GlampOwner has been deleted"}, status=HTTP_204_NO_CONTENT
+                {"detail": "Not Fopund"},
+                status=status.HTTP_404_NOT_FOUND,
             )
 
-        return Response(deactivate_serializer.errors, status=HTTP_400_BAD_REQUEST)
+        instance.status = ProfileStatus.DEACTIVATED
+        instance.save()
+
+        self.log_event(request, operated_object=instance)
+
+        return Response(
+            {"detail": "Object deactivated successfully."},
+            status=status.HTTP_204_NO_CONTENT,
+        )

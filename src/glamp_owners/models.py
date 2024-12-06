@@ -11,6 +11,9 @@ User = get_user_model()
 class GlampOwner(TimestampMixin):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
+    first_name = models.CharField(max_length=255, null=True, default=None)
+    last_name = models.CharField(max_length=255, null=True, default=None)
+
     is_hidden = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)
 
