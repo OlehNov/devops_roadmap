@@ -29,6 +29,8 @@ class UserSerializer(serializers.ModelSerializer):
             "role",
             "is_active",
             "is_staff",
+            "is_superuser",
+            "is_deleted",
             "created_at",
             "updated_at",
         ]
