@@ -101,3 +101,7 @@
 ## 03.12.2024 12:03. Create CRUD for tourist profile.
 1. Create full CRUD functionality for tourist profile.
 ---
+## 06.12.2024 12:45. Moved endpoint categories and added a new one.
+1. Moved categories to http://localhost:8181/api/v1/categories/.
+2. Added a new endponit http://localhost:8181/api/v1/categories/{category_id}/glamps/{glamp_id}/.
+---
