@@ -44,11 +44,11 @@
 
 ## Getting a specific category (by slug)
 
-```Url``` - http://localhost:8181/api/v1/glamps/categories/{slug} instead of slug, insert the slug of the category you want to get.
+```Url``` - http://localhost:8181/api/v1/categories/{category_id}/ instead of slug, insert the slug of the category you want to get.
 
 ### Request GET
 
-#### An example of a response to ```Url``` - http://localhost:8181/api/v1/glamps/categories/bobr-kurwa
+#### An example of a response to ```Url``` - http://localhost:8181/api/v1/glamps/categories/3/
 
 ```
 {
@@ -66,7 +66,7 @@
 
 ## Create a category 
 
-```Url``` - http://localhost:8181/api/v1/glamps/categories/
+```Url``` - http://localhost:8181/api/v1/categories/
 
 ### Request POST
 

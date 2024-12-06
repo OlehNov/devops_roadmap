@@ -1,12 +1,10 @@
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
-
 from slugify import slugify
 from unidecode import unidecode
 
 from categories.models import Category
 from categories.validators import validate_slug_category, validate_name_category
-
 
 
 class CategorySerializer(ModelSerializer):

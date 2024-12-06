@@ -1,13 +1,10 @@
+from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
-from django.contrib.auth import get_user_model
-
 from categories.models import Category
 from categories.serializers import CategorySerializer
-
 from glamps.models import Glamp, Picture
-
 from users.serializers import UserSerializer
 
 User = get_user_model()

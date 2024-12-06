@@ -2,7 +2,7 @@
 
 ## Отримання списку всіх категорій 
 
-```Url``` - http://localhost:8181/api/v1/glamps/categories/
+```Url``` - http://localhost:8181/api/v1/categories/
 
 ### Запит GET
 
@@ -44,7 +44,7 @@
 
 ## Отримання конкретної категорії (за id)
 
-```Url``` - http://localhost:8181/api/v1/glamps/categories/{category_id} замість category_id вставляєм id тієї категорії що хочем отримати.
+```Url``` - http://localhost:8181/api/v1/categories/{category_id}/ замість category_id вставляєм id тієї категорії що хочем отримати.
 
 ### Запит GET
 
@@ -66,11 +66,11 @@
 
 ## Створення категорії 
 
-```Url``` - http://localhost:8181/api/v1/glamps/categories/
+```Url``` - http://localhost:8181/api/v1/categories/
 
 ### Запит POST
 
-#### Є 2 варіанта створення слагу:
+#### Є 2 варіанта створення категорії:
 
 *Перший - коли користувач вписує свій кастомний слаг*
 

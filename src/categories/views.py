@@ -2,20 +2,9 @@ from rest_framework.viewsets import ModelViewSet
 from drf_spectacular.utils import extend_schema
 
 from addons.mixins.eventlog import EventLogMixin
-
 from categories.models import Category
 from categories.serializers import CategorySerializer
-
 from roles.permissions import IsAdminOrSuperuser, RoleIsManager
-
-from glamps.permissions import (
-    IsAnonymousUser,
-    IsGlampOwner,
-    RoleIsAdmin,
-    RoleIsManager,
-    RoleIsOwner,
-    RoleIsTourist,
-)
 
 
 @extend_schema(tags=["glamp-categories"])

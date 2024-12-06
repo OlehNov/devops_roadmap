@@ -89,3 +89,7 @@
 1. Tourists endpoints views permission classes fixed.
 2. Tourists views serializer added.
 ---
+## 06.12.2024 12:45. Moved endpoint categories and added a new one.
+1. Moved categories to http://localhost:8181/api/v1/categories/.
+2. Added a new endponit http://localhost:8181/api/v1/categories/{category_id}/glamps/{glamp_id}/.
+---
