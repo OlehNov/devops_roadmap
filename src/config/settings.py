@@ -105,6 +105,8 @@ MAX_PAGE_SIZE = 50
 DEFAULT_PAGE_SIZE = 10
 
 
+EVENTLOGS_DB_ALIAS = os.getenv("EVENTLOGS_DB_ALIAS", "eventlog")
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
@@ -116,7 +118,7 @@ DATABASES = {
         "HOST": os.getenv("DB_HOST", default="localhost"),
         "PORT": int(os.getenv("DB_PORT", default="3306")),
     },
-    "eventlog": {
+    EVENTLOGS_DB_ALIAS: {
         "ENGINE": os.getenv(
             "EVENTLOGS_DB_ENGINE", default="django.db.backends.mysql"
         ),
