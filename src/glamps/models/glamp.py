@@ -16,13 +16,13 @@ from django.db.models import (
     SlugField,
     TextField,
 )
-from django.utils.text import slugify
+
 from django.utils.translation import gettext as _
 
 from categories.models import Category
 from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
 from addons.mixins.timestamps import TimestampMixin
-from glamps.validators import validate_type, validate_status
+from glamps.validators import validate_type, validate_status, validate_name_glamp
 
 User = get_user_model()
 
@@ -34,7 +34,7 @@ class Glamp(TimestampMixin):
     )
 
     name = CharField(
-        _("Glamp Name"), max_length=225, null=False, blank=False, default=None
+        _("Glamp Name"), max_length=225, null=False, blank=False, default=None, validators=[validate_name_glamp]
     )
     slug = SlugField(
         _("Slug"), max_length=225, null=True, blank=True, unique=True, default=None
@@ -249,14 +249,3 @@ class Glamp(TimestampMixin):
 
     def __repr__(self) -> str:
         return f"<GlampModel>: {self.name}"
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            super().save(*args, **kwargs)
-
-        if not self.slug or not self.slug.startswith(f"{self.id}-"):
-            base_slug = slugify(self.name)
-            self.slug = f"{self.id}-{base_slug}"
-            kwargs["force_insert"] = False
-
-        super().save(*args, **kwargs)

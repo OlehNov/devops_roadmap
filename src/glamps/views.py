@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.response import Response
@@ -224,6 +225,7 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
 
     def get_queryset(self):
         category_id = self.kwargs.get("category_id")
+        get_object_or_404(Category, id=category_id)
         return Glamp.objects.filter(category_id=category_id)
 
     def get_permissions(self):
@@ -249,7 +251,7 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
 
     def perform_create(self, serializer):
         category_id = self.kwargs.get("category_id")
-        category = Category.objects.get(id=category_id)
+        category = get_object_or_404(Category, id=category_id)
         glamp_instance = serializer.save(category=category)
         self.log_event(self.request, glamp_instance)
         return glamp_instance
@@ -262,3 +264,4 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
     def perform_destroy(self, glamp_instance):
         self.log_event(self.request, glamp_instance)
         return super().perform_destroy(glamp_instance)
+
