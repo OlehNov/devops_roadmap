@@ -16,7 +16,7 @@ create_eventlog_database = (
     f"mysql -h db -u {root_user} -p{root_password} -e "
     f"'CREATE DATABASE IF NOT EXISTS {eventlog_database_name}; "
     f'GRANT ALL PRIVILEGES ON {eventlog_database_name}.* TO "{eventlog_database_user}"@"%";\''
-    f"exit;"
+    # f"exit;"
 )
 
 subprocess.run(create_eventlog_database, shell=True, check=True)
