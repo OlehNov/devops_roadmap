@@ -1,15 +1,15 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer, ValidationError
+from rest_framework.serializers import ModelSerializer
 from slugify import slugify
 from unidecode import unidecode
-
 
 from categories.models import Category
 from categories.serializers import CategorySerializer
 from glamps.models import Glamp, Picture
+from glamps.validators import validate_slug_glamp
 from users.serializers import UserSerializer
-from glamps.validators import validate_name_glamp, validate_slug_glamp
+
 
 User = get_user_model()
 

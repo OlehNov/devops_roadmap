@@ -18,7 +18,7 @@ def validate_status(value):
         )
 
 def validate_name_glamp(value):
-    if len(value) < 1:
+    if len(value) < 3:
         raise ValidationError("The name must have more than one character.")
 
     if re.match(r"^[A-Za-zА-Яа-яєЄїЇіІґҐ`'ʼ0-9,.:; \"]+$", value) is None:

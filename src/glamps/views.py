@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -201,16 +202,19 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @transaction.atomic
     def perform_create(self, serializer):
         glamp_instance = serializer.save()
         self.log_event(self.request, glamp_instance)
         return glamp_instance
 
+    @transaction.atomic
     def perform_update(self, serializer):
         glamp_instance = serializer.save()
         self.log_event(self.request, glamp_instance)
         return glamp_instance
 
+    @transaction.atomic
     def perform_destroy(self, glamp_instance):
         self.log_event(self.request, glamp_instance)
         return super().perform_destroy(glamp_instance)
@@ -249,6 +253,7 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
 
         return [permission() for permission in permission_classes]
 
+    @transaction.atomic
     def perform_create(self, serializer):
         category_id = self.kwargs.get("category_id")
         category = get_object_or_404(Category, id=category_id)
@@ -256,11 +261,13 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
         self.log_event(self.request, glamp_instance)
         return glamp_instance
 
+    @transaction.atomic
     def perform_update(self, serializer):
         glamp_instance = serializer.save()
         self.log_event(self.request, glamp_instance)
         return glamp_instance
 
+    @transaction.atomic
     def perform_destroy(self, glamp_instance):
         self.log_event(self.request, glamp_instance)
         return super().perform_destroy(glamp_instance)

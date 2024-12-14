@@ -1,6 +1,3 @@
-from uuid import uuid4
-from wsgiref.validate import validator
-
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (
@@ -17,12 +14,12 @@ from django.db.models import (
     TextField,
 )
 
-from django.utils.translation import gettext as _
-
-from categories.models import Category
-from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
 from addons.mixins.timestamps import TimestampMixin
+from categories.models import Category
+from django.utils.translation import gettext as _
+from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
 from glamps.validators import validate_type, validate_status, validate_name_glamp
+
 
 User = get_user_model()
 
