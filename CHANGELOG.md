@@ -105,3 +105,7 @@
 1. Moved categories to http://localhost:8181/api/v1/categories/.
 2. Added a new endponit http://localhost:8181/api/v1/categories/{category_id}/glamps/{glamp_id}/.
 ---
+## 14.12.2024 13:35. Fixed bugs in glamps.
+1. Fixed transliteration name glamp.
+2. Fixed 500 errors in glamps urls.
+---
