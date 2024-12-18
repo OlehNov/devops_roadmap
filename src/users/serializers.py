@@ -8,7 +8,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from users.utils import TokenGenerator
 
-
 User = get_user_model()
 
 

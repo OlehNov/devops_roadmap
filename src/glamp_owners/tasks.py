@@ -1,4 +1,5 @@
 from celery import shared_task
+
 from glamp_owners.services.owner_verify import send_verification_email
 
 

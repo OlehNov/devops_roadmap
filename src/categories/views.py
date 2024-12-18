@@ -1,5 +1,5 @@
-from rest_framework.viewsets import ModelViewSet
 from drf_spectacular.utils import extend_schema
+from rest_framework.viewsets import ModelViewSet
 
 from addons.mixins.eventlog import EventLogMixin
 from categories.models import Category

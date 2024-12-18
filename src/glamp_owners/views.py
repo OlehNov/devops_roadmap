@@ -1,26 +1,22 @@
-from drf_spectacular.utils import extend_schema
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from drf_spectacular.utils import extend_schema
+from rest_framework import status
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
-from roles.constants import ProfileStatus, Role
 
+from addons.handlers.errors import handle_error
 from addons.mixins.eventlog import EventLogMixin
 from glamp_owners.models import GlampOwner
-from rest_framework.permissions import AllowAny
-from users.validators import validate_first_name_last_name
-from tourists.validators import validate_phone
-from rest_framework.serializers import ValidationError
-from rest_framework.response import Response
-from rest_framework import status
+from glamp_owners.permissions import IsAdministrator, IsManager, IsOwner
+from glamp_owners.serializers import (GlampOwnerRegisterSerializer,
+                                      GlampOwnerSerializer)
 from glamp_owners.tasks import verify_glamp_owner
-from addons.handlers.errors import handle_error
-from rest_framework.response import Response
-from glamp_owners.serializers import (
-    GlampOwnerRegisterSerializer,
-    GlampOwnerSerializer,
-)
-from glamp_owners.permissions import IsAdministrator, IsOwner, IsManager
-
+from roles.constants import ProfileStatus, Role
+from tourists.validators import validate_phone
+from users.validators import validate_first_name_last_name
 
 User = get_user_model()
 

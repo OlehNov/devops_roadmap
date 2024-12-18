@@ -1,25 +1,16 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db.models import (
-    CASCADE,
-    SET_NULL,
-    BooleanField,
-    CharField,
-    DecimalField,
-    FloatField,
-    ForeignKey,
-    PositiveSmallIntegerField,
-    UUIDField,
-    SlugField,
-    TextField,
-)
+from django.db.models import (CASCADE, SET_NULL, BooleanField, CharField,
+                              DecimalField, FloatField, ForeignKey,
+                              PositiveSmallIntegerField, SlugField, TextField,
+                              UUIDField)
+from django.utils.translation import gettext as _
 
 from addons.mixins.timestamps import TimestampMixin
 from categories.models import Category
-from django.utils.translation import gettext as _
 from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
-from glamps.validators import validate_type, validate_status, validate_name_glamp
-
+from glamps.validators import (validate_name_glamp, validate_status,
+                               validate_type)
 
 User = get_user_model()
 

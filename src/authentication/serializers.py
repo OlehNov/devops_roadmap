@@ -1,9 +1,7 @@
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.serializers import (
-    TokenObtainPairSerializer,
-    TokenRefreshSerializer,
-    TokenVerifySerializer,
-)
+from rest_framework_simplejwt.serializers import (TokenObtainPairSerializer,
+                                                  TokenRefreshSerializer,
+                                                  TokenVerifySerializer)
 
 User = get_user_model()
 

@@ -1,19 +1,18 @@
-from rest_framework.viewsets import ModelViewSet
-from managers.models import GlampManager
-
-# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
-from managers.serializers import ManagerSerializer, ManagerRegisterSerializer
-from drf_spectacular.utils import extend_schema
-from rest_framework.response import Response
-from roles.constants import ProfileStatus, Role
-from rest_framework import status
-from managers.permissions import IsAdministrator, IsManager
-from addons.mixins.eventlog import EventLogMixin
-from rest_framework.serializers import ValidationError
-from users.validators import validate_first_name_last_name
-from django.db import transaction
 from django.contrib.auth import get_user_model
+from django.db import transaction
+from drf_spectacular.utils import extend_schema
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.serializers import ValidationError
+from rest_framework.viewsets import ModelViewSet
 
+from addons.mixins.eventlog import EventLogMixin
+from managers.models import GlampManager
+from managers.permissions import IsAdministrator, IsManager
+# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
+from managers.serializers import ManagerRegisterSerializer, ManagerSerializer
+from roles.constants import ProfileStatus, Role
+from users.validators import validate_first_name_last_name
 
 User = get_user_model()
 

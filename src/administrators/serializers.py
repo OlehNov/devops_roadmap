@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer
+
 from administrators.models import Administrator
 from users.serializers import UserRegisterSerializer, UserSerializer
-
 
 User = get_user_model()
 

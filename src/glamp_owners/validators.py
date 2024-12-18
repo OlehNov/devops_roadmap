@@ -1,5 +1,6 @@
-from glamp_owners.constants import VipStatus
 from django.core.exceptions import ValidationError
+
+from glamp_owners.constants import VipStatus
 
 
 def vip_status_validator(value):

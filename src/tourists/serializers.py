@@ -1,10 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer
-from users.serializers import UserRegisterSerializer, UserSerializer
-
 
 from tourists.models import Tourist
-
+from users.serializers import UserRegisterSerializer, UserSerializer
 
 User = get_user_model()
 

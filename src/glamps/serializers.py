@@ -10,7 +10,6 @@ from glamps.models import Glamp, Picture
 from glamps.validators import validate_slug_glamp
 from users.serializers import UserSerializer
 
-
 User = get_user_model()
 
 

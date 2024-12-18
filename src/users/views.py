@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from drf_spectacular.utils import extend_schema
 from django.urls import reverse
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
@@ -15,15 +15,10 @@ from rest_framework.viewsets import ModelViewSet
 from addons.mixins.eventlog import EventLogMixin
 from roles.constants import Role
 from users.permissions import IsAuthenticatedOrForbidden
-from users.serializers import (
-    ActivateUserSerializer,
-    CurrentUserSerializer,
-    PasswordResetConfirmSerializer,
-    PasswordResetRequestSerializer,
-    UserSerializer,
-)
+from users.serializers import (ActivateUserSerializer, CurrentUserSerializer,
+                               PasswordResetConfirmSerializer,
+                               PasswordResetRequestSerializer, UserSerializer)
 from users.tasks import send_reset_password_email
-
 
 User = get_user_model()
 
