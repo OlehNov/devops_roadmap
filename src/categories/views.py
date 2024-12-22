@@ -13,3 +13,7 @@ class CategoryViewSet(ModelViewSet, EventLogMixin):
     serializer_class = CategorySerializer
     permission_classes = (RoleIsManager | IsAdminOrSuperuser, )
     lookup_url_kwarg = "category_id"
+
+    def perform_destroy(self, instance):
+        self.log_event(self.request, instance)
+        super().perform_destroy(instance)
