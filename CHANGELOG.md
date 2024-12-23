@@ -109,3 +109,7 @@
 1. Fixed transliteration name glamp.
 2. Fixed 500 errors in glamps urls.
 ---
+## 23.12.2024 11:17. Adapted event_log to serializers.
+1. Adapted event_log to serializers.
+2. Add new OperationType in event_log
+---
