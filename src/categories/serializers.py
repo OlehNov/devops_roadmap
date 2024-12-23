@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer, ValidationError
 from slugify import slugify
@@ -38,6 +39,7 @@ class CategorySerializer(ModelSerializer, EventLogForSerializersMixin):
 
         return attrs
 
+    @transaction.atomic
     def create(self, validated_data):
         category = super().create(validated_data)
         request = self.context.get("request")
@@ -46,6 +48,7 @@ class CategorySerializer(ModelSerializer, EventLogForSerializersMixin):
             self.log_event_for_serializer(request=request, validated_data=category)
         return category
 
+    @transaction.atomic
     def update(self, instance, validated_data):
         updated_instance = super().update(instance, validated_data)
         request = self.context.get("request")
