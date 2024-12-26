@@ -11,8 +11,10 @@ from addons.handlers.errors import handle_error
 from addons.mixins.eventlog import EventLogMixin
 from glamp_owners.models import GlampOwner
 from glamp_owners.permissions import IsAdministrator, IsManager, IsOwner
-from glamp_owners.serializers import (GlampOwnerRegisterSerializer,
-                                      GlampOwnerSerializer)
+from glamp_owners.serializers import (
+    GlampOwnerRegisterSerializer,
+    GlampOwnerSerializer,
+)
 from glamp_owners.tasks import verify_glamp_owner
 from roles.constants import ProfileStatus, Role
 from tourists.validators import validate_phone
@@ -81,21 +83,23 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
                 is_staff=False,
             )
 
-            try:
-                owner = GlampOwner.objects.get(id=user.id, user=user)
+            owner = GlampOwner.objects.get(id=user.id, user=user)
 
-                owner.first_name = first_name
-                owner.last_name = last_name
-                owner.phone = phone
-                owner.save()
+            if not owner:
+                return Response(
+                    {"detail": "Not Fopund"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
-                transaction.on_commit(verify_glamp_owner(user.id))
+            owner.first_name = first_name
+            owner.last_name = last_name
+            owner.phone = phone
+            owner.save()
 
-            except Exception as e:
-                handle_error(e)
+            transaction.on_commit(verify_glamp_owner(user.id))
 
-                self.log_event(request, operated_object=user)
-                self.log_event(request, operated_object=owner)
+            self.log_event(request, operated_object=user)
+            self.log_event(request, operated_object=owner)
 
             return Response(
                 GlampOwnerSerializer(owner).data,
