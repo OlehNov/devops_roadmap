@@ -87,7 +87,7 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
 
             if not owner:
                 return Response(
-                    {"detail": "Not Fopund"},
+                    {"detail": "Not Found"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
