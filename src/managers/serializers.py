@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer
+
 from managers.models import GlampManager
 from users.serializers import UserRegisterSerializer, UserSerializer
-
 
 User = get_user_model()
 

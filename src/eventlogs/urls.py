@@ -2,7 +2,6 @@ from django.urls import path
 
 from eventlogs.api import EventLogListAPIView, EventLogRetrieveAPIView
 
-
 urlpatterns = [
     path(
         "",

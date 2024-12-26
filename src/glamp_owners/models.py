@@ -1,15 +1,18 @@
 from django.contrib.auth import get_user_model
-from addons.mixins.timestamps import TimestampMixin
 from django.db import models
-from tourists.validators import validate_phone
-from glamp_owners.validators import vip_status_validator
 
+from addons.mixins.timestamps import TimestampMixin
+from glamp_owners.validators import vip_status_validator
+from tourists.validators import validate_phone
 
 User = get_user_model()
 
 
 class GlampOwner(TimestampMixin):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    first_name = models.CharField(max_length=255, null=True, default=None)
+    last_name = models.CharField(max_length=255, null=True, default=None)
 
     is_hidden = models.BooleanField(default=False)
     is_verified = models.BooleanField(default=False)

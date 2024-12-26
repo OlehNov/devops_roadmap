@@ -6,7 +6,8 @@ from unidecode import unidecode
 
 from addons.mixins.eventlog import EventLogForSerializersMixin
 from categories.models import Category
-from categories.validators import validate_slug_category, validate_name_category
+from categories.validators import (validate_name_category,
+                                   validate_slug_category)
 
 
 class CategorySerializer(ModelSerializer, EventLogForSerializersMixin):

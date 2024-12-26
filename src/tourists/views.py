@@ -1,23 +1,21 @@
-from drf_spectacular.utils import extend_schema
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from rest_framework.viewsets import ModelViewSet
-from roles.constants import ProfileStatus, Role
-
-from addons.mixins.eventlog import EventLogMixin
-from tourists.models import Tourist
-from tourists.serializers import TouristSerializer, TouristRegisterSerializer
-from rest_framework.permissions import AllowAny
-from users.validators import validate_first_name_last_name
-from tourists.validators import validate_birthday, validate_phone
-from rest_framework.serializers import ValidationError
-from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from users.tasks import verify_email
-from addons.handlers.errors import handle_error
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from tourists.permissions import IsAdministrator, IsTourist, IsManager
+from rest_framework.serializers import ValidationError
+from rest_framework.viewsets import ModelViewSet
 
+from addons.handlers.errors import handle_error
+from addons.mixins.eventlog import EventLogMixin
+from roles.constants import ProfileStatus, Role
+from tourists.models import Tourist
+from tourists.permissions import IsAdministrator, IsManager, IsTourist
+from tourists.serializers import TouristRegisterSerializer, TouristSerializer
+from tourists.validators import validate_birthday, validate_phone
+from users.tasks import verify_email
+from users.validators import validate_first_name_last_name
 
 User = get_user_model()
 
@@ -54,6 +52,12 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):
+        if Tourist.objects.filter(user=request.user).exist():
+            return Response(
+                {"detail": "User with Tourist profile can't create a new tourist."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
+
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
@@ -89,9 +93,11 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
 
                 tourist.first_name = first_name
                 tourist.last_name = last_name
+                tourist.birthday = birthday
+                tourist.phone = phone
                 tourist.save()
 
-                verify_email.apply_async(args=[user.pk])
+                transaction.on_commit(verify_email(user.id))
 
             except Exception as e:
                 handle_error(e)

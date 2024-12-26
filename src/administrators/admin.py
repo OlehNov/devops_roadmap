@@ -1,10 +1,11 @@
 from django.contrib import admin
-from administrators.models import Administrator
-from roles.constants import Role
-from django.db import transaction
 from django.core.handlers.wsgi import WSGIRequest
+from django.db import transaction
 from django.db.models import Model
 from django.forms import ModelForm
+
+from administrators.models import Administrator
+from roles.constants import Role
 
 
 class AdministratorAdmin(admin.ModelAdmin):

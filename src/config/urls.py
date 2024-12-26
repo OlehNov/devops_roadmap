@@ -1,15 +1,12 @@
+import debug_toolbar
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path
-from drf_spectacular.views import (
-    SpectacularJSONAPIView,
-    SpectacularRedocView,
-    SpectacularSwaggerView,
-)
-import debug_toolbar
+from drf_spectacular.views import (SpectacularJSONAPIView,
+                                   SpectacularRedocView,
+                                   SpectacularSwaggerView)
 
 from config import api
-
 
 ROOT_API = settings.ROOT_API
 

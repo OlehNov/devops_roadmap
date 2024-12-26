@@ -6,25 +6,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = (
     "django-insecure-k$83@$)75u_^s==b+!rf%3^99-mrw7-0o43)yw0@tb8i8^acil"
 )
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-
-# Application definition
 INSTALLED_APPS = [
     "jazzmin",
     "django.contrib.admin",
@@ -77,7 +68,6 @@ ROOT_URLCONF = "config.urls"
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-# Templates Settings
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -98,16 +88,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
-# Pagination settings
 MAX_PAGE_SIZE = 50
 DEFAULT_PAGE_SIZE = 10
 
-
-EVENTLOGS_DB_ALIAS = os.getenv("EVENTLOGS_DB_ALIAS", "eventlog")
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 DATABASES = {
     "default": {
         "ENGINE": os.getenv("DB_ENGINE", default="django.db.backends.mysql"),
@@ -117,7 +100,7 @@ DATABASES = {
         "HOST": os.getenv("DB_HOST", default="localhost"),
         "PORT": int(os.getenv("DB_PORT", default="3306")),
     },
-    EVENTLOGS_DB_ALIAS: {
+    "eventlog": {
         "ENGINE": os.getenv(
             "EVENTLOGS_DB_ENGINE", default="django.db.backends.mysql"
         ),
@@ -131,8 +114,6 @@ DATABASES = {
     },
 }
 
-
-# REST FRAMEWORK Settings
 REST_FRAMEWORK = {
     "DEFAULT_FILTER_BACKENDS": [
         # "django_filters.rest_framework.DjangoFilterBackend",
@@ -155,7 +136,6 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": DEFAULT_PAGE_SIZE,
 }
 
-# Simple JWT Settings
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -190,17 +170,6 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
-# Allow Django to trust the proxy headers set by Nginx
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
-# Ensure session and CSRF cookies are only sent over HTTPS
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -231,9 +200,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/5.0/topics/i18n/
-
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "Europe/Kiev"
@@ -242,15 +208,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.0/howto/static-files/
-
 STATIC_URL = "/static/"
 MEDIA_URL = "/glamp_pic/"
-
-
-# Cloudinary storage settings
 
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
@@ -260,13 +219,8 @@ CLOUDINARY_STORAGE = {
 
 DEFAULT_FILE_STORAGE = os.getenv("DEFAULT_FILE_STORAGE")
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-# Spectacular Settings
 SPECTACULAR_SETTINGS = {
     "TITLE": "GLAMP API",
     "DESCRIPTION": "GLAMP REST API.",
@@ -314,8 +268,6 @@ SPECTACULAR_SETTINGS = {
     "PREPROCESSING_HOOKS": [],  # Pre-processing hooks to modify or inspect the schema
 }
 
-
-# JazzMin Settings
 JAZZMIN_SETTINGS = {
     "site_title": "Glamp",
     "site_header": "Glamp",
@@ -363,8 +315,6 @@ JAZZMIN_SETTINGS = {
     "related_modal_active": False,
 }
 
-
-# CELERY Settings
 CELERY_ACCEPT_CONTENT = ["application/json"]
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
@@ -376,19 +326,6 @@ CELERY_RESULT_BACKEND = os.getenv(
 )
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
-
-# Cache Settings
-
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': os.getenv('CELERY_LOCATION'),
-#         'OPTIONS': {
-#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#         }
-#     }
-# }
-
 EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
 EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
 EMAIL_HOST = os.getenv("EMAIL_HOST")
@@ -399,47 +336,6 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
-
-# Logging settings
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    'formatters': {
-        'verbose': {
-            'format': '{asctime} {levelname} {name} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '{levelname} {message}',
-            'style': '{',
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-            "class": "logging.StreamHandler",
-            "formatter": "verbose",
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-            "propagate": True,
-        },
-        "django.request": {
-            "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-            "propagate": False,
-        },
-        "django.db.backends": {
-            "handlers": ["console"],
-            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-            "propagate": False,
-        },
-    },
-}
-
 
 if DEBUG:
     REST_FRAMEWORK = {

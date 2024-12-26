@@ -1,22 +1,18 @@
-from rest_framework.viewsets import ModelViewSet
-from administrators.models import Administrator
-
-from administrators.serializers import (
-    AdministratorSerializer,
-    AdministratorRegisterSerializer,
-)
-from users.validators import validate_first_name_last_name
-from django.db import transaction
 from django.contrib.auth import get_user_model
-
-from administrators.permissions import IsAdmin
+from django.db import transaction
 from drf_spectacular.utils import extend_schema
-from rest_framework.response import Response
-from roles.constants import ProfileStatus, Role
 from rest_framework import status
-from addons.mixins.eventlog import EventLogMixin
+from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
+from rest_framework.viewsets import ModelViewSet
 
+from addons.mixins.eventlog import EventLogMixin
+from administrators.models import Administrator
+from administrators.permissions import IsAdmin
+from administrators.serializers import (AdministratorRegisterSerializer,
+                                        AdministratorSerializer)
+from roles.constants import ProfileStatus, Role
+from users.validators import validate_first_name_last_name
 
 User = get_user_model()
 

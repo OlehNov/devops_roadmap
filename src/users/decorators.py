@@ -1,7 +1,9 @@
 from functools import wraps
+
 from django.contrib.auth import get_user_model
-from roles.constants import Role, ProfileStatus
 from django.db import transaction
+
+from roles.constants import ProfileStatus, Role
 
 
 def __deactivate_profile(model, user_instance):

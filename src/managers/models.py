@@ -1,8 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+
 from addons.mixins.timestamps import TimestampMixin
 from roles.constants import HELP_TEXT_PROFILE_STATUS
-
 
 User = get_user_model()
 

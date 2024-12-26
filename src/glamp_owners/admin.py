@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from glamp_owners.models import GlampOwner
+
 
 class GlampOwnerAdmin(admin.ModelAdmin):
     list_filter = [

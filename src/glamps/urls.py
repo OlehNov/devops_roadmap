@@ -1,7 +1,6 @@
 from rest_framework.routers import DefaultRouter
 
-from glamps.views import GlampModelViewSet, GlampByCategoryViewSet
-
+from glamps.views import GlampByCategoryViewSet, GlampModelViewSet
 
 router = DefaultRouter()
 router.register("glamps", GlampModelViewSet, basename="glamp")

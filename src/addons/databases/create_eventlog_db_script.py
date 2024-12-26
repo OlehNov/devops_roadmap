@@ -3,7 +3,6 @@ import subprocess
 
 from dotenv import load_dotenv
 
-
 load_dotenv()
 
 root_user = os.getenv("ROOT_USER", "root")

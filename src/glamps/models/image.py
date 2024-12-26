@@ -2,8 +2,8 @@ from django.core.validators import FileExtensionValidator
 from django.db.models import CASCADE, FileField, ForeignKey
 from django.utils.translation import gettext as _
 
-from glamps.utils import folder_path
 from addons.mixins.timestamps import TimestampMixin
+from glamps.utils import folder_path
 
 
 class Picture(TimestampMixin):

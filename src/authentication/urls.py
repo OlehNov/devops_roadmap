@@ -1,10 +1,8 @@
 from django.urls import path
 
-from authentication.api import (
-    CustomObtainTokenPairView,
-    CustomTokenRefreshView,
-    CustomTokenVerifyView, UserLogoutView,
-)
+from authentication.api import (CustomObtainTokenPairView,
+                                CustomTokenRefreshView, CustomTokenVerifyView,
+                                UserLogoutView)
 
 urlpatterns = [
     path("token/", CustomObtainTokenPairView.as_view(), name="token_obtain_pair"),

@@ -1,13 +1,9 @@
-from django.db.models import (
-    BooleanField,
-    CharField,
-    SlugField,
-    TextField,
-)
+from django.db.models import BooleanField, CharField, SlugField, TextField
 from django.utils.translation import gettext as _
 
 from addons.mixins.timestamps import TimestampMixin
-from categories.validators import validate_name_category, validate_slug_category
+from categories.validators import (validate_name_category,
+                                   validate_slug_category)
 
 
 class Category(TimestampMixin):

@@ -19,4 +19,13 @@ class IsManager(BasePermission):
         return request.user.role == Role.MANAGER
 
     def has_object_permission(self, request, view, obj):
+        return self.has_permission(request, view)
+
+
+class IsOwner(BasePermission):
+    def has_permission(self, request, view):
+        user_authenticated(user=request.user)
+        return request.user.role == Role.TOURIST
+
+    def has_object_permission(self, request, view, obj):
         return obj.id == request.user.id

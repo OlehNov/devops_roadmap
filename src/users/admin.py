@@ -1,10 +1,11 @@
 from typing import Any
+
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from roles.constants import Role
-from administrators.models import Administrator
-from tourists.models import Tourist
 
+from administrators.models import Administrator
+from roles.constants import Role
+from tourists.models import Tourist
 
 User = get_user_model()
 

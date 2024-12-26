@@ -1,15 +1,8 @@
-from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-from glamp_owners.views import (
-    GlampOwnerRegisterView,
-    GlampOwnerListAPIView,
-    GlampOwnerRetrieveUpdateDestroyAPIView
-)
+from glamp_owners.views import GlampOwnerViewSet
 
-urlpatterns = [
-    path(
-        "glampowner-register/", GlampOwnerRegisterView.as_view(), name="glampowner_register"
-    ),
-    path("", GlampOwnerListAPIView.as_view()),
-    path("<int:glampowner_id>/", GlampOwnerRetrieveUpdateDestroyAPIView.as_view()),
-]
+router = DefaultRouter()
+router.register("", GlampOwnerViewSet, basename="glamp_owners")
+
+urlpatterns = [] + router.urls

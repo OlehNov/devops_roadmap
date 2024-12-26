@@ -1,21 +1,16 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-    TokenVerifyView,
-)
-from drf_spectacular.utils import extend_schema
+from rest_framework_simplejwt.views import (TokenObtainPairView,
+                                            TokenRefreshView, TokenVerifyView)
 
-from authentication.serializers import (
-    CustomTokenObtainPairSerializer,
-    CustomTokenRefreshSerializer,
-    CustomTokenVerifySerializer,
-)
 from addons.handlers.errors import handle_error
+from authentication.serializers import (CustomTokenObtainPairSerializer,
+                                        CustomTokenRefreshSerializer,
+                                        CustomTokenVerifySerializer)
 
 
 @extend_schema(tags=["token"])

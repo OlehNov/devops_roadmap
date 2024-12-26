@@ -1,6 +1,7 @@
 from rest_framework.permissions import BasePermission
-from roles.constants import Role
+
 from glamps.permissions import user_authenticated
+from roles.constants import Role
 
 
 class IsAdmin(BasePermission):

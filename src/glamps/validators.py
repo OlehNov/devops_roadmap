@@ -1,7 +1,9 @@
 import re
 
 from django.core.exceptions import ValidationError
-from glamps.constants import TypeGlamp, GlampStatus
+
+from glamps.constants import GlampStatus, TypeGlamp
+
 
 def validate_type(value):
     if value not in [type_glamp.value for type_glamp in TypeGlamp]:
