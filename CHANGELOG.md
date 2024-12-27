@@ -111,5 +111,9 @@
 ---
 ## 23.12.2024 11:17. Adapted event_log to serializers.
 1. Adapted event_log to serializers.
-2. Add new OperationType in event_log
+2. Add new OperationType in event_log.
+---
+## 27.12.2024 15:40. Create validator for glamp price.
+1. Add validator for glamp price.
+2. Fix validators for glamp status and type.
 ---

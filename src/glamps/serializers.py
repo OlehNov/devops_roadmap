@@ -7,7 +7,7 @@ from unidecode import unidecode
 from categories.models import Category
 from categories.serializers import CategorySerializer
 from glamps.models import Glamp, Picture
-from glamps.validators import validate_slug_glamp
+from glamps.validators import validate_slug_glamp, validate_type, validate_status, validate_glamp_price
 from users.serializers import UserSerializer
 
 User = get_user_model()
@@ -26,15 +26,16 @@ class GlampSerializer(ModelSerializer):
         queryset=Category.objects.all(), write_only=True, source='category', required=True
     )
     owner = UserSerializer(read_only=True)
-    glamp_type = serializers.IntegerField(required=True)
+    glamp_type = serializers.IntegerField(required=True, validators=[validate_type])
     name = serializers.CharField(required=True, max_length=225)
     capacity = serializers.IntegerField(required=True, min_value=1)
-    status = serializers.IntegerField(required=True)
+    status = serializers.IntegerField(required=True, validators=[validate_status])
     description = serializers.CharField(required=True, max_length=5000)
     street = serializers.CharField(required=True, max_length=225)
     number_of_bedrooms = serializers.IntegerField(required=True)
     number_of_beds = serializers.IntegerField(required=True)
     number_of_bathrooms = serializers.IntegerField(required=True)
+    price = serializers.DecimalField(required=False, max_digits=10, decimal_places=2, validators=[validate_glamp_price])
 
     class Meta:
         model = Glamp

@@ -40,3 +40,10 @@ def validate_slug_glamp(value):
         raise ValidationError({"slug": "The slug must have more than zero characters."})
 
     return value
+
+
+def validate_glamp_price(price):
+    if int(price) < 0:
+        raise ValidationError("The price cannot be negative.")
+
+    return price

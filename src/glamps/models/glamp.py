@@ -10,7 +10,7 @@ from addons.mixins.timestamps import TimestampMixin
 from categories.models import Category
 from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
 from glamps.validators import (validate_name_glamp, validate_status,
-                               validate_type)
+                               validate_type, validate_glamp_price)
 
 User = get_user_model()
 
@@ -49,6 +49,7 @@ class Glamp(TimestampMixin):
         null=True,
         blank=True,
         help_text=_("Price for one night"),
+        validators=[validate_glamp_price]
     )
     status = PositiveSmallIntegerField(
         _("Status"), help_text=HELP_TEXT_STATUSES, default=None, validators=[validate_status]
