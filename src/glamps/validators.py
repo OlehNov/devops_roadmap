@@ -1,4 +1,5 @@
 import re
+from decimal import Decimal
 
 from django.core.exceptions import ValidationError
 
@@ -43,7 +44,7 @@ def validate_slug_glamp(value):
 
 
 def validate_glamp_price(price):
-    if int(price) < 0:
+    if Decimal(price) < 0:
         raise ValidationError("The price cannot be negative.")
 
     return price
