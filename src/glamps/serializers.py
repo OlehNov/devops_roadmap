@@ -96,15 +96,16 @@ class GlampByCategoryViewSet(ModelSerializer):
     # picture = PictureSerializer(many=True)
     category = CategorySerializer(read_only=True)
     owner = UserSerializer(read_only=True)
-    glamp_type = serializers.IntegerField(required=True)
+    glamp_type = serializers.IntegerField(required=True, validators=[validate_type])
     name = serializers.CharField(required=True, max_length=225)
     capacity = serializers.IntegerField(required=True, min_value=1)
-    status = serializers.IntegerField(required=True)
+    status = serializers.IntegerField(required=True, validators=[validate_status])
     description = serializers.CharField(required=True, max_length=5000)
     street = serializers.CharField(required=True, max_length=225)
     number_of_bedrooms = serializers.IntegerField(required=True)
     number_of_beds = serializers.IntegerField(required=True)
     number_of_bathrooms = serializers.IntegerField(required=True)
+    price = serializers.DecimalField(required=False, max_digits=10, decimal_places=2, validators=[validate_glamp_price])
 
     class Meta:
         model = Glamp
