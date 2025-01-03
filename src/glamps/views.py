@@ -201,13 +201,15 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
     @transaction.atomic
     def perform_create(self, serializer):
         glamp_instance = serializer.save()
-        self.log_event(self.request, glamp_instance)
+        validated_data = serializer.validated_data
+        self.log_event(self.request, glamp_instance, validated_data=validated_data)
         return glamp_instance
 
     @transaction.atomic
     def perform_update(self, serializer):
         glamp_instance = serializer.save()
-        self.log_event(self.request, glamp_instance)
+        validated_data = serializer.validated_data
+        self.log_event(self.request, glamp_instance, validated_data=validated_data)
         return glamp_instance
 
     @transaction.atomic
@@ -254,13 +256,15 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
         category_id = self.kwargs.get("category_id")
         category = get_object_or_404(Category, id=category_id)
         glamp_instance = serializer.save(category=category)
-        self.log_event(self.request, glamp_instance)
+        validated_data = serializer.validated_data
+        self.log_event(self.request, glamp_instance, validated_data=validated_data, category=category)
         return glamp_instance
 
     @transaction.atomic
     def perform_update(self, serializer):
         glamp_instance = serializer.save()
-        self.log_event(self.request, glamp_instance)
+        validated_data = serializer.validated_data
+        self.log_event(self.request, glamp_instance, validated_data=validated_data)
         return glamp_instance
 
     @transaction.atomic
