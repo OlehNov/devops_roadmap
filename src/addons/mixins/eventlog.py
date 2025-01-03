@@ -45,7 +45,7 @@ class EventLogMixin:
             return ValueError(f"{value} is None")
         return value
 
-    def log_event(self, request, operated_object, operation_type=None):
+    def log_event(self, request, operated_object, **kwargs):
         """
         This method is used for logging event and must be implemented in your code after successfully writing to DB
         Takes two arguments - request and operated_object (object)
@@ -53,13 +53,20 @@ class EventLogMixin:
 
         request = self._validate(request)
         operated_object = self._validate(operated_object)
+        validated_data = kwargs.get("validated_data", {})
+
+        if kwargs.get("category"):
+            validated_data["category"] = kwargs.get("category")
+
         instance = {
             "instance_id": operated_object.id,
             "instance_class": operated_object.__class__.__name__,
-            "request_data": request.data,
+            "validated_data": validated_data,
         }
 
         # checking request method and setting operation type depending on it
+        operation_type = kwargs.get("operation_type", None)
+
         if not operation_type:
             match request.method.upper():
                 case "POST":
@@ -100,7 +107,7 @@ class EventLogForSerializersMixin:
             return ValueError(f"{value} is None")
         return value
 
-    def log_event_for_serializer(self, request, validated_data, operation_type=None):
+    def log_event_for_serializer(self, request, validated_data, **kwargs):
         """
         Logs an event from serializers.
         """
@@ -115,6 +122,7 @@ class EventLogForSerializersMixin:
             "validated_data": model_to_dict(validated_data),
         }
 
+        operation_type = kwargs.get("operation_type", None)
         if not operation_type:
             if request.method == "POST":
                 operation_type = OperationType.CREATE
