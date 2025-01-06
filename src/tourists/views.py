@@ -6,8 +6,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.exceptions import PermissionDenied
 
-from addons.handlers.errors import handle_error
 from addons.mixins.eventlog import EventLogMixin
 from roles.constants import ProfileStatus, Role
 from tourists.models import Tourist
@@ -126,6 +126,9 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
 
+        if instance.user != request.user:
+            raise PermissionDenied("Not Allowed")
+
         data = {
             "first_name": request.data.get("first_name"),
             "last_name": request.data.get("last_name"),
@@ -168,6 +171,9 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
     @transaction.atomic()
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
+
+        if instance.user != request.user:
+            raise PermissionDenied("Not Allowed")
 
         if instance.status == ProfileStatus.DEACTIVATED:
             return Response(

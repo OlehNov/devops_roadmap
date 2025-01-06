@@ -9,8 +9,10 @@ from rest_framework.viewsets import ModelViewSet
 from addons.mixins.eventlog import EventLogMixin
 from administrators.models import Administrator
 from administrators.permissions import IsAdmin
-from administrators.serializers import (AdministratorRegisterSerializer,
-                                        AdministratorSerializer)
+from administrators.serializers import (
+    AdministratorRegisterSerializer,
+    AdministratorSerializer,
+)
 from roles.constants import ProfileStatus, Role
 from users.validators import validate_first_name_last_name
 

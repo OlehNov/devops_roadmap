@@ -9,6 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 from addons.mixins.eventlog import EventLogMixin
 from managers.models import GlampManager
 from managers.permissions import IsAdministrator, IsManager
+
 # from addons.backend_filters.filter_backend import CustomBaseFilterBackend
 from managers.serializers import ManagerRegisterSerializer, ManagerSerializer
 from roles.constants import ProfileStatus, Role
