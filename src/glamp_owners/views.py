@@ -55,6 +55,17 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):
+
+        if not request.user.is_anonymous:
+
+            if GlampOwner.objects.filter(user=request.user).exists():
+                return Response(
+                    {
+                        "detail": "User with Glamp Owner profile can't create a new Glamp Owner."
+                    },
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
