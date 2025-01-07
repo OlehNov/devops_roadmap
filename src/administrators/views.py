@@ -65,8 +65,8 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
 
             validated_data = serializer.validated_data
 
-            self.log_event(request, user, validated_data=validated_data)
-            self.log_event(request, administrator, validated_data=validated_data)
+            self.log_event(request, operated_object=user, validated_data=validated_data)
+            self.log_event(request, operated_object=administrator, validated_data=validated_data)
 
             return Response(
                 AdministratorSerializer(administrator).data,
@@ -86,7 +86,7 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
         if serializer.is_valid():
             validated_data = serializer.validated_data
             self.perform_update(serializer)
-            self.log_event(request, instance, validated_data=validated_data)
+            self.log_event(request, operated_object=instance, validated_data=validated_data)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
@@ -112,7 +112,7 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
             instance.status = ProfileStatus.DEACTIVATED
             instance.save()
 
-            self.log_event(request, instance)
+            self.log_event(request, operated_object=instance)
 
             return Response(
                 {"detail": "Object deactivated successfully."},

@@ -49,17 +49,17 @@ class UserViewSet(ModelViewSet, EventLogMixin):
     def perform_create(self, serializer):
         model = serializer.save()
         validated_data = serializer.validated_data
-        self.log_event(self.request, model, validated_data=validated_data)
+        self.log_event(self.request, operated_object=model, validated_data=validated_data)
         return model
 
     def perform_update(self, serializer):
         model = serializer.save()
         validated_data = serializer.validated_data
-        self.log_event(self.request, model, validated_data=validated_data)
+        self.log_event(self.request, operated_object=model, validated_data=validated_data)
         return model
 
     def perform_destroy(self, model):
-        self.log_event(self.request, model)
+        self.log_event(self.request, operated_object=model)
         return super().perform_destroy(model)
 
 

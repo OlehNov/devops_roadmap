@@ -202,19 +202,19 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
     def perform_create(self, serializer):
         glamp_instance = serializer.save()
         validated_data = serializer.validated_data
-        self.log_event(self.request, glamp_instance, validated_data=validated_data)
+        self.log_event(self.request, operated_object=glamp_instance, validated_data=validated_data)
         return glamp_instance
 
     @transaction.atomic
     def perform_update(self, serializer):
         glamp_instance = serializer.save()
         validated_data = serializer.validated_data
-        self.log_event(self.request, glamp_instance, validated_data=validated_data)
+        self.log_event(self.request, operated_object=glamp_instance, validated_data=validated_data)
         return glamp_instance
 
     @transaction.atomic
     def perform_destroy(self, glamp_instance):
-        self.log_event(self.request, glamp_instance)
+        self.log_event(self.request, operated_object=glamp_instance)
         return super().perform_destroy(glamp_instance)
 
 
@@ -257,18 +257,18 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
         category = get_object_or_404(Category, id=category_id)
         glamp_instance = serializer.save(category=category)
         validated_data = serializer.validated_data
-        self.log_event(self.request, glamp_instance, validated_data=validated_data, category=category)
+        self.log_event(self.request, operated_object=glamp_instance, validated_data=validated_data, category=category)
         return glamp_instance
 
     @transaction.atomic
     def perform_update(self, serializer):
         glamp_instance = serializer.save()
         validated_data = serializer.validated_data
-        self.log_event(self.request, glamp_instance, validated_data=validated_data)
+        self.log_event(self.request, operated_object=glamp_instance, validated_data=validated_data)
         return glamp_instance
 
     @transaction.atomic
     def perform_destroy(self, glamp_instance):
-        self.log_event(self.request, glamp_instance)
+        self.log_event(self.request, operated_object=glamp_instance)
         return super().perform_destroy(glamp_instance)
 
