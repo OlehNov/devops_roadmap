@@ -1,10 +1,8 @@
-from django.contrib import admin
+import typing as t
 from django.contrib import admin
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Model
 from django.forms import ModelForm
-
-from administrators.models import Administrator
 
 from tourists.models import Tourist
 
@@ -42,6 +40,7 @@ class TouristAdmin(admin.ModelAdmin):
     def save_model(
         self, request: WSGIRequest, obj: Model, form: ModelForm, change: bool
     ) -> None:
+
         if obj.user:
             obj.id = obj.user.id
 
