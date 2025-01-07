@@ -23,13 +23,31 @@ User = get_user_model()
 class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
     queryset = Administrator.objects.select_related("user")
     serializer_class = AdministratorSerializer
-    permission_classes = [IsAdmin]
     lookup_url_kwarg = "administrator_id"
 
     def get_serializer_class(self):
         if self.action == "create":
             return AdministratorRegisterSerializer
         return AdministratorSerializer
+
+    def get_permissions(self):
+        match self.actions:
+            case "create":
+                permission_classes = [IsAdmin]
+            case "list":
+                permission_classes = [IsAdmin]
+            case "retrieve":
+                permission_classes = [IsAdmin]
+            case "update":
+                permission_classes = [IsAdmin]
+            case "partial_update":
+                permission_classes = [IsAdmin]
+            case "destroy":
+                permission_classes = [IsAdmin]
+            case _:
+                permission_classes = []
+
+        return [permission() for permission in permission_classes]
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):

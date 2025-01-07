@@ -23,8 +23,6 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
     queryset = GlampManager.objects.select_related("user")
     serializer_class = ManagerSerializer
     lookup_url_kwarg = "manager_id"
-    permission_classes = [IsAdministrator | IsManager]
-    # filter_backends = [CustomBaseFilterBackend]
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -34,9 +32,19 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
     def get_permissions(self):
         match self.action:
             case "create":
-                permission_classes = [IsAdministrator]
-            case _:
                 permission_classes = [IsAdministrator | IsManager]
+            case "list":
+                permission_classes = [IsAdministrator | IsManager]
+            case "retrieve":
+                permission_classes = [IsAdministrator | IsManager]
+            case "update":
+                permission_classes = [IsAdministrator | IsManager]
+            case "partial_update":
+                permission_classes = [IsAdministrator | IsManager]
+            case "destroy":
+                permission_classes = [IsAdministrator | IsManager]
+            case _:
+                permission_classes = []
 
         return [permission() for permission in permission_classes]
 
