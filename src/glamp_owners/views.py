@@ -58,7 +58,7 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
 
         if not request.user.is_anonymous:
 
-            if GlampOwner.objects.filter(user=request.user).exists():
+            if GlampOwner.objects.filter(user=request.user).first().exists():
                 return Response(
                     {
                         "detail": "User with Glamp Owner profile can't create a new Glamp Owner."

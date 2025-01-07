@@ -55,7 +55,7 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
 
         if not request.user.is_anonymous:
 
-            if Tourist.objects.filter(user=request.user).exists():
+            if Tourist.objects.filter(user=request.user).first().exists():
                 return Response(
                     {
                         "detail": "User with Tourist profile can't create a new tourist."
