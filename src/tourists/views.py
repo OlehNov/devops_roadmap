@@ -102,8 +102,10 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
             except Exception as e:
                 handle_error(e)
 
-            self.log_event(request, operated_object=user)
-            self.log_event(request, operated_object=tourist)
+            validated_data = serializer.validated_data
+
+            self.log_event(request, operated_object=user, validated_data=validated_data)
+            self.log_event(request, operated_object=tourist, validated_data=validated_data)
 
             return Response(
                 TouristSerializer(tourist).data, status=status.HTTP_201_CREATED
@@ -143,8 +145,9 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
         )
 
         if serializer.is_valid():
+            validated_data = serializer.validated_data
             self.perform_update(serializer)
-            self.log_event(request, operated_object=instance)
+            self.log_event(request, operated_object=instance, validated_data=validated_data)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 

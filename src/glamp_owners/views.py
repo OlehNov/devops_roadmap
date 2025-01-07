@@ -97,9 +97,10 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
             owner.save()
 
             transaction.on_commit(verify_glamp_owner(user.id))
+            validated_data = serializer.validated_data
 
-            self.log_event(request, operated_object=user)
-            self.log_event(request, operated_object=owner)
+            self.log_event(request, operated_object=user, validated_data=validated_data)
+            self.log_event(request, operated_object=owner, validated_data=validated_data)
 
             return Response(
                 GlampOwnerSerializer(owner).data,
@@ -139,8 +140,9 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
         )
 
         if serializer.is_valid():
+            validated_data = serializer.validated_data
             self.perform_update(serializer)
-            self.log_event(request, operated_object=instance)
+            self.log_event(request, operated_object=instance, validated_data=validated_data)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
