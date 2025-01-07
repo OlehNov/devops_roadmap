@@ -117,3 +117,6 @@
 1. Add validator for glamp price.
 2. Fix validators for glamp status and type.
 ---
+## 07.01.2025 15:40. Connection log event.
+1. Connection log event to other urls.
+---

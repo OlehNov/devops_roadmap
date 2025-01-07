@@ -97,9 +97,10 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
             owner.save()
 
             transaction.on_commit(verify_glamp_owner(user.id))
+            validated_data = serializer.validated_data
 
-            self.log_event(request, operated_object=user)
-            self.log_event(request, operated_object=owner)
+            self.log_event(request, user, validated_data=validated_data)
+            self.log_event(request, owner, validated_data=validated_data)
 
             return Response(
                 GlampOwnerSerializer(owner).data,
@@ -139,8 +140,9 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
         )
 
         if serializer.is_valid():
+            validated_data = serializer.validated_data
             self.perform_update(serializer)
-            self.log_event(request, operated_object=instance)
+            self.log_event(request, instance, validated_data=validated_data)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -163,7 +165,7 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
         instance.status = ProfileStatus.DEACTIVATED
         instance.save()
 
-        self.log_event(request, operated_object=instance)
+        self.log_event(request, instance)
 
         return Response(
             {"detail": "Object deactivated successfully."},

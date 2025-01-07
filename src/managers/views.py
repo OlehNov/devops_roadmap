@@ -73,9 +73,10 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
             manager.first_name = first_name
             manager.last_name = last_name
             manager.save()
+            validated_data = serializer.validated_data
 
-            self.log_event(request, operated_object=user)
-            self.log_event(request, operated_object=manager)
+            self.log_event(request, user, validated_data=validated_data)
+            self.log_event(request, manager, validated_data=validated_data)
 
             return Response(
                 ManagerSerializer(manager).data, status=status.HTTP_201_CREATED
@@ -105,8 +106,9 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
         )
 
         if serializer.is_valid():
+            validated_data = serializer.validated_data
             self.perform_update(serializer)
-            self.log_event(request, operated_object=instance)
+            self.log_event(request, instance, validated_data=validated_data)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
@@ -132,7 +134,7 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
             instance.status = ProfileStatus.DEACTIVATED
             instance.save()
 
-            self.log_event(request, operated_object=instance)
+            self.log_event(request, instance)
 
             return Response(
                 {"detail": "Object deactivated successfully."},
