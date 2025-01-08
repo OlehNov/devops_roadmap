@@ -10,7 +10,7 @@ from rest_framework.exceptions import PermissionDenied
 
 from addons.mixins.eventlog import EventLogMixin
 from glamp_owners.models import GlampOwner
-from glamp_owners.permissions import IsAdministrator, IsManager, IsOwner
+from addons.permissions.permissions import IsManager, IsAdministrator, IsOwner
 from glamp_owners.serializers import (
     GlampOwnerRegisterSerializer,
     GlampOwnerSerializer,
