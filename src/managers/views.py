@@ -8,8 +8,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from addons.mixins.eventlog import EventLogMixin
 from managers.models import GlampManager
-from managers.permissions import IsAdministrator, IsManager
-# from addons.backend_filters.filter_backend import CustomBaseFilterBackend
+from addons.permissions.permissions import IsAdministrator, IsManager, IsStaff
+
 from managers.serializers import ManagerRegisterSerializer, ManagerSerializer
 from roles.constants import ProfileStatus, Role
 from users.validators import validate_first_name_last_name
@@ -22,8 +22,6 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
     queryset = GlampManager.objects.select_related("user")
     serializer_class = ManagerSerializer
     lookup_url_kwarg = "manager_id"
-    permission_classes = [IsAdministrator | IsManager]
-    # filter_backends = [CustomBaseFilterBackend]
 
     def get_serializer_class(self):
         if self.action == "create":
@@ -33,9 +31,19 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
     def get_permissions(self):
         match self.action:
             case "create":
-                permission_classes = [IsAdministrator]
+                permission_classes = [IsAdministrator | IsStaff]
+            case "list":
+                permission_classes = [IsAdministrator | IsManager | IsStaff]
+            case "retrieve":
+                permission_classes = [IsAdministrator | IsManager | IsStaff]
+            case "update":
+                permission_classes = [IsAdministrator | IsManager | IsStaff]
+            case "partial_update":
+                permission_classes = [IsAdministrator | IsManager | IsStaff]
+            case "destroy":
+                permission_classes = [IsAdministrator | IsStaff]
             case _:
-                permission_classes = [IsAdministrator | IsManager]
+                permission_classes = []
 
         return [permission() for permission in permission_classes]
 

@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
+from addons.permissions.permissions import IsAdministrator, IsStaff
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -8,9 +9,10 @@ from rest_framework.viewsets import ModelViewSet
 
 from addons.mixins.eventlog import EventLogMixin
 from administrators.models import Administrator
-from administrators.permissions import IsAdmin
-from administrators.serializers import (AdministratorRegisterSerializer,
-                                        AdministratorSerializer)
+from administrators.serializers import (
+    AdministratorRegisterSerializer,
+    AdministratorSerializer,
+)
 from roles.constants import ProfileStatus, Role
 from users.validators import validate_first_name_last_name
 
@@ -21,13 +23,31 @@ User = get_user_model()
 class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
     queryset = Administrator.objects.select_related("user")
     serializer_class = AdministratorSerializer
-    permission_classes = [IsAdmin]
     lookup_url_kwarg = "administrator_id"
 
     def get_serializer_class(self):
         if self.action == "create":
             return AdministratorRegisterSerializer
         return AdministratorSerializer
+
+    def get_permissions(self):
+        match self.actions:
+            case "create":
+                permission_classes = [IsStaff]
+            case "list":
+                permission_classes = [IsAdministrator | IsStaff]
+            case "retrieve":
+                permission_classes = [IsAdministrator | IsStaff]
+            case "update":
+                permission_classes = [IsAdministrator | IsStaff]
+            case "partial_update":
+                permission_classes = [IsAdministrator | IsStaff]
+            case "destroy":
+                permission_classes = [IsStaff]
+            case _:
+                permission_classes = []
+
+        return [permission() for permission in permission_classes]
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):

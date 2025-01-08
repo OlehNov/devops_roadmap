@@ -6,8 +6,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.exceptions import PermissionDenied
 
-from addons.handlers.errors import handle_error
 from addons.mixins.eventlog import EventLogMixin
 from roles.constants import ProfileStatus, Role
 from tourists.models import Tourist
@@ -52,11 +52,16 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):
-        if Tourist.objects.filter(user=request.user).exist():
-            return Response(
-                {"detail": "User with Tourist profile can't create a new tourist."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
+
+        if not request.user.is_anonymous:
+
+            if Tourist.objects.filter(user=request.user).first().exists():
+                return Response(
+                    {
+                        "detail": "User with Tourist profile can't create a new tourist."
+                    },
+                    status=status.HTTP_403_FORBIDDEN,
+                )
 
         serializer = self.get_serializer(data=request.data)
 
@@ -70,6 +75,7 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
 
             password = user_data.get("password")
             confirm_password = user_data.pop("confirm_password")
+
             if password != confirm_password:
                 raise ValidationError(
                     {"password": "Password fields do not match."}
@@ -88,19 +94,21 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
                 is_staff=False,
             )
 
-            try:
-                tourist = Tourist.objects.get(id=user.id, user=user)
+            tourist = Tourist.objects.get(id=user.id, user=user)
 
-                tourist.first_name = first_name
-                tourist.last_name = last_name
-                tourist.birthday = birthday
-                tourist.phone = phone
-                tourist.save()
+            if not tourist:
+                return Response(
+                    {"detail": "Not Found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
-                transaction.on_commit(verify_email(user.id))
+            tourist.first_name = first_name
+            tourist.last_name = last_name
+            tourist.birthday = birthday
+            tourist.phone = phone
+            tourist.save()
 
-            except Exception as e:
-                handle_error(e)
+            transaction.on_commit(verify_email(user.id))
 
             validated_data = serializer.validated_data
 
@@ -117,6 +125,9 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
+
+        if instance.user != request.user:
+            raise PermissionDenied("Not Allowed")
 
         data = {
             "first_name": request.data.get("first_name"),
@@ -160,6 +171,9 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
     @transaction.atomic()
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
+
+        if instance.user != request.user:
+            raise PermissionDenied("Not Allowed")
 
         if instance.status == ProfileStatus.DEACTIVATED:
             return Response(

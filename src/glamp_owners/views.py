@@ -6,11 +6,11 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.exceptions import PermissionDenied
 
-from addons.handlers.errors import handle_error
 from addons.mixins.eventlog import EventLogMixin
 from glamp_owners.models import GlampOwner
-from glamp_owners.permissions import IsAdministrator, IsManager, IsOwner
+from addons.permissions.permissions import IsManager, IsAdministrator, IsOwner
 from glamp_owners.serializers import (
     GlampOwnerRegisterSerializer,
     GlampOwnerSerializer,
@@ -55,6 +55,17 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):
+
+        if not request.user.is_anonymous:
+
+            if GlampOwner.objects.filter(user=request.user).first().exists():
+                return Response(
+                    {
+                        "detail": "User with Glamp Owner profile can't create a new Glamp Owner."
+                    },
+                    status=status.HTTP_403_FORBIDDEN,
+                )
+
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
@@ -114,6 +125,9 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
 
+        if instance.user != request.user:
+            raise PermissionDenied("Not Allowed")
+
         data = {
             "first_name": request.data.get("first_name"),
             "last_name": request.data.get("last_name"),
@@ -155,6 +169,9 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
     @transaction.atomic()
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
+
+        if instance.user != request.user:
+            raise PermissionDenied("Not Allowed")
 
         if instance.status == ProfileStatus.DEACTIVATED:
             return Response(
