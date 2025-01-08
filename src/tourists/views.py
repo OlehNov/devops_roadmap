@@ -11,7 +11,7 @@ from rest_framework.exceptions import PermissionDenied
 from addons.mixins.eventlog import EventLogMixin
 from roles.constants import ProfileStatus, Role
 from tourists.models import Tourist
-from tourists.permissions import IsAdministrator, IsManager, IsTourist
+from addons.permissions.permissions import IsAdministrator, IsManager, IsTourist
 from tourists.serializers import TouristRegisterSerializer, TouristSerializer
 from tourists.validators import validate_birthday, validate_phone
 from users.tasks import verify_email
