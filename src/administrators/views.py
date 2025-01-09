@@ -31,7 +31,7 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
         return AdministratorSerializer
 
     def get_permissions(self):
-        match self.actions:
+        match self.action:
             case "create":
                 permission_classes = [IsStaff]
             case "list":
@@ -85,8 +85,14 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
 
             validated_data = serializer.validated_data
 
-            self.log_event(request, operated_object=user, validated_data=validated_data)
-            self.log_event(request, operated_object=administrator, validated_data=validated_data)
+            self.log_event(
+                request, operated_object=user, validated_data=validated_data
+            )
+            self.log_event(
+                request,
+                operated_object=administrator,
+                validated_data=validated_data,
+            )
 
             return Response(
                 AdministratorSerializer(administrator).data,
@@ -106,7 +112,11 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
         if serializer.is_valid():
             validated_data = serializer.validated_data
             self.perform_update(serializer)
-            self.log_event(request, operated_object=instance, validated_data=validated_data)
+            self.log_event(
+                request,
+                operated_object=instance,
+                validated_data=validated_data,
+            )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
