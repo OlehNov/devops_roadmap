@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -230,6 +230,14 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
 
 @extend_schema(
     tags=["glamp_by_category"],
+    parameters=[
+        OpenApiParameter(
+            "glamp_id",
+            OpenApiTypes.INT,
+            location=OpenApiParameter.PATH,
+            description="The ID of the glamp",
+        ),
+    ],
 )
 class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
     serializer_class = GlampByCategorySerializer
