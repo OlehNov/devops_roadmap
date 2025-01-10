@@ -33,7 +33,9 @@ class UserVerificationMiddleware:
             # Verify if the user has a valid role (optional)
             if user.role is None:
                 return JsonResponse(
-                    {"error": "Your account role is not assigned. Please contact support."},
+                    {
+                        "error": "Your account role is not assigned. Please contact support."
+                    },
                     status=403,
                 )
 
