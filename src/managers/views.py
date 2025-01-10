@@ -8,7 +8,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from addons.mixins.eventlog import EventLogMixin
 from managers.models import GlampManager
-from addons.permissions.permissions import IsAdministrator, IsManager, IsStaff
+from addons.permissions.permissions import IsAdministrator, IsManager, IsStaffAdministrator
 
 from managers.serializers import ManagerRegisterSerializer, ManagerSerializer
 from roles.constants import ProfileStatus, Role
@@ -31,17 +31,17 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
     def get_permissions(self):
         match self.action:
             case "create":
-                permission_classes = [IsAdministrator | IsStaff]
+                permission_classes = [IsAdministrator | IsStaffAdministrator]
             case "list":
-                permission_classes = [IsAdministrator | IsManager | IsStaff]
+                permission_classes = [IsAdministrator | IsManager | IsStaffAdministrator]
             case "retrieve":
-                permission_classes = [IsAdministrator | IsManager | IsStaff]
+                permission_classes = [IsAdministrator | IsManager | IsStaffAdministrator]
             case "update":
-                permission_classes = [IsAdministrator | IsManager | IsStaff]
+                permission_classes = [IsAdministrator | IsManager | IsStaffAdministrator]
             case "partial_update":
-                permission_classes = [IsAdministrator | IsManager | IsStaff]
+                permission_classes = [IsAdministrator | IsManager | IsStaffAdministrator]
             case "destroy":
-                permission_classes = [IsAdministrator | IsStaff]
+                permission_classes = [IsAdministrator | IsStaffAdministrator]
             case _:
                 permission_classes = []
 

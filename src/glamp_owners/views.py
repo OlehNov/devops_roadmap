@@ -10,7 +10,7 @@ from rest_framework.exceptions import PermissionDenied
 
 from addons.mixins.eventlog import EventLogMixin
 from glamp_owners.models import GlampOwner
-from addons.permissions.permissions import IsManager, IsAdministrator, IsOwner
+from addons.permissions.permissions import IsManager, IsAdministrator, IsStaffAdministrator, IsOwner
 from glamp_owners.serializers import (
     GlampOwnerRegisterSerializer,
     GlampOwnerSerializer,
@@ -19,6 +19,7 @@ from glamp_owners.tasks import verify_glamp_owner
 from roles.constants import ProfileStatus, Role
 from tourists.validators import validate_phone
 from users.validators import validate_first_name_last_name
+
 
 User = get_user_model()
 
@@ -39,15 +40,15 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
             case "create":
                 permission_classes = [AllowAny]
             case "list":
-                permission_classes = [IsAdministrator | IsManager]
+                permission_classes = [IsStaffAdministrator | IsAdministrator | IsManager]
             case "retrieve":
-                permission_classes = [IsOwner | IsManager | IsAdministrator]
+                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
             case "update":
-                permission_classes = [IsOwner | IsManager | IsAdministrator]
+                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
             case "partial_update":
-                permission_classes = [IsOwner | IsManager | IsAdministrator]
+                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
             case "delete":
-                permission_classes = [IsOwner | IsManager | IsAdministrator]
+                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
             case _:
                 permission_classes = []
 
@@ -86,7 +87,7 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
             validate_first_name_last_name(last_name)
             validate_phone(phone)
 
-            user = User.objects.create_user(
+            user = User.objects.create(
                 email=user_data.get("email"),
                 password=password,
                 role=Role.OWNER,

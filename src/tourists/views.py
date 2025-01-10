@@ -11,7 +11,7 @@ from rest_framework.exceptions import PermissionDenied
 from addons.mixins.eventlog import EventLogMixin
 from roles.constants import ProfileStatus, Role
 from tourists.models import Tourist
-from addons.permissions.permissions import IsAdministrator, IsManager, IsTourist
+from addons.permissions.permissions import IsAdministrator, IsManager, IsTourist, IsStaffAdministrator
 from tourists.serializers import TouristRegisterSerializer, TouristSerializer
 from tourists.validators import validate_birthday, validate_phone
 from users.tasks import verify_email
@@ -36,15 +36,15 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
             case "create":
                 permission_classes = [AllowAny]
             case "list":
-                permission_classes = [IsAdministrator | IsManager]
+                permission_classes = [IsAdministrator | IsManager | IsStaffAdministrator]
             case "retrieve":
-                permission_classes = [IsTourist | IsManager | IsAdministrator]
+                permission_classes = [IsTourist | IsManager | IsAdministrator | IsStaffAdministrator]
             case "update":
-                permission_classes = [IsTourist | IsManager | IsAdministrator]
+                permission_classes = [IsTourist | IsManager | IsAdministrator | IsStaffAdministrator]
             case "partial_update":
-                permission_classes = [IsTourist | IsManager | IsAdministrator]
+                permission_classes = [IsTourist | IsManager | IsAdministrator | IsStaffAdministrator]
             case "delete":
-                permission_classes = [IsTourist | IsManager | IsAdministrator]
+                permission_classes = [IsTourist | IsManager | IsAdministrator | IsStaffAdministrator]
             case _:
                 permission_classes = []
 
