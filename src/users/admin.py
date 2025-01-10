@@ -1,11 +1,6 @@
-from typing import Any
-
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 
-from administrators.models import Administrator
-from roles.constants import Role
-from tourists.models import Tourist
 
 User = get_user_model()
 
@@ -21,6 +16,7 @@ class UserAdmin(admin.ModelAdmin):
         "is_active",
         "is_staff",
         "is_superuser",
+        "is_deleted",
         "created_at",
         "updated_at",
     ]
@@ -33,6 +29,7 @@ class UserAdmin(admin.ModelAdmin):
         "is_active",
         "is_staff",
         "is_superuser",
+        "is_deleted",
         "created_at",
         "updated_at",
     ]
