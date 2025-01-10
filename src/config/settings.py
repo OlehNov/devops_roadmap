@@ -23,6 +23,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+ROOT_API = "api/v1"
+
+# Restricted paths for anonymous, deleted and inactive users
+RESTRICTED_PATHS = [
+    f"/{ROOT_API}/administrators/",
+    f"/{ROOT_API}/managers/",
+    f"/{ROOT_API}/users/",
+    f"/{ROOT_API}/tourists/",
+    f"/{ROOT_API}/glamp-owners/",
+    f"/{ROOT_API}/eventlogs/",
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -78,13 +89,13 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # Verifies the inactive and deleted users and restricts access to resources
+    "addons.middlewares.restricted.RestrictInactiveOrDeletedUserMiddleware",
     # Verifies the authenticated user
     "addons.middlewares.user_verification.UserVerificationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
-ROOT_API = "api/v1"
 
 ROOT_URLCONF = "config.urls"
 
