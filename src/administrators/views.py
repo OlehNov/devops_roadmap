@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
-from addons.permissions.permissions import IsAdministrator, IsStaff
+from addons.permissions.permissions import IsAdministrator, IsStaffAdministrator
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
@@ -15,6 +15,7 @@ from administrators.serializers import (
 )
 from roles.constants import ProfileStatus, Role
 from users.validators import validate_first_name_last_name
+
 
 User = get_user_model()
 
@@ -33,17 +34,17 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
     def get_permissions(self):
         match self.action:
             case "create":
-                permission_classes = [IsStaff]
+                permission_classes = [IsStaffAdministrator]
             case "list":
-                permission_classes = [IsAdministrator | IsStaff]
+                permission_classes = [IsAdministrator | IsStaffAdministrator]
             case "retrieve":
-                permission_classes = [IsAdministrator | IsStaff]
+                permission_classes = [IsAdministrator | IsStaffAdministrator]
             case "update":
-                permission_classes = [IsAdministrator | IsStaff]
+                permission_classes = [IsAdministrator | IsStaffAdministrator]
             case "partial_update":
-                permission_classes = [IsAdministrator | IsStaff]
+                permission_classes = [IsAdministrator | IsStaffAdministrator]
             case "destroy":
-                permission_classes = [IsStaff]
+                permission_classes = [IsStaffAdministrator]
             case _:
                 permission_classes = []
 
