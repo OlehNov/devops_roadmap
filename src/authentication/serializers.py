@@ -1,7 +1,10 @@
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.serializers import (TokenObtainPairSerializer,
-                                                  TokenRefreshSerializer,
-                                                  TokenVerifySerializer)
+from rest_framework.serializers import Serializer, CharField
+from rest_framework_simplejwt.serializers import (
+    TokenObtainPairSerializer,
+    TokenRefreshSerializer,
+    TokenVerifySerializer
+)
 
 User = get_user_model()
 
@@ -36,3 +39,7 @@ class CustomTokenVerifySerializer(TokenVerifySerializer):
         data["result"] = "Token is valid"
 
         return data
+
+
+class UserLogoutSerializer(Serializer):
+    refresh_token = CharField()

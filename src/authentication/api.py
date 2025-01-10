@@ -10,7 +10,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
 from addons.handlers.errors import handle_error
 from authentication.serializers import (CustomTokenObtainPairSerializer,
                                         CustomTokenRefreshSerializer,
-                                        CustomTokenVerifySerializer)
+                                        CustomTokenVerifySerializer, UserLogoutSerializer)
 
 
 @extend_schema(tags=["token"])
@@ -35,6 +35,7 @@ class UserLogoutView(APIView):
     This view is for adding refresh token to a blacklist, so user cannot refresh his access token,
     Access token is still valid and user can continue using the app until access token is expired
     """
+    serializer_class = UserLogoutSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
