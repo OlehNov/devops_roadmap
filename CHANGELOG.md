@@ -120,3 +120,10 @@
 ## 07.01.2025 15:40. Connection log event.
 1. Connection log event to other urls.
 ---
+## 10.01.2025 16:35. Permissions fixed.
+1. Permissions in addons/permissions module fixed.
+2. addons/handlers/auth_handler.py added.
+---
+## 10.01.2025 16:37. LogOut Endpoint fixed.
+1. UserLogoutSerializer added.
+---
