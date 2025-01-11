@@ -24,36 +24,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-ROOT_API = "api/v1"
-
-
-#############################################################
-#                  RESTRICTED AREA SETTINGS                 #
-#############################################################
-RESTRICTED_AREA = {
-    "USER_ROLES": [
-
-    ],
-    "USER_ATTRS": [
-        "is_deleted",
-    ],
-    "PATHS": [
-        f"/{ROOT_API}/administrators/",
-        f"/{ROOT_API}/managers/",
-        # f"/{ROOT_API}/users/",
-        f"/{ROOT_API}/tourists/",
-        f"/{ROOT_API}/glamp-owners/",
-        f"/{ROOT_API}/eventlogs/",
-    ],
-    "URL_PATTERNS": [
-
-    ]
-}
-
-# Restricted url patterns for anonymous, deleted and inactive users
-RESTRICTED_URL_PATTERNS = [
-    re.compile(f"^{path}.*$").pattern for path in RESTRICTED_AREA.get("PATHS")
-]
 
 # Application definition
 INSTALLED_APPS = [
@@ -91,6 +61,35 @@ AUTH_USER_MODEL = "users.User"
 
 SITE_ID = 1
 
+
+ROOT_API = "api/v1"
+
+#############################################################
+#                  RESTRICTED AREA SETTINGS                 #
+#############################################################
+RESTRICTED_AREA = {
+    "USER_ROLES": [
+
+    ],
+    "USER_ATTRS": [
+        "is_deleted",
+    ],
+    "PATHS": [
+        # f"/{ROOT_API}/users/",
+    ],
+    "URL_PATTERNS": [
+        f"/{ROOT_API}/administrators/",
+        f"/{ROOT_API}/managers/",
+        f"/{ROOT_API}/users/",
+        f"/{ROOT_API}/tourists/",
+        f"/{ROOT_API}/glamp-owners/",
+        f"/{ROOT_API}/eventlogs/",
+    ],
+    "EXCLUDED_PATHS": [
+        f"/{ROOT_API}/users/current-user/",
+    ]
+}
+
 # MIDDLEWARE = [
 #     "django.middleware.security.SecurityMiddleware",
 #     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -109,7 +108,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    # Verifies the inactive and deleted users and restricts access to resources
+    # Verifies and restricts access to resources
     "addons.middlewares.restricted.RestrictAccessMiddleware",
     # Verifies the authenticated user
     "addons.middlewares.user_verification.UserVerificationMiddleware",
