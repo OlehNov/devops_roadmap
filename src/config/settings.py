@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import timedelta
 from pathlib import Path
 
@@ -25,14 +26,33 @@ ALLOWED_HOSTS = ["*"]
 
 ROOT_API = "api/v1"
 
-# Restricted paths for anonymous, deleted and inactive users
-RESTRICTED_PATHS = [
-    f"/{ROOT_API}/administrators/",
-    f"/{ROOT_API}/managers/",
-    f"/{ROOT_API}/users/",
-    f"/{ROOT_API}/tourists/",
-    f"/{ROOT_API}/glamp-owners/",
-    f"/{ROOT_API}/eventlogs/",
+
+#############################################################
+#                  RESTRICTED AREA SETTINGS                 #
+#############################################################
+RESTRICTED_AREA = {
+    "USER_ROLES": [
+
+    ],
+    "USER_ATTRS": [
+        "is_deleted",
+    ],
+    "PATHS": [
+        f"/{ROOT_API}/administrators/",
+        f"/{ROOT_API}/managers/",
+        # f"/{ROOT_API}/users/",
+        f"/{ROOT_API}/tourists/",
+        f"/{ROOT_API}/glamp-owners/",
+        f"/{ROOT_API}/eventlogs/",
+    ],
+    "URL_PATTERNS": [
+
+    ]
+}
+
+# Restricted url patterns for anonymous, deleted and inactive users
+RESTRICTED_URL_PATTERNS = [
+    re.compile(f"^{path}.*$").pattern for path in RESTRICTED_AREA.get("PATHS")
 ]
 
 # Application definition
@@ -90,7 +110,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # Verifies the inactive and deleted users and restricts access to resources
-    "addons.middlewares.restricted.RestrictInactiveOrDeletedUserMiddleware",
+    "addons.middlewares.restricted.RestrictAccessMiddleware",
     # Verifies the authenticated user
     "addons.middlewares.user_verification.UserVerificationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
