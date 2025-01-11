@@ -38,7 +38,10 @@ class RestrictAccessMiddleware:
             restricted_paths = restricted_area.get("PATHS", [])
             restricted_url_patterns = restricted_area.get(
                 "URL_PATTERNS",
-                [re.compile(f"^{path}.*$").pattern for path in settings.RESTRICTED_AREA.get("PATHS")]
+                [
+                    re.compile(f"^{path}.*$").pattern
+                    for path in settings.RESTRICTED_AREA.get("PATHS")
+                ],
             )
             restricted_excluded_paths = restricted_area.get("EXCLUDED_PATHS", [])
 
@@ -49,7 +52,7 @@ class RestrictAccessMiddleware:
                 current_path=current_path,
                 restricted_paths=restricted_paths,
                 restricted_url_patterns=restricted_url_patterns,
-                restricted_excluded_paths=restricted_excluded_paths
+                restricted_excluded_paths=restricted_excluded_paths,
             )
             if response:
                 response.accepted_renderer = JSONRenderer()
@@ -66,7 +69,9 @@ class RestrictAccessMiddleware:
             return self._get_restricted_response()
 
         for pattern in kwargs.get("restricted_url_patterns"):
-            if re.match(pattern, current_path) and current_path not in kwargs.get("restricted_excluded_paths"):
+            if re.match(pattern, current_path) and current_path not in kwargs.get(
+                "restricted_excluded_paths"
+            ):
                 return self._get_restricted_response()
 
     def _get_restricted_response(self):
@@ -81,7 +86,7 @@ class RestrictAccessMiddleware:
         """
         Process the response based on the accepted renderer.
         """
-        if hasattr(request, 'accepted_renderer'):
+        if hasattr(request, "accepted_renderer"):
             renderer = request.accepted_renderer
 
             data = {
@@ -91,11 +96,13 @@ class RestrictAccessMiddleware:
 
             if isinstance(renderer, JSONRenderer):
                 response_data = renderer.render(data)
-                return HttpResponse(response_data, content_type='application/json')
+                return HttpResponse(response_data, content_type="application/json")
 
             elif isinstance(renderer, BrowsableAPIRenderer):
-                response_data = renderer.render(data, renderer_context={'request': request})
-                return HttpResponse(response_data, content_type='text/html')
+                response_data = renderer.render(
+                    data, renderer_context={"request": request}
+                )
+                return HttpResponse(response_data, content_type="text/html")
 
             else:
                 response_data = renderer.render(data)
