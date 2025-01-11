@@ -2,11 +2,10 @@ import re
 
 from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
+from django.http import HttpResponse
 from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
+from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.status import HTTP_403_FORBIDDEN
-
-# from config.settings import RESTRICTED_AREA
 
 
 class RestrictAccessMiddleware:
@@ -73,7 +72,33 @@ class RestrictAccessMiddleware:
     def _get_restricted_response(self):
         return Response(
             {
-                "error": "Access denied. Your account is inactive, deleted, or you are not logged in."
+                "detail": "Access denied. Your account is inactive, deleted, or you are not logged in."
             },
             status=HTTP_403_FORBIDDEN,
         )
+
+    def _process_renderer(self, request, response):
+        """
+        Process the response based on the accepted renderer.
+        """
+        if hasattr(request, 'accepted_renderer'):
+            renderer = request.accepted_renderer
+
+            data = {
+                "message": "Response processed by middleware",
+                "original_data": getattr(response, "data", None),
+            }
+
+            if isinstance(renderer, JSONRenderer):
+                response_data = renderer.render(data)
+                return HttpResponse(response_data, content_type='application/json')
+
+            elif isinstance(renderer, BrowsableAPIRenderer):
+                response_data = renderer.render(data, renderer_context={'request': request})
+                return HttpResponse(response_data, content_type='text/html')
+
+            else:
+                response_data = renderer.render(data)
+                return HttpResponse(response_data, content_type=renderer.media_type)
+
+        return response
