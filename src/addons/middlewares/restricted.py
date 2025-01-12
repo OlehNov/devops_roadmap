@@ -1,10 +1,8 @@
 import re
 
-from asgiref.sync import iscoroutinefunction, markcoroutinefunction, sync_to_async
 from functools import partial
 
 from django.conf import settings
-from django.contrib.auth import get_user, aget_user
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.functional import SimpleLazyObject
@@ -13,20 +11,11 @@ from rest_framework.response import Response
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.status import HTTP_403_FORBIDDEN
 
-
-def get_cached_user(request):
-    if not hasattr(request, "_cached_user"):
-        request._cached_user = get_user(request)
-    return request._cached_user
+from addons.handlers.get_user_handler import aget_cached_user, get_cached_user
+from addons.mixins.middleware_mixin import MiddlewareMixin
 
 
-async def auser(request):
-    if not hasattr(request, "_acached_user"):
-        request._acached_user = await aget_user(request)
-    return request._acached_user
-
-
-class RestrictAccessMiddleware:
+class RestrictAccessMiddleware(MiddlewareMixin):
     """
     Middleware that restricts access to specific paths or views for users
     who are inactive, deleted, or anonymous.
@@ -39,108 +28,6 @@ class RestrictAccessMiddleware:
     - Validates the presence of AuthenticationMiddleware to provide `request.user`.
     - Supports dynamic configuration through the `RESTRICTED_AREA` setting.
     """
-
-    sync_capable = True  # Indicates compatibility with synchronous requests.
-    async_capable = True  # Indicates compatibility with asynchronous requests.
-
-    def __init__(self, get_response):
-        """
-        Initialize the middleware.
-
-        Args:
-            get_response (callable): The next middleware or view in the chain.
-
-        Raises:
-            ValueError: If `get_response` is not provided.
-        """
-        if get_response is None:
-            raise ValueError("get_response must be provided.")
-        self.get_response = get_response
-        self._async_check()  # Detects if the response is asynchronous.
-        super().__init__()
-
-    def __repr__(self):
-        """
-        Generate a string representation of the middleware instance.
-
-        Returns:
-            str: The string representation, including the class and `get_response`.
-        """
-        return "<%s get_response=%s>" % (
-            self.__class__.__qualname__,
-            getattr(
-                self.get_response,
-                "__qualname__",
-                self.get_response.__class__.__name__,
-            ),
-        )
-
-    def _async_check(self):
-        """
-        Check if `get_response` is an asynchronous function.
-
-        If it is, the middleware is marked as async-capable and will handle requests
-        asynchronously when needed.
-        """
-        if iscoroutinefunction(self.get_response):
-            markcoroutinefunction(self)
-
-    def __call__(self, request):
-        """
-        Handle incoming requests synchronously.
-
-        Args:
-            request (HttpRequest): The HTTP request object.
-
-        Returns:
-            HttpResponse: The processed HTTP response.
-        """
-        if iscoroutinefunction(self):
-            # Delegate to the asynchronous call if applicable.
-            return self.__acall__(request)
-
-        response = None
-        if hasattr(self, "process_request"):
-            # Process the request if the method is defined.
-            response = self.process_request(request)
-
-        response = response or self.get_response(request)
-
-        if hasattr(self, "process_response"):
-            # Process the response if the method is defined.
-            response = self.process_response(request, response)
-
-        return response
-
-    async def __acall__(self, request):
-        """
-        Handle incoming requests asynchronously.
-
-        Args:
-            request (HttpRequest): The HTTP request object.
-
-        Returns:
-            HttpResponse: The processed HTTP response.
-        """
-        response = None
-        if hasattr(self, "process_request"):
-            # Process the request asynchronously.
-            response = await sync_to_async(
-                self.process_request,
-                thread_sensitive=True,
-            )(request)
-
-        response = response or await self.get_response(request)
-
-        if hasattr(self, "process_response"):
-            # Process the response asynchronously.
-            response = await sync_to_async(
-                self.process_response,
-                thread_sensitive=True,
-            )(request, response)
-
-        return response
-
     def process_request(self, request):
         """
         Validate and restrict access based on the user's state and request path.
@@ -170,8 +57,8 @@ class RestrictAccessMiddleware:
             )
 
         # Lazily initialize user and async user for the request.
-        request.user = SimpleLazyObject(lambda: get_user(request))
-        request.auser = partial(auser, request)
+        request.user = SimpleLazyObject(lambda: get_cached_user(request))
+        request.auser = partial(aget_cached_user, request)
 
         user = getattr(request, "user", None)
 
