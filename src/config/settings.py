@@ -81,8 +81,6 @@ RESTRICTED_AREA = {
         f"/{ROOT_API}/administrators/",
         f"/{ROOT_API}/managers/",
         f"/{ROOT_API}/users/",
-        f"/{ROOT_API}/tourists/",
-        f"/{ROOT_API}/glamp-owners/",
         f"/{ROOT_API}/eventlogs/",
     ],
     "EXCLUDED_PATHS": [
@@ -110,8 +108,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # Verifies and restricts access to resources
     "addons.middlewares.restricted.RestrictAccessMiddleware",
-    # Verifies the authenticated user
-    "addons.middlewares.user_verification.UserVerificationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
