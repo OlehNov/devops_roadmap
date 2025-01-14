@@ -28,6 +28,7 @@ class RestrictAccessMiddleware(MiddlewareMixin):
     - Validates the presence of AuthenticationMiddleware to provide `request.user`.
     - Supports dynamic configuration through the `RESTRICTED_AREA` setting.
     """
+
     def process_request(self, request):
         """
         Validate and restrict access based on the user's state and request path.
@@ -76,9 +77,14 @@ class RestrictAccessMiddleware(MiddlewareMixin):
             restricted_paths = restricted_area.get("PATHS", [])
             restricted_url_patterns = restricted_area.get(
                 "URL_PATTERNS",
-                [re.compile(f"^{path}.*$").pattern for path in restricted_paths],
+                [
+                    re.compile(f"^{path}.*$").pattern
+                    for path in restricted_paths
+                ],
             )
-            restricted_excluded_paths = restricted_area.get("EXCLUDED_PATHS", [])
+            restricted_excluded_paths = restricted_area.get(
+                "EXCLUDED_PATHS", []
+            )
 
             current_path = request.path
 
@@ -112,9 +118,9 @@ class RestrictAccessMiddleware(MiddlewareMixin):
             return self._get_restricted_response()
 
         for pattern in kwargs.get("restricted_url_patterns"):
-            if re.match(pattern, current_path) and current_path not in kwargs.get(
-                "restricted_excluded_paths"
-            ):
+            if re.match(
+                pattern, current_path
+            ) and current_path not in kwargs.get("restricted_excluded_paths"):
                 return self._get_restricted_response()
 
         return None

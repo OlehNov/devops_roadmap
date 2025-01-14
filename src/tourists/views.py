@@ -11,7 +11,12 @@ from rest_framework.exceptions import PermissionDenied
 from addons.mixins.eventlog import EventLogMixin
 from roles.constants import ProfileStatus, Role
 from tourists.models import Tourist
-from addons.permissions.permissions import IsAdministrator, IsManager, IsTourist, IsStaffAdministrator
+from addons.permissions.permissions import (
+    IsAdministrator,
+    IsManager,
+    IsTourist,
+    IsStaffAdministrator,
+)
 from tourists.serializers import TouristRegisterSerializer, TouristSerializer
 from tourists.validators import validate_birthday, validate_phone
 from users.tasks import verify_email
@@ -36,15 +41,37 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
             case "create":
                 permission_classes = [AllowAny]
             case "list":
-                permission_classes = [IsAdministrator | IsManager | IsStaffAdministrator]
+                permission_classes = [
+                    IsAdministrator | IsManager | IsStaffAdministrator
+                ]
             case "retrieve":
-                permission_classes = [IsTourist | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [
+                    IsTourist
+                    | IsManager
+                    | IsAdministrator
+                    | IsStaffAdministrator
+                ]
             case "update":
-                permission_classes = [IsTourist | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [
+                    IsTourist
+                    | IsManager
+                    | IsAdministrator
+                    | IsStaffAdministrator
+                ]
             case "partial_update":
-                permission_classes = [IsTourist | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [
+                    IsTourist
+                    | IsManager
+                    | IsAdministrator
+                    | IsStaffAdministrator
+                ]
             case "delete":
-                permission_classes = [IsTourist | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [
+                    IsTourist
+                    | IsManager
+                    | IsAdministrator
+                    | IsStaffAdministrator
+                ]
             case _:
                 permission_classes = []
 
@@ -108,12 +135,16 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
             tourist.phone = phone
             tourist.save()
 
-            transaction.on_commit(verify_email(user.id))
+            transaction.on_commit(lambda: verify_email(user.id))
 
             validated_data = serializer.validated_data
 
-            self.log_event(request, operated_object=user, validated_data=validated_data)
-            self.log_event(request, operated_object=tourist, validated_data=validated_data)
+            self.log_event(
+                request, operated_object=user, validated_data=validated_data
+            )
+            self.log_event(
+                request, operated_object=tourist, validated_data=validated_data
+            )
 
             return Response(
                 TouristSerializer(tourist).data, status=status.HTTP_201_CREATED
@@ -158,7 +189,11 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
         if serializer.is_valid():
             validated_data = serializer.validated_data
             self.perform_update(serializer)
-            self.log_event(request, operated_object=instance, validated_data=validated_data)
+            self.log_event(
+                request,
+                operated_object=instance,
+                validated_data=validated_data,
+            )
 
             return Response(serializer.data, status=status.HTTP_200_OK)
 

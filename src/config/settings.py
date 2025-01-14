@@ -76,9 +76,7 @@ ROOT_API = "api/v1"
 #                  RESTRICTED AREA SETTINGS                 #
 #############################################################
 RESTRICTED_AREA = {
-    "USER_ROLES": [
-
-    ],
+    "USER_ROLES": [],
     "USER_ATTRS": [
         "is_deleted",
     ],
@@ -93,7 +91,7 @@ RESTRICTED_AREA = {
     ],
     "EXCLUDED_PATHS": [
         f"/{ROOT_API}/users/current-user/",
-    ]
+    ],
 }
 
 # MIDDLEWARE = [
@@ -237,12 +235,12 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
 
-# # Allow Django to trust the proxy headers set by Nginx
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# Allow Django to trust the proxy headers set by Nginx
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-# # Ensure session and CSRF cookies are only sent over HTTPS
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+# Ensure session and CSRF cookies are only sent over HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 # Password validation
@@ -448,44 +446,44 @@ SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
 
 # Logging settings
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '{asctime} {levelname} {name} {message}',
-#             'style': '{',
-#         },
-#         'simple': {
-#             'format': '{levelname} {message}',
-#             'style': '{',
-#         },
-#     },
-#     "handlers": {
-#         "console": {
-#             "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-#             "class": "logging.StreamHandler",
-#             "formatter": "verbose",
-#         },
-#     },
-#     "loggers": {
-#         "django": {
-#             "handlers": ["console"],
-#             "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-#             "propagate": True,
-#         },
-#         "django.request": {
-#             "handlers": ["console"],
-#             "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-#             "propagate": False,
-#         },
-#         "django.db.backends": {
-#             "handlers": ["console"],
-#             "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
-#             "propagate": False,
-#         },
-#     },
-# }
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} {levelname} {name} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    "handlers": {
+        "console": {
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
+            "propagate": True,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
+            "propagate": False,
+        },
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": os.getenv("DJANGO_LOG_LEVEL", default="INFO"),
+            "propagate": False,
+        },
+    },
+}
 
 
 if DEBUG:
