@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from django.core.exceptions import ValidationError
 
-from glamps.constants import GlampStatus, TypeGlamp
+from glamps.constants import GlampStatus, TypeGlamp, PremiumLevel
 
 
 def validate_type(value):
@@ -48,3 +48,10 @@ def validate_glamp_price(price):
         raise ValidationError("The price cannot be negative.")
 
     return price
+
+def validate_premium_level(value):
+    if value not in [level.value for level in PremiumLevel]:
+        raise ValidationError(
+            "%(value)s is not a valid level",
+            params={"value": value},
+        )

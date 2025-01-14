@@ -3,14 +3,15 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db.models import (CASCADE, SET_NULL, BooleanField, CharField,
                               DecimalField, FloatField, ForeignKey,
                               PositiveSmallIntegerField, SlugField, TextField,
-                              UUIDField)
+                              UUIDField, IntegerField)
 from django.utils.translation import gettext as _
 
 from addons.mixins.timestamps import TimestampMixin
 from categories.models import Category
 from glamps.constants import HELP_TEXT_STATUSES, HELP_TEXT_TYPE_GLAMPS
 from glamps.validators import (validate_name_glamp, validate_status,
-                               validate_type, validate_glamp_price)
+                               validate_type, validate_glamp_price,
+                               validate_premium_level)
 
 User = get_user_model()
 
@@ -20,7 +21,40 @@ class Glamp(TimestampMixin):
     glamp_type = PositiveSmallIntegerField(
         _("Glamp Type"), help_text=HELP_TEXT_TYPE_GLAMPS, default=None, validators=[validate_type]
     )
-
+    is_active = BooleanField(
+        _("Is Active"), default=False
+    )
+    is_hidden = BooleanField(
+        _("Is Hidden"), default=False
+    )
+    is_verified = BooleanField(
+        _("Is Verified"), default=False
+    )
+    is_approved = BooleanField(
+        _("Is Approved"), default=False
+    )
+    rating = FloatField(
+        _("Rating"),
+        default=0.0,
+        null=True,
+        validators=[
+            MinValueValidator(0.0),
+            MaxValueValidator(5.0),
+        ],
+    )
+    premium_level = PositiveSmallIntegerField(
+        null=True,
+        default=None,
+        validators=[validate_premium_level],
+    )
+    priority = FloatField(
+        null=True,
+        default=0.0,
+        validators=[
+            MinValueValidator(0.0),
+            MaxValueValidator(100.0),
+        ],
+    )
     name = CharField(
         _("Glamp Name"), max_length=225, null=False, blank=False, default=None, validators=[validate_name_glamp]
     )
@@ -82,7 +116,6 @@ class Glamp(TimestampMixin):
     region = CharField(
         _("Region"), max_length=255, null=True, blank=True, default=None
     )
-
     latitude = FloatField(
         _("Latitude"),
         default=0.0,
