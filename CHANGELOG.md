@@ -127,6 +127,11 @@
 ## 10.01.2025 16:37. LogOut Endpoint fixed.
 1. UserLogoutSerializer added.
 ---
+## 14.01.2025 15:29. Refactor ActivateUserView.
+1. Refactor ActivateUserView.
+2. Change activate-user endpoint
+3. Change send_activation_email func for activation
+---
 ## 16.01.2025 19:34. Add new fields in glamp model.
 1. Add new fields.
 2. Create new endpoints for new fields. 

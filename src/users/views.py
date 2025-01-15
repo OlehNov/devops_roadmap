@@ -24,6 +24,7 @@ from users.serializers import (
     UserSerializer,
 )
 from users.tasks import send_reset_password_email
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 User = get_user_model()
@@ -79,22 +80,24 @@ class ActivateUserView(APIView):
         token = kwargs.get("token")
 
         try:
-            decode_token = jwt.decode(
-                token, settings.SECRET_KEY, algorithms=["HS256"]
+            decoded_token = jwt.decode(
+                token, settings.SECRET_KEY, settings.ALGORITHM
             )
 
-            user = get_object_or_404(User, id=decode_token["user_id"])
+            user = get_object_or_404(User, id=decoded_token["user_id"])
             user.is_active = True
             user.save()
 
             login(request, user)
+
+            refresh_token = RefreshToken.for_user(user)
 
             return Response(
                 {
                     "detail": "User has been activated.",
                     "email": user.email,
                     "user_id": user.id,
-                    "token": token,
+                    "token": str(refresh_token),
                 },
                 status=status.HTTP_200_OK,
             )

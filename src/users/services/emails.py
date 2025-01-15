@@ -3,10 +3,11 @@ import os
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage, send_mail
+from django.http import HttpRequest
 from dotenv import load_dotenv
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.template.loader import render_to_string
-from django.urls import reverse
+from django.contrib.sites.shortcuts import get_current_site
 
 
 load_dotenv()
@@ -14,14 +15,16 @@ load_dotenv()
 User = get_user_model()
 
 
-def send_registration_email(user_id: int) -> None:
+def send_activation_email(request: HttpRequest, user_id: int) -> None:
     user_instance = User.objects.get(pk=user_id)
-    domain = os.getenv("DOMAIN")
     token = RefreshToken.for_user(user_instance)
+    domain = request.get_host()
+    protocol = "https" if request.is_secure() else "http"
 
     context = {
         "user": user_instance,
         "domain": domain,
+        "protocol": protocol,
         "token": str(token),
     }
 

@@ -19,6 +19,9 @@ SECRET_KEY = (
     "django-insecure-k$83@$)75u_^s==b+!rf%3^99-mrw7-0o43)yw0@tb8i8^acil"
 )
 
+DOMAIN = os.environ.get("DOMAIN")
+ALGORITHM = os.environ.get("ALGORITHM")
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

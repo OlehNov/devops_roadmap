@@ -82,7 +82,7 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
 
         if not request.user.is_anonymous:
 
-            if Tourist.objects.filter(user=request.user).first().exists():
+            if Tourist.objects.get(user=request.user):
                 return Response(
                     {
                         "detail": "User with Tourist profile can't create a new tourist."
@@ -135,7 +135,7 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
             tourist.phone = phone
             tourist.save()
 
-            transaction.on_commit(lambda: verify_email(user.id))
+            transaction.on_commit(lambda: verify_email(request, user.id))
 
             validated_data = serializer.validated_data
 
