@@ -127,3 +127,7 @@
 ## 10.01.2025 16:37. LogOut Endpoint fixed.
 1. UserLogoutSerializer added.
 ---
+## 16.01.2025 19:34. Add new fields in glamp model.
+1. Add new fields.
+2. Create new endpoints for new fields. 
+---
