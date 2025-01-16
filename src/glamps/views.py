@@ -311,7 +311,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
 
     @action(detail=True, methods=["put", "patch"])
     def activate(self, request, *args, **kwargs):
-        instance = self.get_object()
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("glamp_id"))
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(instance, data=request.data, partial=True)
         if serializer.is_valid():
@@ -322,7 +322,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
 
     @action(detail=True, methods=["put", "patch"])
     def hidden(self, request, *args, **kwargs):
-        instance = self.get_object()
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(instance, data=request.data, partial=True)
         if serializer.is_valid():
@@ -333,7 +333,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
 
     @action(detail=True, methods=["put", "patch"])
     def verified(self, request, *args, **kwargs):
-        instance = self.get_object()
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(instance, data=request.data, partial=True)
         if serializer.is_valid():
@@ -344,7 +344,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
 
     @action(detail=True, methods=["put", "patch"])
     def approved(self, request, *args, **kwargs):
-        instance = self.get_object()
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(instance, data=request.data, partial=True)
         if serializer.is_valid():
@@ -355,7 +355,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
 
     @action(detail=True, methods=["put", "patch"])
     def rating(self, request, *args, **kwargs):
-        instance = self.get_object()
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(instance, data=request.data, partial=True)
         if serializer.is_valid():
@@ -366,7 +366,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
 
     @action(detail=True, methods=["put", "patch"])
     def premium_level(self, request, *args, **kwargs):
-        instance = self.get_object()
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(instance, data=request.data, partial=True)
         if serializer.is_valid():
@@ -377,7 +377,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
 
     @action(detail=True, methods=["put", "patch"])
     def priority(self, request, *args, **kwargs):
-        instance = self.get_object()
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("glamp_id"))
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(instance, data=request.data, partial=True)
         if serializer.is_valid():

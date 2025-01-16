@@ -9,9 +9,9 @@ class GlampStatus(IntEnum):
 
 
 class PremiumLevel(IntEnum):
-    Silver = 1
-    Gold = 2
-    Platinum = 3
+    SILVER = 1
+    GOLD = 2
+    PLATINUM = 3
 
 
 class TypeGlamp(IntEnum):

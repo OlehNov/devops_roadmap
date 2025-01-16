@@ -8,14 +8,15 @@ from categories.models import Category
 from categories.serializers import CategorySerializer
 from glamps.models import Glamp, Picture
 from glamps.validators import (
-    validate_slug_glamp,
-    validate_type,
-    validate_status,
     validate_glamp_price,
-    validate_premium_level
+    validate_premium_level,
+    validate_slug_glamp,
+    validate_status,
+    validate_type
 )
 from roles.constants import Role
 from users.serializers import UserSerializer
+
 
 User = get_user_model()
 
@@ -141,6 +142,7 @@ class GlampForTouristSerializer(GlampSerializer):
             representation.pop("priority", None)
         return representation
 
+
 class GlampForOwnerSerializer(GlampSerializer):
     priority = serializers.FloatField(required=False, write_only=True)
 
@@ -242,6 +244,7 @@ class GlampByCategorySerializer(ModelSerializer):
             glamp.save()
 
         return instance
+
 
 class ActivateGlampSerializer(ModelSerializer):
     is_active = serializers.BooleanField(required=True)
