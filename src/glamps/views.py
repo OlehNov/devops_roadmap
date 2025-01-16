@@ -2,6 +2,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -17,7 +18,21 @@ from glamps.permissions import (
     RoleIsOwner,
     RoleIsTourist,
 )
-from glamps.serializers import GlampByCategorySerializer, GlampSerializer
+from glamps.serializers import (
+    GlampByCategorySerializer,
+    GlampSerializer,
+    ActivateGlampSerializer,
+    GlampForTouristSerializer,
+    GlampForOwnerSerializer,
+    GlampForManagerSerializer,
+    HiddenGlampSerializer,
+    VerifiedGlampSerializer,
+    ApprovedGlampSerializer,
+    RatingGlampSerializer,
+    PremiumLevelGlampSerializer,
+    PriorityGlampSerializer
+)
+from roles.constants import Role
 
 
 @extend_schema(
@@ -25,7 +40,6 @@ from glamps.serializers import GlampByCategorySerializer, GlampSerializer
 )
 class GlampModelViewSet(ModelViewSet, EventLogMixin):
     queryset = Glamp.objects.all()
-    serializer_class = GlampSerializer
     lookup_url_kwarg = "glamp_id"
 
     def get_permissions(self):
@@ -58,6 +72,34 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
             case "destroy":
                 permission_classes = [
                     RoleIsAdmin | RoleIsManager | IsGlampOwner
+                ]
+            case "activate":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager
+                ]
+            case "hidden":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | RoleIsOwner
+                ]
+            case "verified":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager
+                ]
+            case "approved":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager
+                ]
+            case "rating":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | RoleIsOwner | RoleIsTourist
+                ]
+            case "premium_level":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager
+                ]
+            case "priority":
+                permission_classes = [
+                    RoleIsAdmin
                 ]
             case _:
                 permission_classes = []
@@ -189,6 +231,46 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
             "- `room_on_first_flor` \n\n"
         ),
     )
+    def get_serializer_class(self):
+        if self.action == "activate":
+            return ActivateGlampSerializer
+        elif self.action == "hidden":
+            return HiddenGlampSerializer
+        elif self.action == "verified":
+            return VerifiedGlampSerializer
+        elif self.action == "approved":
+            return ApprovedGlampSerializer
+        elif self.action == "rating":
+            return RatingGlampSerializer
+        elif self.action == "premium_level":
+            return PremiumLevelGlampSerializer
+        elif self.action == "priority":
+            return PriorityGlampSerializer
+        elif self.action == "list":
+            if self.request.user.role == Role.TOURIST:
+                return GlampForTouristSerializer
+        elif self.action == "retrieve":
+            if self.request.user.role == Role.TOURIST:
+                return GlampForTouristSerializer
+        elif self.action == "list":
+            if self.request.user.role == Role.OWNER:
+                return GlampForOwnerSerializer
+        elif self.action == "retrieve":
+            if self.request.user.role == Role.OWNER:
+                return GlampForOwnerSerializer
+        elif self.action == "list":
+            if self.request.user.role == Role.MANAGER:
+                return GlampForManagerSerializer
+        elif self.action == "retrieve":
+            if self.request.user.role == Role.MANAGER:
+                return GlampForManagerSerializer
+
+        return GlampSerializer
+
+    def get_object(self):
+        glamp_id = self.kwargs.get("glamp_id")
+        return get_object_or_404(Glamp, id=glamp_id)
+
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
 
@@ -226,6 +308,83 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
     def perform_destroy(self, glamp_instance):
         self.log_event(self.request, operated_object=glamp_instance)
         return super().perform_destroy(glamp_instance)
+
+    @action(detail=True, methods=["put", "patch"])
+    def activate(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("glamp_id"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def hidden(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def verified(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def approved(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def rating(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def premium_level(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def priority(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("glamp_id"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @extend_schema(

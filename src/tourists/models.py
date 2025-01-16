@@ -7,6 +7,7 @@ from roles.constants import HELP_TEXT_PROFILE_STATUS
 from roles.validators import validate_profile_status
 from tourists.validators import validate_birthday, validate_phone
 
+
 User = get_user_model()
 
 

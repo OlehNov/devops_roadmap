@@ -8,6 +8,12 @@ class GlampStatus(IntEnum):
     INACTIVE = 4
 
 
+class PremiumLevel(IntEnum):
+    SILVER = 1
+    GOLD = 2
+    PLATINUM = 3
+
+
 class TypeGlamp(IntEnum):
     DOME = 1
     ECO = 2

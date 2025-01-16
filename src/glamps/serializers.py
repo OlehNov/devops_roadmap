@@ -8,12 +8,15 @@ from categories.models import Category
 from categories.serializers import CategorySerializer
 from glamps.models import Glamp, Picture
 from glamps.validators import (
-    validate_slug_glamp,
-    validate_type,
-    validate_status,
     validate_glamp_price,
+    validate_premium_level,
+    validate_slug_glamp,
+    validate_status,
+    validate_type
 )
+from roles.constants import Role
 from users.serializers import UserSerializer
+
 
 User = get_user_model()
 
@@ -53,6 +56,13 @@ class GlampSerializer(ModelSerializer):
         decimal_places=2,
         validators=[validate_glamp_price],
     )
+    is_active = serializers.BooleanField(required=False, read_only=True)
+    is_hidden = serializers.BooleanField(required=False, read_only=True)
+    is_verified = serializers.BooleanField(required=False, read_only=True)
+    is_approved = serializers.BooleanField(required=False, read_only=True)
+    rating = serializers.FloatField(required=False, read_only=True)
+    premium_level = serializers.IntegerField(required=False, read_only=True)
+    priority = serializers.FloatField(required=False, read_only=True)
 
     class Meta:
         model = Glamp
@@ -111,6 +121,46 @@ class GlampSerializer(ModelSerializer):
             glamp.save()
 
         return instance
+
+
+class GlampForTouristSerializer(GlampSerializer):
+    is_active = serializers.BooleanField(required=False, write_only=True)
+    is_hidden = serializers.BooleanField(required=False, write_only=True)
+    is_verified = serializers.BooleanField(required=False, write_only=True)
+    is_approved = serializers.BooleanField(required=False, write_only=True)
+    premium_level = serializers.IntegerField(required=False, write_only=True)
+    priority = serializers.FloatField(required=False, write_only=True)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if self.context["request"].user.role == Role.TOURIST:
+            representation.pop("is_active", None)
+            representation.pop("is_hidden", None)
+            representation.pop("is_verified", None)
+            representation.pop("is_approved", None)
+            representation.pop("premium_level", None)
+            representation.pop("priority", None)
+        return representation
+
+
+class GlampForOwnerSerializer(GlampSerializer):
+    priority = serializers.FloatField(required=False, write_only=True)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if self.context["request"].user.role == Role.OWNER:
+            representation.pop("priority", None)
+        return representation
+
+
+class GlampForManagerSerializer(GlampSerializer):
+    priority = serializers.FloatField(required=False, write_only=True)
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if self.context["request"].user.role == Role.MANAGER:
+            representation.pop("priority", None)
+        return representation
 
 
 class GlampByCategorySerializer(ModelSerializer):
@@ -194,3 +244,70 @@ class GlampByCategorySerializer(ModelSerializer):
             glamp.save()
 
         return instance
+
+
+class ActivateGlampSerializer(ModelSerializer):
+    is_active = serializers.BooleanField(required=True)
+
+    class Meta:
+        model = Glamp
+        fields = ("is_active",)
+
+
+class HiddenGlampSerializer(ModelSerializer):
+    is_hidden = serializers.BooleanField(required=True)
+
+    class Meta:
+        model = Glamp
+        fields = ("is_hidden",)
+
+
+class VerifiedGlampSerializer(ModelSerializer):
+    is_verified = serializers.BooleanField(required=True)
+
+    class Meta:
+        model = Glamp
+        fields = ("is_verified",)
+
+
+class ApprovedGlampSerializer(ModelSerializer):
+    is_approved = serializers.BooleanField(required=True)
+
+    class Meta:
+        model = Glamp
+        fields = ("is_approved",)
+
+
+class RatingGlampSerializer(ModelSerializer):
+    rating = serializers.FloatField(
+        required=True,
+        min_value=0.0,
+        max_value=5.0,
+    )
+
+    class Meta:
+        model = Glamp
+        fields = ("rating",)
+
+
+class PremiumLevelGlampSerializer(ModelSerializer):
+    premium_level = serializers.IntegerField(
+        required=True,
+        validators=[validate_premium_level],
+    )
+
+    class Meta:
+        model = Glamp
+        fields = ("premium_level",)
+
+
+class PriorityGlampSerializer(ModelSerializer):
+    priority = serializers.FloatField(
+        required=True,
+        min_value=0.0,
+        max_value=100.0,
+    )
+
+    class Meta:
+        model = Glamp
+        fields = ("priority",)
