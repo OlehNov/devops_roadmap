@@ -4,7 +4,6 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import PermissionDenied
 
@@ -79,49 +78,22 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):
-
-        if not request.user.is_anonymous:
-
-            if Tourist.objects.get(user=request.user):
-                return Response(
-                    {
-                        "detail": "User with Tourist profile can't create a new tourist."
-                    },
-                    status=status.HTTP_403_FORBIDDEN,
-                )
-
         serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
+            created_user = serializer.save()
 
-            user_data = serializer.validated_data["user"]
             first_name = serializer.validated_data["first_name"]
             last_name = serializer.validated_data["last_name"]
             birthday = serializer.validated_data["birthday"]
             phone = serializer.validated_data["phone"]
-
-            password = user_data.get("password")
-            confirm_password = user_data.pop("confirm_password")
-
-            if password != confirm_password:
-                raise ValidationError(
-                    {"password": "Password fields do not match."}
-                )
 
             validate_first_name_last_name(first_name)
             validate_first_name_last_name(last_name)
             validate_birthday(birthday)
             validate_phone(phone)
 
-            user = User.objects.create_user(
-                email=user_data.get("email"),
-                password=password,
-                role=Role.TOURIST,
-                is_active=False,
-                is_staff=False,
-            )
-
-            tourist = Tourist.objects.get(id=user.id, user=user)
+            tourist = Tourist.objects.get(id=created_user.id)
 
             if not tourist:
                 return Response(
@@ -135,12 +107,12 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
             tourist.phone = phone
             tourist.save()
 
-            transaction.on_commit(lambda: verify_email(request, user.id))
+            transaction.on_commit(lambda: verify_email(request, created_user.id))
 
             validated_data = serializer.validated_data
 
             self.log_event(
-                request, operated_object=user, validated_data=validated_data
+                request, operated_object=created_user, validated_data=validated_data
             )
             self.log_event(
                 request, operated_object=tourist, validated_data=validated_data
