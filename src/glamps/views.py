@@ -3,7 +3,6 @@ from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -11,12 +10,12 @@ from addons.mixins.eventlog import EventLogMixin
 from categories.models import Category
 from glamps.models import Glamp
 from glamps.permissions import (
-    IsAnonymousUser,
     IsGlampOwner,
     RoleIsAdmin,
     RoleIsManager,
     RoleIsOwner,
     RoleIsTourist,
+    user_authenticated,
 )
 from glamps.serializers import (
     GlampByCategorySerializer,
@@ -46,20 +45,11 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
         match self.action:
             case "list":
                 permission_classes = [
-                    IsAnonymousUser
-                    | RoleIsAdmin
-                    | RoleIsManager
-                    | RoleIsTourist
-                    | RoleIsOwner
+                    RoleIsAdmin | RoleIsManager | RoleIsTourist | RoleIsOwner
                 ]
             case "retrieve":
                 permission_classes = [
-                    IsAnonymousUser
-                    | RoleIsAdmin
-                    | RoleIsManager
-                    | RoleIsOwner
-                    | RoleIsTourist
-                    | IsAnonymousUser
+                    RoleIsAdmin | RoleIsManager | RoleIsOwner | RoleIsTourist
                 ]
             case "create":
                 permission_classes = [
@@ -399,7 +389,6 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
     ],
 )
 class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
-    serializer_class = GlampByCategorySerializer
     lookup_url_kwarg = "glamp_id"
 
     def get_queryset(self):
@@ -410,23 +399,93 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
     def get_permissions(self):
         match self.action:
             case "list":
-                permission_classes = [AllowAny]
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | RoleIsTourist | RoleIsOwner
+                ]
             case "retrieve":
                 permission_classes = [
-                    IsAnonymousUser
-                    | RoleIsAdmin
-                    | RoleIsManager
-                    | RoleIsOwner
-                    | RoleIsTourist
+                    RoleIsAdmin | RoleIsManager | RoleIsOwner | RoleIsTourist
                 ]
-            case "create", "update", "destroy":
+            case "create":
                 permission_classes = [
                     RoleIsAdmin | RoleIsManager | RoleIsOwner
+                ]
+            case "update":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | IsGlampOwner
+                ]
+            case "destroy":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | IsGlampOwner
+                ]
+            case "activate":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager
+                ]
+            case "hidden":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | RoleIsOwner
+                ]
+            case "verified":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager
+                ]
+            case "approved":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager
+                ]
+            case "rating":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | RoleIsOwner | RoleIsTourist
+                ]
+            case "premium_level":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager
+                ]
+            case "priority":
+                permission_classes = [
+                    RoleIsAdmin
                 ]
             case _:
                 permission_classes = []
 
         return [permission() for permission in permission_classes]
+
+    def get_serializer_class(self):
+        if self.action == "activate":
+            return ActivateGlampSerializer
+        elif self.action == "hidden":
+            return HiddenGlampSerializer
+        elif self.action == "verified":
+            return VerifiedGlampSerializer
+        elif self.action == "approved":
+            return ApprovedGlampSerializer
+        elif self.action == "rating":
+            return RatingGlampSerializer
+        elif self.action == "premium_level":
+            return PremiumLevelGlampSerializer
+        elif self.action == "priority":
+            return PriorityGlampSerializer
+        elif self.action == "list":
+            if self.request.user.role == Role.TOURIST:
+                return GlampForTouristSerializer
+        elif self.action == "retrieve":
+            if self.request.user.role == Role.TOURIST:
+                return GlampForTouristSerializer
+        elif self.action == "list":
+            if self.request.user.role == Role.OWNER:
+                return GlampForOwnerSerializer
+        elif self.action == "retrieve":
+            if self.request.user.role == Role.OWNER:
+                return GlampForOwnerSerializer
+        elif self.action == "list":
+            if self.request.user.role == Role.MANAGER:
+                return GlampForManagerSerializer
+        elif self.action == "retrieve":
+            if self.request.user.role == Role.MANAGER:
+                return GlampForManagerSerializer
+
+        return GlampByCategorySerializer
 
     @transaction.atomic
     def perform_create(self, serializer):
@@ -457,3 +516,80 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
     def perform_destroy(self, glamp_instance):
         self.log_event(self.request, operated_object=glamp_instance)
         return super().perform_destroy(glamp_instance)
+
+    @action(detail=True, methods=["put", "patch"])
+    def activate(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("glamp_id"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def hidden(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def verified(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def approved(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def rating(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def premium_level(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("pk"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["put", "patch"])
+    def priority(self, request, *args, **kwargs):
+        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("glamp_id"))
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(instance, data=request.data, partial=True)
+        if serializer.is_valid():
+            updated_instance = serializer.save()
+            return Response(serializer_class(updated_instance).data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
