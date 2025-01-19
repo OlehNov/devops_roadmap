@@ -24,6 +24,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
+CORS_ALLOWED_ORIGINS = os.getenv("CORS_ALLOWED_ORIGINS", "*").split(",")
+if not CORS_ALLOWED_ORIGINS or CORS_ALLOWED_ORIGINS == [""]:
+    CORS_ALLOWED_ORIGINS = ["*"]
+
+CSRF_TRUSTED_ORIGINS = os.getenv("CSRF_TRUSTED_ORIGINS", "*").split(",")
+if not CSRF_TRUSTED_ORIGINS or CSRF_TRUSTED_ORIGINS == [""]:
+    CSRF_TRUSTED_ORIGINS = ["*"]
+
 
 # Application definition
 INSTALLED_APPS = [
