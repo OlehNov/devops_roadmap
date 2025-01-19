@@ -14,11 +14,6 @@ def user_authenticated(user):
         raise PermissionDenied("Forbidden")
 
 
-class IsAnonymousUser(BasePermission):
-    def has_permission(self, request, view):
-        return isinstance(request.user, AnonymousUser)
-
-
 class RoleIsAdmin(BasePermission):
     def has_permission(self, request, view):
         user_authenticated(user=request.user)

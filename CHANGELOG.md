@@ -131,3 +131,7 @@
 1. Add new fields.
 2. Create new endpoints for new fields. 
 ---
+## 19.01.2025 15:31. Fix 500 create glamp through category.
+1. Fix 500 exception in create glamp through category.
+2. Create new endpoints for new fields for glamp by category.
+---
