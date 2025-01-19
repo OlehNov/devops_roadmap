@@ -15,7 +15,6 @@ from glamps.permissions import (
     RoleIsManager,
     RoleIsOwner,
     RoleIsTourist,
-    user_authenticated,
 )
 from glamps.serializers import (
     GlampByCategorySerializer,
