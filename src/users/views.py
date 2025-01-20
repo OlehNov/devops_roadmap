@@ -1,3 +1,5 @@
+import jwt
+from django.conf import settings
 from django.contrib.auth import get_user_model, login
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.urls import reverse
@@ -15,10 +17,14 @@ from rest_framework.viewsets import ModelViewSet
 from addons.mixins.eventlog import EventLogMixin
 from roles.constants import Role
 from users.permissions import IsAuthenticatedOrForbidden
-from users.serializers import (ActivateUserSerializer, CurrentUserSerializer,
-                               PasswordResetConfirmSerializer,
-                               PasswordResetRequestSerializer, UserSerializer)
+from users.serializers import (
+    CurrentUserSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordResetRequestSerializer,
+    UserSerializer,
+)
 from users.tasks import send_reset_password_email
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
 User = get_user_model()
@@ -50,13 +56,17 @@ class UserViewSet(ModelViewSet, EventLogMixin):
     def perform_create(self, serializer):
         model = serializer.save()
         validated_data = serializer.validated_data
-        self.log_event(self.request, operated_object=model, validated_data=validated_data)
+        self.log_event(
+            self.request, operated_object=model, validated_data=validated_data
+        )
         return model
 
     def perform_update(self, serializer):
         model = serializer.save()
         validated_data = serializer.validated_data
-        self.log_event(self.request, operated_object=model, validated_data=validated_data)
+        self.log_event(
+            self.request, operated_object=model, validated_data=validated_data
+        )
         return model
 
     def perform_destroy(self, model):
@@ -65,38 +75,44 @@ class UserViewSet(ModelViewSet, EventLogMixin):
 
 
 @extend_schema(tags=["activate-user"])
-class ActivateUserAPIView(APIView):
-    """User activate class"""
+class ActivateUserView(APIView):
+    def get(self, request, *args, **kwargs):
+        token = kwargs.get("token")
 
-    permission_classes = [AllowAny]
-    serializer_class = ActivateUserSerializer
+        try:
+            decoded_token = jwt.decode(
+                token, settings.SECRET_KEY, settings.ALGORITHM
+            )
 
-    def post(self, request, *args, **kwargs):
-        data = {
-            "uuid64": kwargs.get("uuid64"),
-            "token": kwargs.get("token"),
-        }
-        serializer = self.serializer_class(data=data)
+            user = get_object_or_404(User, id=decoded_token["user_id"])
+            user.is_active = True
+            user.save()
 
-        if serializer.is_valid():
-            result = serializer.activate()  # Activate user.
+            login(request, user)
 
-            login(request, result["current_user"])
+            refresh_token = RefreshToken.for_user(user)
 
             return Response(
                 {
-                    "detail": "User activated successfully.",
-                    "current_user": result["current_user"].id,
-                    "access": result["access"],
-                    "refresh": result["refresh"],
-                    "user_email": result["current_user"].email,
+                    "detail": "User has been activated.",
+                    "email": user.email,
+                    "user_id": user.id,
+                    "token": str(refresh_token),
                 },
                 status=status.HTTP_200_OK,
             )
 
-        return Response(
-            {"error": "Unexpected error."}, status=status.HTTP_400_BAD_REQUEST
-        )
+        except jwt.ExpiredSignatureError:
+            return Response(
+                {"detail": "Activation link has expired."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except jwt.InvalidTokenError:
+            return Response(
+                {"detail": "Invalid token."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 @extend_schema(tags=["password"])

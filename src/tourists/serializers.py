@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, ValidationError
 
 from tourists.models import Tourist
 from users.serializers import UserRegisterSerializer, UserSerializer
+from roles.constants import ProfileStatus, Role
 
 User = get_user_model()
 
@@ -21,6 +22,26 @@ class TouristRegisterSerializer(ModelSerializer):
             "phone",
         ]
         read_only_fields = ["status"]
+
+    def create(self, validated_data):
+        user_data = validated_data.get("user")
+
+        password = user_data.get("password")
+        confirm_password = user_data.pop("confirm_password")
+
+        if password != confirm_password:
+            raise ValidationError(
+                {"password": "Password fields do not match."}
+            )
+
+        user = User.objects.create_user(
+            email=user_data.pop("email"),
+            password=user_data.pop("password"),
+            role=Role.TOURIST,
+            is_active=False,
+            is_staff=False,
+        )
+        return user
 
 
 class TouristSerializer(ModelSerializer):

@@ -3,30 +3,27 @@ import os
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage, send_mail
+from django.http import HttpRequest
 from django.template.loader import render_to_string
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
-from dotenv import load_dotenv
-
-from users.utils import TokenGenerator
-
-load_dotenv()
+from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
 
-def send_registration_email(user_id: int) -> None:
-    user_instance = User.objects.get(pk=user_id)
+def send_activation_email(request: HttpRequest, user_id: int) -> None:
+    user_instance = User.objects.get(id=user_id)
+    token = RefreshToken.for_user(user_instance)
+    host = request.get_host()
+    protocol = "https" if request.is_secure() else "http"
 
-    message = render_to_string(
-        "emails/registration_email.html",
-        context={
-            "user": user_instance,
-            "domain": os.getenv("DOMAIN"),
-            "uid": urlsafe_base64_encode(force_bytes(user_id)),
-            "token": TokenGenerator().make_token(user_instance),
-        },
-    )
+    context = {
+        "user": user_instance.email,
+        "host": host,
+        "protocol": protocol,
+        "token": str(token),
+    }
+
+    message = render_to_string("emails/activation_email.html", context)
 
     email = EmailMessage(
         subject="Activate your account",
