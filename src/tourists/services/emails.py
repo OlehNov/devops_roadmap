@@ -1,5 +1,3 @@
-import os
-
 from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage
 from django.http import HttpRequest
@@ -9,7 +7,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 User = get_user_model()
 
 
-def send_verification_email(request: HttpRequest, user_id: int) -> None:
+def send_activation_email(request: HttpRequest, user_id: int) -> None:
     user_instance = User.objects.get(id=user_id)
     token = RefreshToken.for_user(user_instance)
     host = request.get_host()
@@ -21,10 +19,11 @@ def send_verification_email(request: HttpRequest, user_id: int) -> None:
         "protocol": protocol,
         "token": str(token),
     }
-    message = render_to_string("emails/owner_verify.html", context)
+
+    message = render_to_string("emails/activation_email.html", context)
 
     email = EmailMessage(
-        subject="Action Required: Verify Your Account",
+        subject="Activate your account",
         body=message,
         to=[user_instance.email],
     )

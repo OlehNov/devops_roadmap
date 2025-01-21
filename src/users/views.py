@@ -24,7 +24,6 @@ from users.serializers import (
     UserSerializer,
 )
 from users.tasks import send_reset_password_email
-from rest_framework_simplejwt.tokens import RefreshToken
 
 
 User = get_user_model()
@@ -72,48 +71,6 @@ class UserViewSet(ModelViewSet, EventLogMixin):
     def perform_destroy(self, model):
         self.log_event(self.request, operated_object=model)
         return super().perform_destroy(model)
-
-
-@extend_schema(tags=["activate-user"])
-class ActivateUserView(APIView):
-    def get(self, request, *args, **kwargs):
-        token = kwargs.get("token")
-
-        try:
-            decoded_token = jwt.decode(
-                token, settings.SECRET_KEY, settings.ALGORITHM
-            )
-
-            user = get_object_or_404(User, id=decoded_token["user_id"])
-            user.is_active = True
-            user.save()
-
-            login(request, user)
-
-            refresh_token = RefreshToken.for_user(user)
-
-            return Response(
-                {
-                    "detail": "User has been activated.",
-                    "email": user.email,
-                    "user_id": user.id,
-                    "token": str(refresh_token),
-                },
-                status=status.HTTP_200_OK,
-            )
-
-        except jwt.ExpiredSignatureError:
-            return Response(
-                {"detail": "Activation link has expired."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        except jwt.InvalidTokenError:
-            return Response(
-                {"detail": "Invalid token."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
 
 @extend_schema(tags=["password"])
 class PasswordResetRequestView(APIView):

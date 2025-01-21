@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
@@ -6,9 +5,15 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import PermissionDenied
+from django.contrib.auth import get_user_model, login
+import jwt
+from django.conf import settings
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+from rest_framework.generics import get_object_or_404
 
 from addons.mixins.eventlog import EventLogMixin
-from roles.constants import ProfileStatus, Role
+from roles.constants import ProfileStatus
 from tourists.models import Tourist
 from addons.permissions.permissions import (
     IsAdministrator,
@@ -18,8 +23,9 @@ from addons.permissions.permissions import (
 )
 from tourists.serializers import TouristRegisterSerializer, TouristSerializer
 from tourists.validators import validate_birthday, validate_phone
-from users.tasks import verify_email
+from tourists.tasks import verify_email
 from users.validators import validate_first_name_last_name
+
 
 User = get_user_model()
 
@@ -197,4 +203,45 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
             return Response(
                 {"detail": "Object deactivated successfully."},
                 status=status.HTTP_204_NO_CONTENT,
+            )
+
+
+@extend_schema(tags=["activate-tourist"])
+class ActivateTouristView(APIView):
+    def get(self, request, *args, **kwargs):
+        token = kwargs.get("token")
+
+        try:
+            decoded_token = jwt.decode(
+                token, settings.SECRET_KEY, settings.ALGORITHM
+            )
+
+            tourist = get_object_or_404(Tourist, id=decoded_token["user_id"])
+            tourist.user.is_active = True
+            tourist.user.save()
+
+            login(request, tourist.user)
+
+            refresh_token = RefreshToken.for_user(tourist.user)
+
+            return Response(
+                {
+                    "detail": "Tourist has been activated.",
+                    "email": tourist.user.email,
+                    "user_id": tourist.user.id,
+                    "token": str(refresh_token),
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except jwt.ExpiredSignatureError:
+            return Response(
+                {"detail": "Activation link has expired."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except jwt.InvalidTokenError:
+            return Response(
+                {"detail": "Invalid token."},
+                status=status.HTTP_400_BAD_REQUEST,
             )

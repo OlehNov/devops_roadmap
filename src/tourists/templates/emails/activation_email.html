@@ -1,6 +1,6 @@
 <p>Hi, {{ user }}</p>
 <p>Please follow the link to complete the registration:</p>
 
-<a href="{{ protocol }}://{{ host }}{% url 'users:activate-user' token=token %}">
+<a href="{{ protocol }}://{{ host }}{% url 'tourists:activate-tourist' token=token %}">
     Activation Link
 </a>

@@ -1,12 +1,15 @@
-from django.contrib.auth import get_user_model
+from django.conf import settings
+from django.contrib.auth import get_user_model, login
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.exceptions import PermissionDenied
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from addons.mixins.eventlog import EventLogMixin
 from glamp_owners.models import GlampOwner
@@ -16,9 +19,11 @@ from glamp_owners.serializers import (
     GlampOwnerSerializer,
 )
 from glamp_owners.tasks import verify_glamp_owner
-from roles.constants import ProfileStatus, Role
+from roles.constants import ProfileStatus
 from tourists.validators import validate_phone
 from users.validators import validate_first_name_last_name
+import jwt
+
 
 
 User = get_user_model()
@@ -56,46 +61,20 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
 
     @transaction.atomic()
     def create(self, request, *args, **kwargs):
-
-        if not request.user.is_anonymous:
-
-            if GlampOwner.objects.filter(user=request.user).first().exists():
-                return Response(
-                    {
-                        "detail": "User with Glamp Owner profile can't create a new Glamp Owner."
-                    },
-                    status=status.HTTP_403_FORBIDDEN,
-                )
-
         serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
+            created_user = serializer.save()
 
-            user_data = serializer.validated_data["user"]
             first_name = serializer.validated_data["first_name"]
             last_name = serializer.validated_data["last_name"]
             phone = serializer.validated_data["phone"]
-
-            password = user_data.get("password")
-            confirm_password = user_data.pop("confirm_password")
-            if password != confirm_password:
-                raise ValidationError(
-                    {"password": "Password fields do not match."}
-                )
 
             validate_first_name_last_name(first_name)
             validate_first_name_last_name(last_name)
             validate_phone(phone)
 
-            user = User.objects.create(
-                email=user_data.get("email"),
-                password=password,
-                role=Role.OWNER,
-                is_active=False,
-                is_staff=False,
-            )
-
-            owner = GlampOwner.objects.get(id=user.id, user=user)
+            owner = GlampOwner.objects.get(id=created_user.id)
 
             if not owner:
                 return Response(
@@ -108,10 +87,11 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
             owner.phone = phone
             owner.save()
 
-            transaction.on_commit(verify_glamp_owner(user.id))
+            transaction.on_commit(lambda: verify_glamp_owner(request, created_user.id))
+
             validated_data = serializer.validated_data
 
-            self.log_event(request, operated_object=user, validated_data=validated_data)
+            self.log_event(request, operated_object=created_user, validated_data=validated_data)
             self.log_event(request, operated_object=owner, validated_data=validated_data)
 
             return Response(
@@ -189,3 +169,49 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
             {"detail": "Object deactivated successfully."},
             status=status.HTTP_204_NO_CONTENT,
         )
+
+
+@extend_schema(tags=["activate-glamp_owner"])
+class ActivateGlampOwnerView(APIView, EventLogMixin):
+    def get(self, request, *args, **kwargs):
+        token = kwargs.get("token")
+
+        try:
+            decoded_token = jwt.decode(
+                token, settings.SECRET_KEY, settings.ALGORITHM
+            )
+
+            owner = get_object_or_404(GlampOwner, id=decoded_token["user_id"])
+
+            owner.is_verified = True
+            owner.user.is_active = True
+
+            owner.user.save()
+            owner.save()
+
+            login(request, owner.user)
+
+            refresh_token = RefreshToken.for_user(owner.user)
+
+            return Response(
+                {
+                    "detail": "Owner has been activated.",
+                    "email": owner.user.email,
+                    "user_id": owner.user.id,
+                    "token": str(refresh_token),
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except jwt.ExpiredSignatureError:
+            return Response(
+                {"detail": "Activation link has expired."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        except jwt.InvalidTokenError:
+            return Response(
+                {"detail": "Invalid token."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
