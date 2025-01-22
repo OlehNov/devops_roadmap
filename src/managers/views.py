@@ -3,15 +3,18 @@ from django.db import transaction
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from addons.mixins.eventlog import EventLogMixin
+from addons.permissions.permissions import (
+    IsAdministrator,
+    IsManager,
+    IsObjOwner,
+    IsStaffAdministrator
+)
 from managers.models import GlampManager
-from addons.permissions.permissions import IsAdministrator, IsManager, IsStaffAdministrator
-
 from managers.serializers import ManagerRegisterSerializer, ManagerSerializer
-from roles.constants import ProfileStatus, Role
+from roles.constants import ProfileStatus
 from users.validators import validate_first_name_last_name
 
 User = get_user_model()
@@ -33,13 +36,13 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
             case "create":
                 permission_classes = [IsAdministrator | IsStaffAdministrator]
             case "list":
-                permission_classes = [IsAdministrator | IsManager | IsStaffAdministrator]
+                permission_classes = [IsManager | IsAdministrator  | IsStaffAdministrator]
             case "retrieve":
-                permission_classes = [IsAdministrator | IsManager | IsStaffAdministrator]
+                permission_classes = [IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "update":
-                permission_classes = [IsAdministrator | IsManager | IsStaffAdministrator]
+                permission_classes = [IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "partial_update":
-                permission_classes = [IsAdministrator | IsManager | IsStaffAdministrator]
+                permission_classes = [IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "destroy":
                 permission_classes = [IsAdministrator | IsStaffAdministrator]
             case _:
@@ -51,39 +54,30 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
+            created_user = serializer.save()
 
-            user_data = serializer.validated_data["user"]
             first_name = serializer.validated_data["first_name"]
             last_name = serializer.validated_data["last_name"]
-
-            password = user_data.get("password")
-            confirm_password = user_data.pop("confirm_password")
-
-            if password != confirm_password:
-                raise ValidationError(
-                    {"password": "Password fields do not match."}
-                )
 
             validate_first_name_last_name(first_name)
             validate_first_name_last_name(last_name)
 
-            user = User.objects.create_user(
-                email=user_data.get("email"),
-                password=password,
-                role=Role.MANAGER,
-                is_active=True,
-                is_staff=False,
-            )
+            manager = GlampManager.objects.get(id=created_user.id, user=created_user)
 
-            manager = GlampManager.objects.get(id=user.id, user=user)
+            if not manager:
+                return Response(
+                    {"detail": "Not Found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
             manager.first_name = first_name
             manager.last_name = last_name
             manager.save()
+
             validated_data = serializer.validated_data
 
-            self.log_event(request, operated_object=user, validated_data=validated_data)
+            self.log_event(request, operated_object=created_user, validated_data=validated_data)
             self.log_event(request, operated_object=manager, validated_data=validated_data)
 
             return Response(

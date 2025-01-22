@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer, ValidationError
 
+from roles.constants import ProfileStatus, Role
 from tourists.models import Tourist
 from users.serializers import UserRegisterSerializer, UserSerializer
-from roles.constants import ProfileStatus, Role
 
 User = get_user_model()
 
