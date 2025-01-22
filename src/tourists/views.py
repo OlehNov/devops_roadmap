@@ -35,16 +35,10 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
     queryset = Tourist.objects.select_related("user")
     serializer_class = TouristSerializer
     lookup_url_kwarg = "tourist_id"
-
-    def get_serializer_class(self):
-        if self.action == "create":
-            return TouristRegisterSerializer
-        return TouristSerializer
+    http_method_names = ["get", "put", "patch", "delete"]
 
     def get_permissions(self):
         match self.action:
-            case "create":
-                permission_classes = [AllowAny]
             case "list":
                 permission_classes = [
                     IsAdministrator | IsManager | IsStaffAdministrator
@@ -81,54 +75,6 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
                 permission_classes = []
 
         return [permission() for permission in permission_classes]
-
-    @transaction.atomic()
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-
-        if serializer.is_valid(raise_exception=True):
-            created_user = serializer.save()
-
-            first_name = serializer.validated_data["first_name"]
-            last_name = serializer.validated_data["last_name"]
-            birthday = serializer.validated_data["birthday"]
-            phone = serializer.validated_data["phone"]
-
-            validate_first_name_last_name(first_name)
-            validate_first_name_last_name(last_name)
-            validate_birthday(birthday)
-            validate_phone(phone)
-
-            tourist = Tourist.objects.get(id=created_user.id)
-
-            if not tourist:
-                return Response(
-                    {"detail": "Not Found"},
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-
-            tourist.first_name = first_name
-            tourist.last_name = last_name
-            tourist.birthday = birthday
-            tourist.phone = phone
-            tourist.save()
-
-            transaction.on_commit(lambda: verify_email(request, created_user.id))
-
-            validated_data = serializer.validated_data
-
-            self.log_event(
-                request, operated_object=created_user, validated_data=validated_data
-            )
-            self.log_event(
-                request, operated_object=tourist, validated_data=validated_data
-            )
-
-            return Response(
-                TouristSerializer(tourist).data, status=status.HTTP_201_CREATED
-            )
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic()
     def update(self, request, *args, **kwargs):
@@ -205,6 +151,58 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
                 status=status.HTTP_204_NO_CONTENT,
             )
 
+@extend_schema(tags=["register-tourist"])
+class TouristRegisterView(APIView, EventLogMixin):
+    serializer_class = TouristRegisterSerializer
+    permission_classes = [AllowAny]
+
+    @transaction.atomic()
+    def post(self, request, *args, **kwargs):
+        serializer = TouristRegisterSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            created_user = serializer.save()
+
+            first_name = serializer.validated_data["first_name"]
+            last_name = serializer.validated_data["last_name"]
+            birthday = serializer.validated_data["birthday"]
+            phone = serializer.validated_data["phone"]
+
+            validate_first_name_last_name(first_name)
+            validate_first_name_last_name(last_name)
+            validate_birthday(birthday)
+            validate_phone(phone)
+
+            tourist = Tourist.objects.get(id=created_user.id)
+
+            if not tourist:
+                return Response(
+                    {"detail": "Not Found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            tourist.first_name = first_name
+            tourist.last_name = last_name
+            tourist.birthday = birthday
+            tourist.phone = phone
+            tourist.save()
+
+            transaction.on_commit(lambda: verify_email(request, created_user.id))
+
+            validated_data = serializer.validated_data
+
+            self.log_event(
+                request, operated_object=created_user, validated_data=validated_data
+            )
+            self.log_event(
+                request, operated_object=tourist, validated_data=validated_data
+            )
+
+            return Response(
+                TouristSerializer(tourist).data, status=status.HTTP_201_CREATED
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @extend_schema(tags=["activate-tourist"])
 class ActivateTouristView(APIView):

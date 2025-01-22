@@ -34,16 +34,10 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
     queryset = GlampOwner.objects.select_related("user")
     serializer_class = GlampOwnerSerializer
     lookup_url_kwarg = "glamp_owner_id"
-
-    def get_serializer_class(self):
-        if self.action == "create":
-            return GlampOwnerRegisterSerializer
-        return GlampOwnerSerializer
+    http_method_names = ["get", "put", "patch", "delete"]
 
     def get_permissions(self):
         match self.action:
-            case "create":
-                permission_classes = [AllowAny]
             case "list":
                 permission_classes = [IsStaffAdministrator | IsAdministrator | IsManager]
             case "retrieve":
@@ -58,48 +52,6 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
                 permission_classes = []
 
         return [permission() for permission in permission_classes]
-
-    @transaction.atomic()
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-
-        if serializer.is_valid(raise_exception=True):
-            created_user = serializer.save()
-
-            first_name = serializer.validated_data["first_name"]
-            last_name = serializer.validated_data["last_name"]
-            phone = serializer.validated_data["phone"]
-
-            validate_first_name_last_name(first_name)
-            validate_first_name_last_name(last_name)
-            validate_phone(phone)
-
-            owner = GlampOwner.objects.get(id=created_user.id)
-
-            if not owner:
-                return Response(
-                    {"detail": "Not Found"},
-                    status=status.HTTP_404_NOT_FOUND,
-                )
-
-            owner.first_name = first_name
-            owner.last_name = last_name
-            owner.phone = phone
-            owner.save()
-
-            transaction.on_commit(lambda: verify_glamp_owner(request, created_user.id))
-
-            validated_data = serializer.validated_data
-
-            self.log_event(request, operated_object=created_user, validated_data=validated_data)
-            self.log_event(request, operated_object=owner, validated_data=validated_data)
-
-            return Response(
-                GlampOwnerSerializer(owner).data,
-                status=status.HTTP_201_CREATED,
-            )
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     @transaction.atomic()
     def update(self, request, *args, **kwargs):
@@ -169,6 +121,53 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
             {"detail": "Object deactivated successfully."},
             status=status.HTTP_204_NO_CONTENT,
         )
+
+@extend_schema(tags=["register-glamp_owner"])
+class GlampOwnerRegisterView(APIView, EventLogMixin):
+    serializer_class = GlampOwnerRegisterSerializer
+    permission_classes = [AllowAny]
+
+    @transaction.atomic()
+    def post(self, request, *args, **kwargs):
+        serializer = GlampOwnerRegisterSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            created_user = serializer.save()
+
+            first_name = serializer.validated_data["first_name"]
+            last_name = serializer.validated_data["last_name"]
+            phone = serializer.validated_data["phone"]
+
+            validate_first_name_last_name(first_name)
+            validate_first_name_last_name(last_name)
+            validate_phone(phone)
+
+            owner = GlampOwner.objects.get(id=created_user.id)
+
+            if not owner:
+                return Response(
+                    {"detail": "Not Found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            owner.first_name = first_name
+            owner.last_name = last_name
+            owner.phone = phone
+            owner.save()
+
+            transaction.on_commit(lambda: verify_glamp_owner(request, created_user.id))
+
+            validated_data = serializer.validated_data
+
+            self.log_event(request, operated_object=created_user, validated_data=validated_data)
+            self.log_event(request, operated_object=owner, validated_data=validated_data)
+
+            return Response(
+                GlampOwnerSerializer(owner).data,
+                status=status.HTTP_201_CREATED,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @extend_schema(tags=["activate-glamp_owner"])
