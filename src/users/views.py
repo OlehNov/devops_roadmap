@@ -21,10 +21,9 @@ from users.serializers import (
     CurrentUserSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
-    UserSerializer,
+    UserSerializer
 )
 from users.tasks import send_reset_password_email
-
 
 User = get_user_model()
 

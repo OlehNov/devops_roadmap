@@ -2,13 +2,16 @@ from django.contrib.auth import get_user_model
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from rest_framework.generics import get_object_or_404
-from rest_framework.serializers import (CharField, ModelSerializer, Serializer,
-                                        ValidationError)
-from roles.constants import ProfileStatus, Role
-
+from rest_framework.serializers import (
+    CharField,
+    ModelSerializer,
+    Serializer,
+    ValidationError
+)
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from glamp_owners.models import GlampOwner
+from roles.constants import ProfileStatus, Role
 from users.serializers import UserRegisterSerializer, UserSerializer
 from users.utils import TokenGenerator
 

@@ -1,30 +1,34 @@
+import jwt
 from django.conf import settings
 from django.contrib.auth import get_user_model, login
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.exceptions import PermissionDenied
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from addons.mixins.eventlog import EventLogMixin
+from addons.permissions.permissions import (
+    IsAdministrator,
+    IsManager,
+    IsObjOwner,
+    IsOwner,
+    IsStaffAdministrator
+)
 from glamp_owners.models import GlampOwner
-from addons.permissions.permissions import IsManager, IsAdministrator, IsStaffAdministrator, IsOwner
 from glamp_owners.serializers import (
     GlampOwnerRegisterSerializer,
-    GlampOwnerSerializer,
+    GlampOwnerSerializer
 )
 from glamp_owners.tasks import verify_glamp_owner
 from roles.constants import ProfileStatus
 from tourists.validators import validate_phone
 from users.validators import validate_first_name_last_name
-import jwt
-
-
 
 User = get_user_model()
 
@@ -41,13 +45,13 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
             case "list":
                 permission_classes = [IsStaffAdministrator | IsAdministrator | IsManager]
             case "retrieve":
-                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "update":
-                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "partial_update":
-                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "delete":
-                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case _:
                 permission_classes = []
 

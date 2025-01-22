@@ -1,7 +1,11 @@
-from rest_framework.routers import DefaultRouter
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-from glamp_owners.views import GlampOwnerViewSet, ActivateGlampOwnerView, GlampOwnerRegisterView
+from glamp_owners.views import (
+    ActivateGlampOwnerView,
+    GlampOwnerRegisterView,
+    GlampOwnerViewSet
+)
 
 router = DefaultRouter()
 router.register("", GlampOwnerViewSet, basename="glamp_owner")

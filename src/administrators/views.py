@@ -1,21 +1,23 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
-from addons.permissions.permissions import IsAdministrator, IsStaffAdministrator
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from addons.mixins.eventlog import EventLogMixin
+from addons.permissions.permissions import (
+    IsAdministrator,
+    IsObjOwner,
+    IsStaffAdministrator
+)
 from administrators.models import Administrator
 from administrators.serializers import (
     AdministratorRegisterSerializer,
-    AdministratorSerializer,
+    AdministratorSerializer
 )
-from roles.constants import ProfileStatus, Role
+from roles.constants import ProfileStatus
 from users.validators import validate_first_name_last_name
-
 
 User = get_user_model()
 
@@ -36,13 +38,13 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
             case "create":
                 permission_classes = [IsStaffAdministrator]
             case "list":
-                permission_classes = [IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "retrieve":
-                permission_classes = [IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "update":
-                permission_classes = [IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "partial_update":
-                permission_classes = [IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "destroy":
                 permission_classes = [IsStaffAdministrator]
             case _:
@@ -54,31 +56,22 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
 
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
+            created_user = serializer.save()
 
-            user_data = serializer.validated_data["user"]
             first_name = serializer.validated_data["first_name"]
             last_name = serializer.validated_data["last_name"]
-
-            password = user_data.get("password")
-            confirm_password = user_data.pop("confirm_password")
-            if password != confirm_password:
-                raise ValidationError(
-                    {"password": "Password fields do not match."}
-                )
 
             validate_first_name_last_name(first_name)
             validate_first_name_last_name(last_name)
 
-            user = User.objects.create_user(
-                email=user_data.get("email"),
-                password=password,
-                role=Role.ADMIN,
-                is_active=True,
-                is_staff=False,
-            )
+            administrator = Administrator.objects.get(id=created_user.id, user=created_user)
 
-            administrator = Administrator.objects.get(id=user.id, user=user)
+            if not administrator:
+                return Response(
+                    {"detail": "Not Found"},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
 
             administrator.first_name = first_name
             administrator.last_name = last_name
@@ -87,7 +80,7 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
             validated_data = serializer.validated_data
 
             self.log_event(
-                request, operated_object=user, validated_data=validated_data
+                request, operated_object=created_user, validated_data=validated_data
             )
             self.log_event(
                 request,

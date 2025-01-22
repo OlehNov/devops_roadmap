@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 from users.views import (
     PasswordResetConfirmView,
     PasswordResetRequestView,
-    UserViewSet,
+    UserViewSet
 )
 
 router = DefaultRouter()

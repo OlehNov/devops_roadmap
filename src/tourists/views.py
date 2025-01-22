@@ -1,31 +1,31 @@
+import jwt
+from django.conf import settings
+from django.contrib.auth import get_user_model, login
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.exceptions import PermissionDenied
-from django.contrib.auth import get_user_model, login
-import jwt
-from django.conf import settings
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
-from rest_framework.generics import get_object_or_404
+from rest_framework.viewsets import ModelViewSet
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from addons.mixins.eventlog import EventLogMixin
-from roles.constants import ProfileStatus
-from tourists.models import Tourist
 from addons.permissions.permissions import (
     IsAdministrator,
     IsManager,
-    IsTourist,
+    IsObjOwner,
     IsStaffAdministrator,
+    IsTourist
 )
+from roles.constants import ProfileStatus
+from tourists.models import Tourist
 from tourists.serializers import TouristRegisterSerializer, TouristSerializer
-from tourists.validators import validate_birthday, validate_phone
 from tourists.tasks import verify_email
+from tourists.validators import validate_birthday, validate_phone
 from users.validators import validate_first_name_last_name
-
 
 User = get_user_model()
 
@@ -49,6 +49,7 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
                     | IsManager
                     | IsAdministrator
                     | IsStaffAdministrator
+                    | IsObjOwner
                 ]
             case "update":
                 permission_classes = [
@@ -56,6 +57,7 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
                     | IsManager
                     | IsAdministrator
                     | IsStaffAdministrator
+                    | IsObjOwner
                 ]
             case "partial_update":
                 permission_classes = [
@@ -63,6 +65,7 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
                     | IsManager
                     | IsAdministrator
                     | IsStaffAdministrator
+                    | IsObjOwner
                 ]
             case "delete":
                 permission_classes = [
@@ -70,6 +73,7 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
                     | IsManager
                     | IsAdministrator
                     | IsStaffAdministrator
+                    | IsObjOwner
                 ]
             case _:
                 permission_classes = []

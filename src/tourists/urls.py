@@ -1,8 +1,11 @@
-from rest_framework.routers import DefaultRouter
 from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-
-from tourists.views import TouristViewSet, ActivateTouristView, TouristRegisterView
+from tourists.views import (
+    ActivateTouristView,
+    TouristRegisterView,
+    TouristViewSet
+)
 
 router = DefaultRouter()
 router.register("", TouristViewSet, basename="tourist")

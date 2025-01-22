@@ -3,7 +3,6 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Model
 from django.forms import ModelForm
 
-
 from glamp_owners.models import GlampOwner
 
 

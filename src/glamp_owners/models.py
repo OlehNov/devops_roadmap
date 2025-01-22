@@ -5,7 +5,6 @@ from addons.mixins.timestamps import TimestampMixin
 from glamp_owners.validators import vip_status_validator
 from tourists.validators import validate_phone
 
-
 User = get_user_model()
 
 

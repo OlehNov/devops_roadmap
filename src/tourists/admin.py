@@ -1,4 +1,5 @@
 import typing as t
+
 from django.contrib import admin
 from django.core.handlers.wsgi import WSGIRequest
 from django.db.models import Model
