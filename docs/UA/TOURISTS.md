@@ -16,14 +16,14 @@
 
 #### ➡️ **URL**: [http://localhost:8181/api/v1/tourists/](http://localhost:8181/api/v1/tourists/)
 
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMINISTRATOR role or:
-    - User with MANAGER role
-    - User stuff
+### Вимоги до запиту:
+    - Токен Bearer token
+    - Користувач з роллю АДМІНІСТРАТОРА або:
+        - Користувач із роллю МЕНЕДЖЕР
+        - Користувач Стафф
 
 
-#### Response
+#### Відповідь
 
 ```
 {
@@ -61,14 +61,14 @@
 #### ➡️ **URL**: [http://localhost:8181/api/v1/tourists/13/](http://localhost:8181/api/v1/tourists/12/)
 
 
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMINISTRATOR role or:
-    - User with MANAGER role
-    - User with TOURIST role and same object id
-    - User stuff
+### Вимоги до запиту:
+    - Токен Bearer token
+    - Користувач з роллю АДМІНІСТРАТОРА або:
+        - Користувач із роллю МЕНЕДЖЕР
+        - Користувач із роллю TOURIST і таким самим ідентифікатором об’єкта
+        - Користувач Стафф
 
-#### Response
+### Відповідь
 ```
 {
     "id": 13,
@@ -95,10 +95,10 @@
 
 #### ➡️ **URL**: [http://localhost:8181/api/v1/tourists/](http://localhost:8181/api/v1/tourists/)
 
-### Request Requirements:
- - Any
+### Вимоги до запиту:
+ - Будь-який
 
-#### Request Body
+### Тіло запиту
 
 ```
 {
@@ -114,7 +114,7 @@
 }
 ```
 
-#### Response
+### Відповідь
 ```
 {
     "id": 13,
@@ -146,17 +146,17 @@
 ![текст](https://img.shields.io/badge/POST-%23FFFF00)
 
 #### ➡️ **URL**: [http://localhost:8181/api/v1/tourists/activate-tourist/{token}/](http://localhost:8181/api/v1/tourists/activate-tourist/{token}/)
-### Request Requirements:
- - Any
+### Вимоги до запиту::
+ - Будь-який
 
-### Request Path
+### URL параметр
 ```
 {
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTczNjk1MDczMSwiaWF0IjoxNzM2ODY0MzMxLCJqdGkiOiI0NmQ0ZjZkMmQwN2Q0MjhkYmRkMzMwMGRmODRkNWI3NiIsInVzZXJfaWQiOjI0fQ.h83BOnikYEhARAZUMQRUNt4k1tfQ19DiWl_FfBr3Fxk",
 }
 ```
 
-### Response
+### Відповідь
 ```
 {
     "detail": "Tourist has been activated.",
@@ -170,14 +170,14 @@
 
 #### ➡️ **URL**: [http://localhost:8181/api/v1/tourists/12/](http://localhost:8181/api/v1/tourists/)
 
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMINISTRATOR role or:
-    - User with MANAGER role
-    - User with TOURIST role and same object id
-    - User stuff
+### Вимоги до запиту:
+    - Токен Bearer token
+    - Користувач з роллю АДМІНІСТРАТОРА або:
+        - Користувач із роллю МЕНЕДЖЕР
+        - Користувач із роллю TOURIST і таким самим ідентифікатором об’єкта
+        - Користувач Стафф
 
-### Request Body
+### Тіло запиту
 ```
 {
     "first_name": "aaa",
@@ -187,7 +187,7 @@
 }
 ```
 
-### Response
+### Відповідь
 ```
 {
     "id": 13,
@@ -216,14 +216,14 @@
 #### ➡️ **URL**: [http://localhost:8181/api/v1/tourists/12/](http://localhost:8181/api/v1/tourists/)
 
 
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMINISTRATOR role or:
-    - User with MANAGER role
-    - User with TOURIST role and same object id
-    - User stuff
+### Вимоги до запиту:
+    - Токен Bearer token
+    - Користувач з роллю АДМІНІСТРАТОРА або:
+        - Користувач із роллю МЕНЕДЖЕР
+        - Користувач із роллю TOURIST і таким самим ідентифікатором об’єкта
+        - Користувач Стафф
 
-## Request Body
+## Тіло запиту
 ```
 {
     "first_name": "qwer",
@@ -231,7 +231,7 @@
 }
 ```
 
-## Response
+## Відповідь
 ```
 {
     "id": 13,
@@ -260,19 +260,19 @@
 #### ➡️ **URL**: [http://localhost:8181/api/v1/tourists/12/](http://localhost:8181/api/v1/tourists/)
 
 
-### Request Requirements:
- - Authentication Bearer token
- - User with ADMINISTRATOR role or:
-    - User with MANAGER role
-    - User with TOURIST role and same object id
-    - User stuff
+### Вимоги до запиту:
+    - Токен Bearer token
+    - Користувач з роллю АДМІНІСТРАТОРА або:
+        - Користувач із роллю МЕНЕДЖЕР
+        - Користувач із роллю TOURIST і таким самим ідентифікатором об’єкта
+        - Користувач Стафф
 
-## Request Body
+## Тіло запиту
 ```
 None
 ```
 
-## Response
+## Відповідь
 ```
 {
     "detail": "Object deactivated successfully."
