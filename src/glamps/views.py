@@ -84,7 +84,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
                 ]
             case "hidden":
                 permission_classes = [
-                    RoleIsAdmin | RoleIsManager | RoleIsOwner
+                    RoleIsAdmin | RoleIsManager | IsGlampOwner
                 ]
             case "verified":
                 permission_classes = [
@@ -324,7 +324,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
 
     @action(detail=True, methods=["put", "patch"])
     def hidden(self, request, *args, **kwargs):
-        instance = get_object_or_404(self.get_queryset(), pk=kwargs.get("glamp_id"))
+        instance = self.get_object()
         serializer_class = self.get_serializer_class()
         serializer = serializer_class(instance, data=request.data, partial=True)
         if serializer.is_valid():
@@ -451,7 +451,7 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
                 ]
             case "hidden":
                 permission_classes = [
-                    RoleIsAdmin | RoleIsManager | RoleIsOwner
+                    RoleIsAdmin | RoleIsManager | IsGlampOwner
                 ]
             case "verified":
                 permission_classes = [

@@ -140,3 +140,6 @@
 1. Fix 500 exception in create glamp through category.
 2. Create new endpoints for new fields for glamp by category.
 ---
+## 25.01.2025 15:13. Bugfix new glamp fields.
+1. Fix permissions for new fields and urls.
+---
