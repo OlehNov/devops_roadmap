@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 from rest_framework import status
@@ -40,6 +41,17 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
     queryset = Glamp.objects.all()
     lookup_url_kwarg = "glamp_id"
 
+    def get_queryset(self):
+        if self.request.user.role == Role.TOURIST:
+            return Glamp.objects.filter(is_hidden=False)
+
+        if self.request.user.role == Role.OWNER:
+            return Glamp.objects.filter(
+                Q(is_hidden=False) | Q(owner_id=self.request.user.pk)
+            )
+
+        return Glamp.objects.all()
+
     def get_permissions(self):
         match self.action:
             case "list":
@@ -55,6 +67,10 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
                     RoleIsAdmin | RoleIsManager | RoleIsOwner
                 ]
             case "update":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | IsGlampOwner
+                ]
+            case "partial_update":
                 permission_classes = [
                     RoleIsAdmin | RoleIsManager | IsGlampOwner
                 ]
@@ -80,7 +96,7 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
                 ]
             case "rating":
                 permission_classes = [
-                    RoleIsAdmin | RoleIsManager | RoleIsOwner | RoleIsTourist
+                    RoleIsAdmin | RoleIsManager | RoleIsTourist
                 ]
             case "premium_level":
                 permission_classes = [
@@ -238,27 +254,24 @@ class GlampModelViewSet(ModelViewSet, EventLogMixin):
         elif self.action == "list":
             if self.request.user.role == Role.TOURIST:
                 return GlampForTouristSerializer
+            elif self.request.user.role == Role.OWNER:
+                queryset = self.get_queryset().filter(owner_id=self.request.user.pk)  # to hide special fields
+                if queryset.exists():
+                    return GlampForOwnerSerializer
+                return GlampForTouristSerializer
+            elif self.request.user.role == Role.MANAGER:
+                return GlampForManagerSerializer
         elif self.action == "retrieve":
             if self.request.user.role == Role.TOURIST:
                 return GlampForTouristSerializer
-        elif self.action == "list":
-            if self.request.user.role == Role.OWNER:
-                return GlampForOwnerSerializer
-        elif self.action == "retrieve":
-            if self.request.user.role == Role.OWNER:
-                return GlampForOwnerSerializer
-        elif self.action == "list":
-            if self.request.user.role == Role.MANAGER:
-                return GlampForManagerSerializer
-        elif self.action == "retrieve":
-            if self.request.user.role == Role.MANAGER:
+            elif self.request.user.role == Role.OWNER:
+                if self.get_object().owner.id == self.request.user.pk:  # to hide special fields
+                    return GlampForOwnerSerializer
+                return GlampForTouristSerializer
+            elif self.request.user.role == Role.MANAGER:
                 return GlampForManagerSerializer
 
         return GlampSerializer
-
-    def get_object(self):
-        glamp_id = self.kwargs.get("glamp_id")
-        return get_object_or_404(Glamp, id=glamp_id)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -393,6 +406,17 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
     def get_queryset(self):
         category_id = self.kwargs.get("category_id")
         get_object_or_404(Category, id=category_id)
+
+        if self.request.user.role == Role.TOURIST:
+            return Glamp.objects.filter(category_id=category_id, is_hidden=False)
+
+        if self.request.user.role == Role.OWNER:
+            return Glamp.objects.filter(
+                category_id=category_id
+            ).filter(
+                Q(is_hidden=False) | Q(owner_id=self.request.user.pk)
+            )
+
         return Glamp.objects.filter(category_id=category_id)
 
     def get_permissions(self):
@@ -410,6 +434,10 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
                     RoleIsAdmin | RoleIsManager | RoleIsOwner
                 ]
             case "update":
+                permission_classes = [
+                    RoleIsAdmin | RoleIsManager | IsGlampOwner
+                ]
+            case "partial_update":
                 permission_classes = [
                     RoleIsAdmin | RoleIsManager | IsGlampOwner
                 ]
@@ -435,7 +463,7 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
                 ]
             case "rating":
                 permission_classes = [
-                    RoleIsAdmin | RoleIsManager | RoleIsOwner | RoleIsTourist
+                    RoleIsAdmin | RoleIsManager | RoleIsTourist
                 ]
             case "premium_level":
                 permission_classes = [
@@ -468,20 +496,21 @@ class GlampByCategoryViewSet(ModelViewSet, EventLogMixin):
         elif self.action == "list":
             if self.request.user.role == Role.TOURIST:
                 return GlampForTouristSerializer
+            elif self.request.user.role == Role.OWNER:
+                queryset = self.get_queryset().filter(owner_id=self.request.user.pk)  # to hide special fields
+                if queryset.exists():
+                    return GlampForOwnerSerializer
+                return GlampForTouristSerializer
+            elif self.request.user.role == Role.MANAGER:
+                return GlampForManagerSerializer
         elif self.action == "retrieve":
             if self.request.user.role == Role.TOURIST:
                 return GlampForTouristSerializer
-        elif self.action == "list":
-            if self.request.user.role == Role.OWNER:
-                return GlampForOwnerSerializer
-        elif self.action == "retrieve":
-            if self.request.user.role == Role.OWNER:
-                return GlampForOwnerSerializer
-        elif self.action == "list":
-            if self.request.user.role == Role.MANAGER:
-                return GlampForManagerSerializer
-        elif self.action == "retrieve":
-            if self.request.user.role == Role.MANAGER:
+            elif self.request.user.role == Role.OWNER:
+                if self.get_object().owner.id == self.request.user.pk:  # to hide special fields
+                    return GlampForOwnerSerializer
+                return GlampForTouristSerializer
+            elif self.request.user.role == Role.MANAGER:
                 return GlampForManagerSerializer
 
         return GlampByCategorySerializer

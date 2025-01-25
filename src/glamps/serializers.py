@@ -122,6 +122,15 @@ class GlampSerializer(ModelSerializer):
 
         return instance
 
+    def remove_fields(self, representation, fields_to_remove):
+        for field in fields_to_remove:
+            representation.pop(field, None)
+        return representation
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        return representation
+
 
 class GlampForTouristSerializer(GlampSerializer):
     is_active = serializers.BooleanField(required=False, write_only=True)
@@ -134,32 +143,26 @@ class GlampForTouristSerializer(GlampSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if self.context["request"].user.role == Role.TOURIST:
-            representation.pop("is_active", None)
-            representation.pop("is_hidden", None)
-            representation.pop("is_verified", None)
-            representation.pop("is_approved", None)
-            representation.pop("premium_level", None)
-            representation.pop("priority", None)
+            fields_to_remove = ["is_active", "is_hidden", "is_verified", "is_approved", "premium_level", "priority"]
+            representation = self.remove_fields(representation, fields_to_remove)
         return representation
 
 
 class GlampForOwnerSerializer(GlampSerializer):
-    priority = serializers.FloatField(required=False, write_only=True)
-
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if self.context["request"].user.role == Role.OWNER:
-            representation.pop("priority", None)
+            fields_to_remove = ["priority"]
+            representation = self.remove_fields(representation, fields_to_remove)
         return representation
 
 
 class GlampForManagerSerializer(GlampSerializer):
-    priority = serializers.FloatField(required=False, write_only=True)
-
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if self.context["request"].user.role == Role.MANAGER:
-            representation.pop("priority", None)
+            fields_to_remove = ["priority"]
+            representation = self.remove_fields(representation, fields_to_remove)
         return representation
 
 
