@@ -87,9 +87,9 @@ RESTRICTED_AREA = {
         # f"/{ROOT_API}/users/",
     ],
     "URL_PATTERNS": [
-        f"/{ROOT_API}/administrators/",
-        f"/{ROOT_API}/managers/",
-        f"/{ROOT_API}/users/",
+        # f"/{ROOT_API}/administrators/",
+        # f"/{ROOT_API}/managers/",
+        # f"/{ROOT_API}/users/",
         f"/{ROOT_API}/eventlogs/",
     ],
     "EXCLUDED_PATHS": [

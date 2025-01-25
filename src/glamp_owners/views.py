@@ -30,6 +30,7 @@ from roles.constants import ProfileStatus
 from tourists.validators import validate_phone
 from users.validators import validate_first_name_last_name
 
+
 User = get_user_model()
 
 

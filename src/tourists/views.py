@@ -27,6 +27,7 @@ from tourists.tasks import verify_email
 from tourists.validators import validate_birthday, validate_phone
 from users.validators import validate_first_name_last_name
 
+
 User = get_user_model()
 
 
@@ -155,6 +156,7 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
                 status=status.HTTP_204_NO_CONTENT,
             )
 
+
 @extend_schema(tags=["register-tourist"])
 class TouristRegisterView(APIView, EventLogMixin):
     serializer_class = TouristRegisterSerializer
@@ -207,6 +209,7 @@ class TouristRegisterView(APIView, EventLogMixin):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @extend_schema(tags=["activate-tourist"])
 class ActivateTouristView(APIView):

@@ -17,6 +17,7 @@ from managers.serializers import ManagerRegisterSerializer, ManagerSerializer
 from roles.constants import ProfileStatus
 from users.validators import validate_first_name_last_name
 
+
 User = get_user_model()
 
 
