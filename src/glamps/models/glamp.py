@@ -37,7 +37,7 @@ class Glamp(TimestampMixin):
     )
     rating = models.FloatField(
         _("Rating"),
-        default=0.0,
+        default=None,
         null=True,
         validators=[
             MinValueValidator(0.0),
@@ -51,7 +51,7 @@ class Glamp(TimestampMixin):
     )
     priority = models.FloatField(
         null=True,
-        default=0.0,
+        default=None,
         validators=[
             MinValueValidator(0.0),
             MaxValueValidator(100.0),
