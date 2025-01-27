@@ -16,11 +16,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = (
-    "django-insecure-k$83@$)75u_^s==b+!rf%3^99-mrw7-0o43)yw0@tb8i8^acil"
+    os.getenv('DJANGO_SECRET_KEY')
 )
-
-DOMAIN = os.environ.get("DOMAIN")
-ALGORITHM = os.environ.get("ALGORITHM")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -115,6 +112,7 @@ MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "addons.middlewares.jwt_middleware.JWTMiddleware",
     # Verifies and restricts access to resources
     "addons.middlewares.restricted.RestrictAccessMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -202,13 +200,15 @@ REST_FRAMEWORK = {
 }
 
 # Simple JWT Settings
+ALGORITHM = os.getenv("JWT_ALGORITHM")
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": True,
-    "ALGORITHM": "HS256",
+    "ALGORITHM": ALGORITHM,
     "SIGNING_KEY": SECRET_KEY,
     "VERIFYING_KEY": "",
     "AUDIENCE": None,
@@ -237,11 +237,11 @@ SIMPLE_JWT = {
 }
 
 # Allow Django to trust the proxy headers set by Nginx
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-
-# Ensure session and CSRF cookies are only sent over HTTPS
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+#
+# # Ensure session and CSRF cookies are only sent over HTTPS
+# SESSION_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 
 # Password validation
