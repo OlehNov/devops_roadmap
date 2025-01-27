@@ -128,6 +128,7 @@ class GlampSerializer(ModelSerializer):
         return representation
 
     def to_representation(self, instance):
+        print("BaseGlampSer")
         representation = super().to_representation(instance)
         return representation
 
@@ -150,20 +151,52 @@ class GlampForTouristSerializer(GlampSerializer):
 
 class GlampForOwnerSerializer(GlampSerializer):
     def to_representation(self, instance):
+        print("GlampForOwnerSerializer")
         representation = super().to_representation(instance)
         if self.context["request"].user.role == Role.OWNER:
             fields_to_remove = ["priority"]
             representation = self.remove_fields(representation, fields_to_remove)
         return representation
 
+    def validate(self, attrs):
+        if self.context["request"].user.role == Role.OWNER:
+            attrs.pop("priority", None)
+        return super().validate(attrs)
+
+    def update(self, instance, validated_data):
+        if self.context["request"].user.role == Role.OWNER:
+            validated_data.pop("priority", None)
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        if self.context["request"].user.role == Role.OWNER:
+            validated_data.pop("priority", None)
+        return super().create(validated_data)
+
 
 class GlampForManagerSerializer(GlampSerializer):
     def to_representation(self, instance):
+        print("GlampForManagerSerializer")
         representation = super().to_representation(instance)
         if self.context["request"].user.role == Role.MANAGER:
             fields_to_remove = ["priority"]
             representation = self.remove_fields(representation, fields_to_remove)
         return representation
+
+    def validate(self, attrs):
+        if self.context["request"].user.role == Role.OWNER:
+            attrs.pop("priority", None)
+        return super().validate(attrs)
+
+    def update(self, instance, validated_data):
+        if self.context["request"].user.role == Role.OWNER:
+            validated_data.pop("priority", None)
+        return super().update(instance, validated_data)
+
+    def create(self, validated_data):
+        if self.context["request"].user.role == Role.OWNER:
+            validated_data.pop("priority", None)
+        return super().create(validated_data)
 
 
 class GlampByCategorySerializer(ModelSerializer):
