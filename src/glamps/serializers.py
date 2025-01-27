@@ -128,7 +128,6 @@ class GlampSerializer(ModelSerializer):
         return representation
 
     def to_representation(self, instance):
-        print("BaseGlampSer")
         representation = super().to_representation(instance)
         return representation
 
@@ -151,7 +150,6 @@ class GlampForTouristSerializer(GlampSerializer):
 
 class GlampForOwnerSerializer(GlampSerializer):
     def to_representation(self, instance):
-        print("GlampForOwnerSerializer")
         representation = super().to_representation(instance)
         if self.context["request"].user.role == Role.OWNER:
             fields_to_remove = ["priority"]
@@ -176,7 +174,6 @@ class GlampForOwnerSerializer(GlampSerializer):
 
 class GlampForManagerSerializer(GlampSerializer):
     def to_representation(self, instance):
-        print("GlampForManagerSerializer")
         representation = super().to_representation(instance)
         if self.context["request"].user.role == Role.MANAGER:
             fields_to_remove = ["priority"]
