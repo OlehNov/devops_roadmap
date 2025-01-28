@@ -142,18 +142,20 @@ class GlampForTouristSerializer(GlampSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        if self.context["request"].user.role == Role.TOURIST:
-            fields_to_remove = ["is_active", "is_hidden", "is_verified", "is_approved", "premium_level", "priority"]
-            representation = self.remove_fields(representation, fields_to_remove)
+        request = self.context.get("request")
+        if request and hasattr(request.user, "role") and request.user.role == Role.TOURIST:
+                fields_to_remove = ["is_active", "is_hidden", "is_verified", "is_approved", "premium_level", "priority"]
+                representation = self.remove_fields(representation, fields_to_remove)
         return representation
 
 
 class GlampForOwnerSerializer(GlampSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        if self.context["request"].user.role == Role.OWNER:
-            fields_to_remove = ["priority"]
-            representation = self.remove_fields(representation, fields_to_remove)
+        request = self.context.get("request")
+        if request and hasattr(request.user, "role") and request.user.role == Role.OWNER:
+                fields_to_remove = ["priority"]
+                representation = self.remove_fields(representation, fields_to_remove)
         return representation
 
     def validate(self, attrs):
@@ -175,9 +177,10 @@ class GlampForOwnerSerializer(GlampSerializer):
 class GlampForManagerSerializer(GlampSerializer):
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        if self.context["request"].user.role == Role.MANAGER:
-            fields_to_remove = ["priority"]
-            representation = self.remove_fields(representation, fields_to_remove)
+        request = self.context.get("request")
+        if request and hasattr(request.user, "role") and request.user.role == Role.MANAGER:
+                fields_to_remove = ["priority"]
+                representation = self.remove_fields(representation, fields_to_remove)
         return representation
 
     def validate(self, attrs):
