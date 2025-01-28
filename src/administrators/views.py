@@ -39,13 +39,13 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
             case "create":
                 permission_classes = [IsStaffAdministrator]
             case "list":
-                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsAdministrator | IsStaffAdministrator]
             case "retrieve":
-                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsObjOwner | IsStaffAdministrator]
             case "update":
-                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsObjOwner | IsStaffAdministrator]
             case "partial_update":
-                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsObjOwner | IsStaffAdministrator]
             case "destroy":
                 permission_classes = [IsStaffAdministrator]
             case _:

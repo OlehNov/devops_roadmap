@@ -44,15 +44,15 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
     def get_permissions(self):
         match self.action:
             case "list":
-                permission_classes = [IsStaffAdministrator | IsAdministrator | IsManager]
+                permission_classes = [IsManager | IsAdministrator | IsStaffAdministrator]
             case "retrieve":
-                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsObjOwner | IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
             case "update":
-                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsObjOwner | IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
             case "partial_update":
-                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsObjOwner | IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
             case "delete":
-                permission_classes = [IsOwner | IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsObjOwner | IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
             case _:
                 permission_classes = []
 
@@ -62,9 +62,6 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", False)
         instance = self.get_object()
-
-        if instance.user != request.user:
-            raise PermissionDenied("Not Allowed")
 
         data = {
             "first_name": request.data.get("first_name"),
@@ -108,12 +105,9 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
 
-        if instance.user != request.user:
-            raise PermissionDenied("Not Allowed")
-
         if instance.status == ProfileStatus.DEACTIVATED:
             return Response(
-                {"detail": "Not Fopund"},
+                {"detail": "Not Found"},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
