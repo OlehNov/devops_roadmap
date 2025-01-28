@@ -111,8 +111,8 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
     "addons.middlewares.jwt_middleware.JWTMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
     # Verifies and restricts access to resources
     "addons.middlewares.restricted.RestrictAccessMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -200,7 +200,7 @@ REST_FRAMEWORK = {
 }
 
 # Simple JWT Settings
-ALGORITHM = os.getenv("JWT_ALGORITHM")
+ALGORITHM = os.getenv("JWT_ALGORITHM", default="HS256")
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
@@ -237,11 +237,11 @@ SIMPLE_JWT = {
 }
 
 # Allow Django to trust the proxy headers set by Nginx
-# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-#
-# # Ensure session and CSRF cookies are only sent over HTTPS
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+# Ensure session and CSRF cookies are only sent over HTTPS
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 
 # Password validation

@@ -1,12 +1,12 @@
 import jwt
 from django.contrib.auth.models import AnonymousUser
 from django.http import JsonResponse
-from django.utils.deprecation import MiddlewareMixin
+from addons.mixins.middleware_mixin import MiddlewareMixin
 
 from config.settings import SECRET_KEY, ALGORITHM
 
 
-class JWTMiddleware(MiddlewareMixin):
+class JWTDecoderMiddleware(MiddlewareMixin):
     """
     Middleware to check JWT token in the request header, decode it and add the user data to the request object.
     """
