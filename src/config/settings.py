@@ -111,7 +111,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
-    "addons.middlewares.jwt_middleware.JWTMiddleware",
+    "addons.middlewares.jwt_middleware.JWTDecoderMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # Verifies and restricts access to resources
     "addons.middlewares.restricted.RestrictAccessMiddleware",
