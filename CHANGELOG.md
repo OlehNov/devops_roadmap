@@ -143,3 +143,6 @@
 ## 25.01.2025 15:13. Bugfix new glamp fields.
 1. Fix permissions for new fields and urls.
 ---
+## 28.01.2025 13:13. Bugfix #130.
+1. Fix is_hidden in glamps by category endpoint.
+---
