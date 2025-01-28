@@ -42,8 +42,7 @@ class IsTourist(BasePermission):
 
 class IsObjOwner(BasePermission):
     def has_permission(self, request, view):
-        user_authenticated(user=request.user)
-        return True
+        return user_authenticated(user=request.user)
 
     def has_object_permission(self, request, view, obj):
         return obj.user == request.user
