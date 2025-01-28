@@ -16,11 +16,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = (
-    "django-insecure-k$83@$)75u_^s==b+!rf%3^99-mrw7-0o43)yw0@tb8i8^acil"
+    os.getenv('DJANGO_SECRET_KEY')
 )
-
-DOMAIN = os.environ.get("DOMAIN")
-ALGORITHM = os.environ.get("ALGORITHM")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -114,6 +111,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.csrf.CsrfViewMiddleware',
+    "addons.middlewares.jwt_middleware.JWTDecoderMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # Verifies and restricts access to resources
     "addons.middlewares.restricted.RestrictAccessMiddleware",
@@ -202,13 +200,15 @@ REST_FRAMEWORK = {
 }
 
 # Simple JWT Settings
+ALGORITHM = os.getenv("JWT_ALGORITHM", default="HS256")
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": True,
-    "ALGORITHM": "HS256",
+    "ALGORITHM": ALGORITHM,
     "SIGNING_KEY": SECRET_KEY,
     "VERIFYING_KEY": "",
     "AUDIENCE": None,
