@@ -39,11 +39,11 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
             case "list":
                 permission_classes = [IsManager | IsAdministrator  | IsStaffAdministrator]
             case "retrieve":
-                permission_classes = [IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "update":
-                permission_classes = [IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "partial_update":
-                permission_classes = [IsManager | IsAdministrator | IsStaffAdministrator | IsObjOwner]
+                permission_classes = [IsAdministrator | IsStaffAdministrator | IsObjOwner]
             case "destroy":
                 permission_classes = [IsAdministrator | IsStaffAdministrator]
             case _:

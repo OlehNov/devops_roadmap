@@ -5,7 +5,7 @@ User = get_user_model()
 
 
 class UserAdmin(admin.ModelAdmin):
-    exclude = ["groups", "user_permissions", "password"]
+    exclude = ["groups", "user_permissions"]
     list_filter = [
         "id",
         "email",
