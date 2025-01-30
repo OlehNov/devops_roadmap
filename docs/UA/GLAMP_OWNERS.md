@@ -93,7 +93,7 @@
 ---
 ![POST](https://img.shields.io/badge/POST-%23FFFF00)
 
-#### ➡️ **URL**: [http://localhost:8181/api/v1/glamp-owners/register-glam_owner/](http://localhost:8181/api/v1/glamp-owners/register-glam_owner/)
+#### ➡️ **URL**: [http://localhost:8181/api/v1/glamp-owners/register-glamp_owner/](http://localhost:8181/api/v1/glamp-owners/register-glamp_owner/)
 
 ### Вимоги до запиту:
  - Будь-який юзер

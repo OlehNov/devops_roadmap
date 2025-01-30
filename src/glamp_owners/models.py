@@ -4,6 +4,8 @@ from django.db import models
 from addons.mixins.timestamps import TimestampMixin
 from glamp_owners.validators import vip_status_validator
 from tourists.validators import validate_phone
+from roles.constants import HELP_TEXT_PROFILE_STATUS
+from roles.validators import validate_profile_status
 
 User = get_user_model()
 
@@ -30,7 +32,8 @@ class GlampOwner(TimestampMixin):
     )
 
     status = models.PositiveSmallIntegerField(
-        null=True, blank=True, default=None
+        null=True, blank=True, default=None, validators=[validate_profile_status],
+        help_text=HELP_TEXT_PROFILE_STATUS,
     )
 
     class Meta:

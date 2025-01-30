@@ -15,6 +15,10 @@ class ManagerRegisterSerializer(ModelSerializer):
         model = GlampManager
         fields = ["user", "status", "first_name", "last_name"]
         read_only_fields = ["status"]
+        extra_kwargs = {
+            "first_name": {"required": True},
+            "last_name": {"required": True},
+        }
 
     def create(self, validated_data):
         user_data = validated_data.get("user")

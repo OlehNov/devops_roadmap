@@ -3,6 +3,7 @@ from django.db import models
 
 from addons.mixins.timestamps import TimestampMixin
 from roles.constants import HELP_TEXT_PROFILE_STATUS
+from roles.validators import validate_profile_status
 
 User = get_user_model()
 
@@ -15,7 +16,8 @@ class GlampManager(TimestampMixin):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     status = models.PositiveSmallIntegerField(
-        null=True, default=None, help_text=HELP_TEXT_PROFILE_STATUS
+        null=True, default=None, validators=[validate_profile_status],
+        help_text=HELP_TEXT_PROFILE_STATUS,
     )
 
     class Meta:
