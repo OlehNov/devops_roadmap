@@ -46,35 +46,30 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
                 ]
             case "retrieve":
                 permission_classes = [
-                    IsTourist
-                    | IsManager
+                    IsManager
                     | IsAdministrator
                     | IsStaffAdministrator
                     | IsObjOwner
                 ]
             case "update":
                 permission_classes = [
-                    IsTourist
-                    | IsManager
+                    IsManager
                     | IsAdministrator
                     | IsStaffAdministrator
                     | IsObjOwner
                 ]
             case "partial_update":
                 permission_classes = [
-                    IsTourist
-                    | IsManager
+                    IsManager
                     | IsAdministrator
                     | IsStaffAdministrator
                     | IsObjOwner
                 ]
-            case "delete":
+            case "destroy":
                 permission_classes = [
-                    IsTourist
-                    | IsManager
+                    IsManager
                     | IsAdministrator
                     | IsStaffAdministrator
-                    | IsObjOwner
                 ]
             case _:
                 permission_classes = []
@@ -139,16 +134,15 @@ class TouristViewSet(ModelViewSet, EventLogMixin):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        else:
-            instance.status = ProfileStatus.DEACTIVATED
-            instance.save()
+        instance.status = ProfileStatus.DEACTIVATED
+        instance.save()
 
-            self.log_event(request, operated_object=instance)
+        self.log_event(request, operated_object=instance)
 
-            return Response(
-                {"detail": "Object deactivated successfully."},
-                status=status.HTTP_204_NO_CONTENT,
-            )
+        return Response(
+            {"detail": "Object deactivated successfully."},
+            status=status.HTTP_204_NO_CONTENT,
+        )
 
 
 @extend_schema(tags=["register-tourist"])
