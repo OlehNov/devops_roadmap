@@ -46,13 +46,13 @@ class GlampOwnerViewSet(ModelViewSet, EventLogMixin):
             case "list":
                 permission_classes = [IsManager | IsAdministrator | IsStaffAdministrator]
             case "retrieve":
-                permission_classes = [IsObjOwner | IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsObjOwner | IsManager | IsAdministrator | IsStaffAdministrator]
             case "update":
-                permission_classes = [IsObjOwner | IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsObjOwner | IsManager | IsAdministrator | IsStaffAdministrator]
             case "partial_update":
-                permission_classes = [IsObjOwner | IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
-            case "delete":
-                permission_classes = [IsObjOwner | IsOwner | IsManager | IsAdministrator | IsStaffAdministrator]
+                permission_classes = [IsObjOwner | IsManager | IsAdministrator | IsStaffAdministrator]
+            case "destroy":
+                permission_classes = [IsManager | IsAdministrator | IsStaffAdministrator]
             case _:
                 permission_classes = []
 

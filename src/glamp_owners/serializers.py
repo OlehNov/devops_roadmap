@@ -25,6 +25,10 @@ class GlampOwnerRegisterSerializer(ModelSerializer):
         model = GlampOwner
         fields = ["user", "status", "first_name", "last_name", "phone"]
         read_only_fields = ["status"]
+        extra_kwargs = {
+            "first_name": {"required": True},
+            "last_name": {"required": True},
+        }
 
     def create(self, validated_data):
         user_data = validated_data.get("user")
