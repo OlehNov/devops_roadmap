@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework.serializers import ModelSerializer, ValidationError
 
-from roles.constants import ProfileStatus, Role
+from roles.constants import Role
 from tourists.models import Tourist
 from users.serializers import UserRegisterSerializer, UserSerializer
 
@@ -25,6 +25,8 @@ class TouristRegisterSerializer(ModelSerializer):
         extra_kwargs = {
             "first_name": {"required": True},
             "last_name": {"required": True},
+            "birthday": {"required": True},
+            "phone": {"required": True},
         }
 
     def create(self, validated_data):
