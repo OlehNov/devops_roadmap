@@ -1,4 +1,5 @@
 Налаштування віртуальної машини
+
   Встановити Virtual Box
 1.Оновити систему
 sudo apt update && sudo apt upgrade -y
@@ -6,6 +7,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install -y virtualbox
 3.Запустити VirtualBox
 virtualbox
+
   Створити Virtual Machine
 1.Завантажити ISO образ Ubuntu Server
 wget https://releases.ubuntu.com/22.04/ubuntu-22.04.5-live-server-amd64.iso -O ~/ubuntu-server.iso  / wget <URL> -O ~/ubuntu-server.iso
@@ -36,16 +38,34 @@ sudo adduser user
 sudo usermod -aG sudo user
 7.Зупинити віртуальну машину
 VBoxManage controlvm "UbuntuServer" poweroff
+
   Запустити Virtual Machine
-1.Запустити віртуальну машину
+1.Старт віртуальної машини
 VBoxManage startvm "UbuntuServer"
-2.Вввести ім"я і пароль для входу у Virtual Machine
+2.Вввести ім"я і пароль root користувача Virtual Machine
+
   Підключитися до віртуальної машини через хост
 1. ssh <server_user>@<ip virtual machine>
 <ip virtual machine> можна використати двух типів:
 - динамічний.
-  Він відображається під час завантаження серверу: IPv4 address for enp0s або 
-  Налаштування роутера: http://192.168.1.1/ -> Розширені налаштування -> Мережа -> Параметри локальної мережі -> Список клієнтів -> Ім"я клієнта
+  1.Він відображається після запуску серверу: IPv4 address for enp0s 
+  2.Налаштування роутера: http://192.168.1.1/ -> Розширені налаштування -> Мережа -> Параметри локальної мережі -> Список клієнтів -> Ім"я клієнта -> Призначена IP-адреса /Цей IP доступний впродовж 24 годин після останнього використання.
+- статичний, потребує додаткового налаштування через sudo vi /etc/netplan/50-cloud-init.yaml
 
+  50-cloud-init.yaml
+  network:
+  version: 2
+  ethernets:
+    enp0s3:
+      dhcp4: no
+      addresses:
+        - 192.168.1.9/24(for example)
+      routes:
+        - to: default
+          via: 192.168.1.1(for example)
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 8.8.4.4
 
 
