@@ -24,5 +24,12 @@ VBoxManage storageattach "UbuntuServer" --storagectl "SATA Controller" --port 1 
 VBoxManage modifyvm "UbuntuServer" --nic1 bridged --bridgeadapter1 <ім'я_вашого_адаптера>(наприклад wlp173s0) / Дізнатися ім"я адаптера -> ip link
 3.5 Активація адаптера
 VBoxManage modifyvm "UbuntuServer" --cableconnected1 on
-
+4.Встановити Ubuntu на Virtual Machine / Виконати всі кроки, що будуть запропановані
+VBoxManage startvm "UbuntuServer"
+5.Додати і активувати ssh у Virtual Machine
+sudo apt update
+sudo apt install openssh-server
+sudo systemctl enable ssh
+sudo systemctl start ssh
+6.Створити користувача user і додати до групи user
 
