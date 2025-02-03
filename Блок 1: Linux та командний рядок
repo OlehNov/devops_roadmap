@@ -20,3 +20,9 @@ VBoxManage storagectl "UbuntuServer" --name "SATA Controller" --add sata --contr
 VBoxManage storageattach "UbuntuServer" --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium ~/UbuntuServer.vdi
 3.3 Додати ISO-образ до Virtual Machine
 VBoxManage storageattach "UbuntuServer" --storagectl "SATA Controller" --port 1 --device 0 --type dvddrive --medium ~/ubuntu-server.iso
+3.4 Налаштувати режим Bridged Adapter у Virtual Box
+VBoxManage modifyvm "UbuntuServer" --nic1 bridged --bridgeadapter1 <ім'я_вашого_адаптера>(наприклад wlp173s0) / Дізнатися ім"я адаптера -> ip link
+3.5 Активація адаптера
+VBoxManage modifyvm "UbuntuServer" --cableconnected1 on
+
+
