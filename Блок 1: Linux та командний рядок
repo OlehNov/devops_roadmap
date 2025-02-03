@@ -26,10 +26,22 @@ VBoxManage modifyvm "UbuntuServer" --nic1 bridged --bridgeadapter1 <ім'я_ва
 VBoxManage modifyvm "UbuntuServer" --cableconnected1 on
 4.Встановити Ubuntu на Virtual Machine / Виконати всі кроки, що будуть запропановані
 VBoxManage startvm "UbuntuServer"
-5.Додати і активувати ssh у Virtual Machine
+5.Додати і активувати ssh-сервер у Virtual Machine
 sudo apt update
 sudo apt install openssh-server
 sudo systemctl enable ssh
 sudo systemctl start ssh
 6.Створити користувача user і додати до групи user
+sudo adduser user
+sudo usermod -aG sudo user
+7.Зупинити віртуальну машину
+VBoxManage controlvm "UbuntuServer" poweroff
+  Запустити Virtual Machine
+1.Запустити віртуальну машину
+VBoxManage startvm "UbuntuServer"
+2.Вввести ім"я і пароль для входу у Virtual Machine
+  Підключитися до віртуальної машини через хост
+1. ssh <server_user>@<ip virtual machine>
+
+
 
