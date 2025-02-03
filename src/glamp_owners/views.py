@@ -169,6 +169,8 @@ class GlampOwnerRegisterView(APIView, EventLogMixin):
 
 @extend_schema(tags=["activate-glamp_owner"])
 class ActivateGlampOwnerView(APIView, EventLogMixin):
+    permission_classes = [AllowAny]
+
     def get(self, request, *args, **kwargs):
         token = kwargs.get("token")
 
