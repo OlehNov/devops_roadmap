@@ -27,7 +27,6 @@ function _error(){
 }
 
 if ! VBoxManage createvm --name "${VM_NAME}" --ostype Ubuntu_64 --register; then _error; fi
-check_command
 
 if ! VBoxManage modifyvm "${VM_NAME}" --memory "${VM_MEMORY}" --cpus "${VM_CPUS}" --nic1 bridged --bridgeadapter1 "${BRIDGE_ADAPTER}"; then _error; fi
 
