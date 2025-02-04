@@ -200,6 +200,7 @@ class TouristRegisterView(APIView, EventLogMixin):
 @extend_schema(tags=["activate-tourist"])
 class ActivateTouristView(APIView):
     permission_classes = [AllowAny]
+    serializer_class = None
 
     def get(self, request, *args, **kwargs):
         token = kwargs.get("token")
