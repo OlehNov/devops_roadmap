@@ -1,7 +1,7 @@
 import re
 from datetime import date, datetime
 
-from django.core.exceptions import ValidationError
+from rest_framework.serializers import ValidationError
 
 
 def validate_birthday(value):

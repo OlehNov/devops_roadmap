@@ -1,8 +1,9 @@
 import re
 
-from django.core.exceptions import ValidationError
+from rest_framework.serializers import ValidationError
 
 from roles.constants import Role
+
 
 
 class NoSpacePasswordValidator:
@@ -70,17 +71,16 @@ def validate_role(value):
     if value not in [role.value for role in Role]:
         raise ValidationError(
             "%(value)s is not a valid role",
-            params={"value": value},
         )
 
 
 def validate_first_name_last_name(value):
     if len(value) < 2:
-        raise ValidationError("The name must have more than two characters.")
+        raise ValidationError("The first_name or last_name must have more than two characters.")
 
     if re.match(r"^[A-Za-zА-Яа-яєЄїЇіІґҐ`'ʼ-]+$", value) is None:
         raise ValidationError(
-            "The name must not contain digits or special characters."
+            "The first_name or last_name must not contain digits or special characters."
         )
 
     return value

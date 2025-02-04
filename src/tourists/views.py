@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model, login
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -18,7 +17,6 @@ from addons.permissions.permissions import (
     IsManager,
     IsObjOwner,
     IsStaffAdministrator,
-    IsTourist
 )
 from roles.constants import ProfileStatus
 from tourists.models import Tourist
@@ -201,6 +199,9 @@ class TouristRegisterView(APIView, EventLogMixin):
 
 @extend_schema(tags=["activate-tourist"])
 class ActivateTouristView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = None
+
     def get(self, request, *args, **kwargs):
         token = kwargs.get("token")
 
