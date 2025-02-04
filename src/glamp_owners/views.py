@@ -135,10 +135,6 @@ class GlampOwnerRegisterView(APIView, EventLogMixin):
             last_name = serializer.validated_data["last_name"]
             phone = serializer.validated_data["phone"]
 
-            validate_first_name_last_name(first_name)
-            validate_first_name_last_name(last_name)
-            validate_phone(phone)
-
             owner = GlampOwner.objects.get(id=created_user.id)
 
             if not owner:
@@ -147,9 +143,9 @@ class GlampOwnerRegisterView(APIView, EventLogMixin):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            owner.first_name = first_name
-            owner.last_name = last_name
-            owner.phone = phone
+            owner.first_name = validate_first_name_last_name(first_name)
+            owner.last_name = validate_first_name_last_name(last_name)
+            owner.phone = validate_phone(phone)
             owner.save()
 
             transaction.on_commit(lambda: verify_glamp_owner(request, created_user.id))

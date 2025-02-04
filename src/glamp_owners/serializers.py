@@ -7,6 +7,8 @@ from rest_framework.serializers import (
 from glamp_owners.models import GlampOwner
 from roles.constants import Role
 from users.serializers import UserRegisterSerializer, UserSerializer
+from tourists.validators import validate_birthday, validate_phone
+from users.validators import validate_first_name_last_name
 
 User = get_user_model()
 
@@ -52,3 +54,15 @@ class GlampOwnerSerializer(ModelSerializer):
         model = GlampOwner
         fields = "__all__"
         read_only_fields = ["id", "status"]
+
+    def validate_first_name(self, value):
+        return validate_first_name_last_name(value)
+
+    def validate_last_name(self, value):
+        return validate_first_name_last_name(value)
+
+    def validate_birthday(self, value):
+        return validate_birthday(value)
+
+    def validate_phone(self, value):
+        return validate_phone(value)
