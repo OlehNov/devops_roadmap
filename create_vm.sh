@@ -18,37 +18,29 @@ read VM_DISK_SIZE
 echo "Enter Path to ISO_IMAGE: "
 read ISO_PATH
 
-VM_DISK="${HOME}${VM_NAME}.vdi"
+VM_DISK="${HOME}/${VM_NAME}.vdi"
 BRIDGE_ADAPTER=$(ip -br r sh default | awk '{print $5}')
 
-check_command(){
-    if [ $? -ne 0 ]; then
+function _error(){
       echo "Error: Something went wrong."
       exit 1
-    fi
 }
 
-VBoxManage createvm --name "${VM_NAME}" --ostype Ubuntu_64 --register
+if ! VBoxManage createvm --name "${VM_NAME}" --ostype Ubuntu_64 --register; then _error; fi
 check_command
 
-VBoxManage modifyvm "${VM_NAME}" --memory "${VM_MEMORY}" --cpus "${VM_CPUS}" --nic1 bridged --bridgeadapter1 "${BRIDGE_ADAPTER}"
-check_command
+if ! VBoxManage modifyvm "${VM_NAME}" --memory "${VM_MEMORY}" --cpus "${VM_CPUS}" --nic1 bridged --bridgeadapter1 "${BRIDGE_ADAPTER}"; then _error; fi
 
-VBoxManage createhd --filename "${VM_DISK}" --size "${VM_DISK_SIZE}"
-check_command
+if ! VBoxManage createhd --filename "${VM_DISK}" --size "${VM_DISK_SIZE}"; then _error; fi
 
-VBoxManage storagectl "${VM_NAME}" --name "SATA Controller" --add sata --controller IntelAHCI
-check_command
+if ! VBoxManage storagectl "${VM_NAME}" --name "SATA Controller" --add sata --controller IntelAHCI; then _error; fi
 
-VBoxManage storageattach "${VM_NAME}" --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium "${VM_DISK}"
-check_command
+if ! VBoxManage storageattach "${VM_NAME}" --storagectl "SATA Controller" --port 0 --device 0 --type hdd --medium "${VM_DISK}"; then _error; fi
 
-if [ -f "${ISO_PATH}" ]; then
-  VBoxManage storageattach "${VM_NAME}" --storagectl "SATA Controller" --port 1 --device 0 --type dvddrive --medium "${ISO_PATH}"
-  check_command
-else
-  echo "Error: ISO file '${ISO_PATH}'"
+if [ ! -e "${ISO_PATH}" ]; then
+  echo "Error: ISO file [${ISO_PATH}]"
   exit 1
 fi
+if ! VBoxManage storageattach "${VM_NAME}" --storagectl "SATA Controller" --port 1 --device 0 --type dvddrive --medium "${ISO_PATH}" || exit 1
 
 echo "Your virtual machine "${VM_NAME}" was created"
