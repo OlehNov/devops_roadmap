@@ -83,4 +83,4 @@ def validate_first_name_last_name(value: str) -> str:
             "The first_name or last_name must not contain digits or special characters."
         )
 
-    return value.capitalize()
+    return "-".join(item.title() for item in value.split('-'))
