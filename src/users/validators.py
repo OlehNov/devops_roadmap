@@ -74,7 +74,7 @@ def validate_role(value):
         )
 
 
-def validate_first_name_last_name(value):
+def validate_first_name_last_name(value: str) -> str:
     if len(value) < 2:
         raise ValidationError("The first_name or last_name must have more than two characters.")
 
@@ -83,4 +83,4 @@ def validate_first_name_last_name(value):
             "The first_name or last_name must not contain digits or special characters."
         )
 
-    return value
+    return "-".join(item.title() for item in value.split('-'))

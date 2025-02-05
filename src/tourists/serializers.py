@@ -4,6 +4,8 @@ from rest_framework.serializers import ModelSerializer, ValidationError
 from roles.constants import Role
 from tourists.models import Tourist
 from users.serializers import UserRegisterSerializer, UserSerializer
+from tourists.validators import validate_birthday, validate_phone
+from users.validators import validate_first_name_last_name
 
 User = get_user_model()
 
@@ -57,3 +59,19 @@ class TouristSerializer(ModelSerializer):
         model = Tourist
         fields = "__all__"
         read_only_fields = ["id", "status"]
+
+    def validate(self, data):
+        for item in data.keys():
+            match item:
+                case "first_name":
+                    data["first_name"] = validate_first_name_last_name(data.get("first_name"))
+                case "last_name":
+                    data["last_name"] = validate_first_name_last_name(data.get("last_name"))
+                case "birthday":
+                    data["birthday"] = validate_birthday(data.get("birthday"))
+                case "phone":
+                    data["phone"] = validate_phone(data.get("phone"))
+                case _:
+                    pass
+
+        return data

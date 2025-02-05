@@ -160,11 +160,6 @@ class TouristRegisterView(APIView, EventLogMixin):
             birthday = serializer.validated_data["birthday"]
             phone = serializer.validated_data["phone"]
 
-            validate_first_name_last_name(first_name)
-            validate_first_name_last_name(last_name)
-            validate_birthday(birthday)
-            validate_phone(phone)
-
             tourist = Tourist.objects.get(id=created_user.id)
 
             if not tourist:
@@ -173,10 +168,10 @@ class TouristRegisterView(APIView, EventLogMixin):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            tourist.first_name = first_name
-            tourist.last_name = last_name
-            tourist.birthday = birthday
-            tourist.phone = phone
+            tourist.first_name = validate_first_name_last_name(first_name)
+            tourist.last_name = validate_first_name_last_name(last_name)
+            tourist.birthday = validate_birthday(birthday)
+            tourist.phone = validate_phone(phone)
             tourist.save()
 
             transaction.on_commit(lambda: verify_email(request, created_user.id))
