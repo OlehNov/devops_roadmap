@@ -55,14 +55,18 @@ class GlampOwnerSerializer(ModelSerializer):
         fields = "__all__"
         read_only_fields = ["id", "status"]
 
-    def validate_first_name(self, value):
-        return validate_first_name_last_name(value)
+    def validate(self, data):
+        for item in data.keys():
+            match item:
+                case "first_name":
+                    data["first_name"] = validate_first_name_last_name(data.get("first_name"))
+                case "last_name":
+                    data["last_name"] = validate_first_name_last_name(data.get("last_name"))
+                case "birthday":
+                    data["birthday"] = validate_birthday(data.get("birthday"))
+                case "phone":
+                    data["phone"] = validate_phone(data.get("phone"))
+                case _:
+                    pass
 
-    def validate_last_name(self, value):
-        return validate_first_name_last_name(value)
-
-    def validate_birthday(self, value):
-        return validate_birthday(value)
-
-    def validate_phone(self, value):
-        return validate_phone(value)
+        return data
