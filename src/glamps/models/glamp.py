@@ -2,6 +2,8 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.utils.translation import gettext as _
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
 
 from addons.mixins.timestamps import TimestampMixin
 from categories.models import Category
@@ -13,6 +15,7 @@ from glamps.validators import (
     validate_status,
     validate_type
 )
+from addons.upload_images.downloaders import ThumbnailStorage, upload_to
 
 
 User = get_user_model()
@@ -56,6 +59,14 @@ class Glamp(TimestampMixin):
             MinValueValidator(0.0),
             MaxValueValidator(100.0),
         ],
+    )
+    image = models.ImageField(upload_to=upload_to)
+    thumb = ImageSpecField(
+        source="image",
+        processors=[ResizeToFill(300, 300)],
+        format="JPEG",
+        options={"quality": 60},
+        cachefile_storage=ThumbnailStorage()
     )
     name = models.CharField(
         _("Glamp Name"), max_length=225, null=False, blank=False, default=None, validators=[validate_name_glamp]
@@ -273,3 +284,15 @@ class Glamp(TimestampMixin):
 
     def __repr__(self) -> str:
         return f"<GlampModel>: {self.name}"
+
+
+class ImageList(models.Model):
+    images_list = models.ImageField(upload_to=upload_to)
+    parent = models.ForeignKey(Glamp, on_delete=models.CASCADE, related_name="images_list")
+    thumbs_list = ImageSpecField(
+        source="images_list",
+        processors=[ResizeToFill(300, 300)],
+        format="JPEG",
+        options={"quality": 60},
+        cachefile_storage=ThumbnailStorage(),
+    )
