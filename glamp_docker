@@ -1,0 +1,53 @@
+FROM python:3.11-slim AS base
+
+FROM base AS build
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    gcc \
+    default-libmysqlclient-dev \
+    pkg-config && \
+    rm -rf /var/lib/apt/lists/*
+
+
+COPY requirements.txt .
+
+RUN python -m venv /opt/venv && \
+    /opt/venv/bin/pip install --upgrade pip && \
+    /opt/venv/bin/pip install -r requirements.txt
+
+
+FROM base AS production
+
+WORKDIR /app
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    mariadb-client && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN addgroup --system futurama && \
+    adduser --system --ingroup futurama futurama && \
+    chown -R futurama:futurama /app
+
+USER futurama
+
+COPY --chown=futurama:futurama --from=build /opt/venv /opt/venv
+COPY --chown=futurama:futurama . ./
+
+RUN chmod +x script/docker-entrypoint.sh
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN find / -perm +6000 -type f -exec chmod a-s {} \; || true
+
+
+CMD ["sh", "-c", "python src/addons/databases/create_eventlog_db_script.py && \
+    python src/manage.py makemigrations && \
+    python src/manage.py migrate && \
+    python src/manage.py migrate eventlogs --database=eventlog && \
+    python src/manage.py loaddata src/dump.json && \
+    python src/manage.py runserver 0.0.0.0:8000"]
