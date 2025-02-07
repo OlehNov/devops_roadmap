@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from glamps.models import Glamp, Picture
+from glamps.models import Glamp
 
 
 @admin.register(Glamp)
@@ -21,5 +21,3 @@ class GlampAdmin(admin.ModelAdmin):
         "updated_at"
     )
     prepopulated_fields = {"slug": ("name",)}
-
-admin.site.register(Picture)

@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
@@ -6,7 +8,9 @@ from unidecode import unidecode
 
 from categories.models import Category
 from categories.serializers import CategorySerializer
-from glamps.models import Glamp, Picture
+from config import settings
+from glamps.models import Glamp
+from glamps.models.glamp import ImageList
 from glamps.validators import (
     validate_glamp_price,
     validate_premium_level,
@@ -16,24 +20,23 @@ from glamps.validators import (
 )
 from roles.constants import Role
 from users.serializers import UserSerializer
-
+from addons.upload_images.downloaders import upload_to, process_image
 
 User = get_user_model()
 
 
-class PictureSerializer(ModelSerializer):
+class ImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Picture
-        fields = ["pic"]
+        model = ImageList
+        fields = ["id", "images_list"]
 
 
 class GlampSerializer(ModelSerializer):
-    # picture = PictureSerializer(many=True)
     category = CategorySerializer(read_only=True)
     category_id = serializers.PrimaryKeyRelatedField(
         queryset=Category.objects.all(),
         write_only=True,
-        source='category',
+        source="category",
         required=True,
     )
     owner = UserSerializer(read_only=True)
@@ -63,6 +66,13 @@ class GlampSerializer(ModelSerializer):
     rating = serializers.FloatField(required=False, read_only=True)
     premium_level = serializers.IntegerField(required=False, read_only=True)
     priority = serializers.FloatField(required=False, read_only=True)
+    thumb = serializers.SerializerMethodField()
+    images_list = serializers.SerializerMethodField()
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(), write_only=True, required=False
+    )
+    thumb_list = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Glamp
@@ -79,21 +89,30 @@ class GlampSerializer(ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        # pic = validated_data.pop("picture")
+        image = validated_data.pop("image", None)
+        compressed_image = process_image(image)
+
+        uploaded_images = validated_data.pop("uploaded_images", [])
 
         glamp_obj = Glamp.objects.create(
-            owner=self.context["request"].user, **validated_data
+            owner=self.context["request"].user,
+            image=compressed_image,
+            **validated_data
         )
         glamp_obj.slug = f"{glamp_obj.id}-{slugify(unidecode(glamp_obj.name))}"
-        glamp_obj.save()
 
-        # for picture_data in pic:
-        #     Picture.objects.create(glamp=glamp_obj, **picture_data)
+        for image in uploaded_images:
+            compressed_image = process_image(image)
+            image_list_obj = ImageList.objects.create(images_list=compressed_image, parent=glamp_obj)
+            image_list_obj.thumbs_list = image_list_obj.thumbs_list.url
+            image_list_obj.save()
+
+        glamp_obj.thumb = glamp_obj.thumb.url
+        glamp_obj.save()
 
         return glamp_obj
 
     def update(self, instance, validated_data):
-        # pic = validated_data.pop("picture", None)
         category = validated_data.pop("category", None)
 
         if category:
@@ -105,12 +124,6 @@ class GlampSerializer(ModelSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
-        # if pic:
-        #     instance.picture.clear()
-        #
-        #     for picture_data in pic:
-        #         Picture.objects.get_or_create(glamp=instance, **picture_data)
-
         instance.save()
 
         glamp = super().update(instance, validated_data)
@@ -121,6 +134,53 @@ class GlampSerializer(ModelSerializer):
             glamp.save()
 
         return instance
+
+    def get_thumb(self, obj):
+        if obj.image:
+            from urllib.parse import urljoin
+
+            original_path = os.path.basename(obj.thumb.name)
+            thumb_name = upload_to(obj, original_path)
+            print(thumb_name)
+            print(original_path)
+
+            base_path = thumb_name.split("/")[1:-1]
+            thumb_path = settings.IMAGE_ROOT + "/".join(base_path) + settings.THUMB_ROOT + original_path.split("/")[-1]
+
+            print(base_path)
+            print(thumb_path)
+            return self.context["request"].build_absolute_uri(
+                urljoin(settings.MEDIA_URL, thumb_path)
+            )
+
+        return None
+
+    def get_thumb_list(self, obj):
+        from urllib.parse import urljoin
+
+        thumbs = []
+        for image_obj in obj.images_list.all():
+            if image_obj.thumbs_list:
+                original_path = os.path.basename(image_obj.thumbs_list.name)
+                thumb_name = upload_to(image_obj, original_path)
+
+                base_path = thumb_name.split("/")[1:-1]
+                thumb_path = settings.IMAGE_ROOT + "/".join(base_path) + settings.THUMB_ROOT + original_path.split("/")[-1]
+
+                thumbs.append(self.context["request"].build_absolute_uri(
+                    urljoin(settings.MEDIA_URL, thumb_path)
+                ))
+
+        return thumbs if thumbs else None
+
+    def get_images_list(self, obj):
+        request = self.context.get("request")
+        image_urls = [
+            request.build_absolute_uri(image_obj.images_list.url)
+            for image_obj in obj.images_list.all()
+            if image_obj.images_list
+        ]
+        return image_urls if image_urls else None
 
     def remove_fields(self, representation, fields_to_remove):
         for field in fields_to_remove:
@@ -200,7 +260,6 @@ class GlampForManagerSerializer(GlampSerializer):
 
 
 class GlampByCategorySerializer(ModelSerializer):
-    # picture = PictureSerializer(many=True)
     category = CategorySerializer(read_only=True)
     owner = UserSerializer(read_only=True)
     glamp_type = serializers.IntegerField(
@@ -222,6 +281,12 @@ class GlampByCategorySerializer(ModelSerializer):
         decimal_places=2,
         validators=[validate_glamp_price],
     )
+    thumb = serializers.SerializerMethodField()
+    images_list = serializers.SerializerMethodField()
+    uploaded_images = serializers.ListField(
+        child=serializers.ImageField(), write_only=True, required=False
+    )
+    thumb_list = serializers.SerializerMethodField()
 
     class Meta:
         model = Glamp
@@ -238,21 +303,30 @@ class GlampByCategorySerializer(ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        # pic = validated_data.pop("picture")
+        image = validated_data.pop("image", None)
+        compressed_image = process_image(image)
+
+        uploaded_images = validated_data.pop("uploaded_images", [])
 
         glamp_obj = Glamp.objects.create(
-            owner=self.context["request"].user, **validated_data
+            owner=self.context["request"].user,
+            image=compressed_image,
+            **validated_data
         )
         glamp_obj.slug = f"{glamp_obj.id}-{slugify(unidecode(glamp_obj.name))}"
-        glamp_obj.save()
 
-        # for picture_data in pic:
-        #     Picture.objects.create(glamp=glamp_obj, **picture_data)
+        for image in uploaded_images:
+            compressed_image = process_image(image)
+            image_list_obj = ImageList.objects.create(images_list=compressed_image, parent=glamp_obj)
+            image_list_obj.thumbs_list = image_list_obj.thumbs_list.url
+            image_list_obj.save()
+
+        glamp_obj.thumb = glamp_obj.thumb.url
+        glamp_obj.save()
 
         return glamp_obj
 
     def update(self, instance, validated_data):
-        # pic = validated_data.pop("picture", None)
         category = validated_data.pop("category", None)
 
         if category:
@@ -264,12 +338,6 @@ class GlampByCategorySerializer(ModelSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
 
-        # if pic:
-        #     instance.picture.clear()
-        #
-        #     for picture_data in pic:
-        #         Picture.objects.get_or_create(glamp=instance, **picture_data)
-
         instance.save()
 
         glamp = super().update(instance, validated_data)
@@ -280,6 +348,53 @@ class GlampByCategorySerializer(ModelSerializer):
             glamp.save()
 
         return instance
+
+    def get_thumb(self, obj):
+        if obj.image:
+            from urllib.parse import urljoin
+
+            original_path = os.path.basename(obj.thumb.name)
+            thumb_name = upload_to(obj, original_path)
+            print(thumb_name)
+            print(original_path)
+
+            base_path = thumb_name.split("/")[1:-1]
+            thumb_path = settings.IMAGE_ROOT + "/".join(base_path) + settings.THUMB_ROOT + original_path.split("/")[-1]
+
+            print(base_path)
+            print(thumb_path)
+            return self.context["request"].build_absolute_uri(
+                urljoin(settings.MEDIA_URL, thumb_path)
+            )
+
+        return None
+
+    def get_thumb_list(self, obj):
+        from urllib.parse import urljoin
+
+        thumbs = []
+        for image_obj in obj.images_list.all():
+            if image_obj.thumbs_list:
+                original_path = os.path.basename(image_obj.thumbs_list.name)
+                thumb_name = upload_to(image_obj, original_path)
+
+                base_path = thumb_name.split("/")[1:-1]
+                thumb_path = settings.IMAGE_ROOT + "/".join(base_path) + settings.THUMB_ROOT + original_path.split("/")[-1]
+
+                thumbs.append(self.context["request"].build_absolute_uri(
+                    urljoin(settings.MEDIA_URL, thumb_path)
+                ))
+
+        return thumbs if thumbs else None
+
+    def get_images_list(self, obj):
+        request = self.context.get("request")
+        image_urls = [
+            request.build_absolute_uri(image_obj.images_list.url)
+            for image_obj in obj.images_list.all()
+            if image_obj.images_list
+        ]
+        return image_urls if image_urls else None
 
 
 class ActivateGlampSerializer(ModelSerializer):

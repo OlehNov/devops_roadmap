@@ -293,18 +293,24 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "/static/"
-MEDIA_URL = "/glamp_pic/"
+MEDIA_URL = "/uploads/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
 
+QUALITY_IMAGE = 80
+QUALITY_THUMB = 80
+
+IMAGE_ROOT = "/uploads/images/"
+THUMB_ROOT = "/thumbs/"
 
 # Cloudinary storage settings
 
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
-    "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
-    "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
-}
-
-DEFAULT_FILE_STORAGE = os.getenv("DEFAULT_FILE_STORAGE")
+# CLOUDINARY_STORAGE = {
+#     "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
+#     "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
+#     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
+# }
+#
+# DEFAULT_FILE_STORAGE = os.getenv("DEFAULT_FILE_STORAGE")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
