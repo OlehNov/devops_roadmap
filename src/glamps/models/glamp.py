@@ -16,6 +16,7 @@ from glamps.validators import (
     validate_type
 )
 from addons.upload_images.downloaders import ThumbnailStorage, upload_to
+from config import settings
 
 
 User = get_user_model()
@@ -65,7 +66,7 @@ class Glamp(TimestampMixin):
         source="image",
         processors=[ResizeToFill(300, 300)],
         format="JPEG",
-        options={"quality": 60},
+        options={"quality": settings.QUALITY_THUMB},
         cachefile_storage=ThumbnailStorage()
     )
     name = models.CharField(
@@ -293,6 +294,6 @@ class ImageList(models.Model):
         source="images_list",
         processors=[ResizeToFill(300, 300)],
         format="JPEG",
-        options={"quality": 60},
+        options={"quality": settings.QUALITY_THUMB},
         cachefile_storage=ThumbnailStorage(),
     )

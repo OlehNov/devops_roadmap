@@ -6,6 +6,7 @@ from io import BytesIO
 from PIL import Image
 from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
+from config import settings
 
 
 class ThumbnailStorage(FileSystemStorage):
@@ -16,6 +17,7 @@ class ThumbnailStorage(FileSystemStorage):
         new_path = os.path.join("images", now.strftime("%Y/%m-%d"), "thumbs", filename)
 
         return super().get_available_name(new_path, max_length)
+
 
 def upload_to(instance, filename):
     now = datetime.now()
@@ -28,6 +30,7 @@ def upload_to(instance, filename):
     unique_filename = f"{hash_name}{ext}"
 
     return os.path.join("images", year, month_day, unique_filename)
+
 
 def process_image(image):
     if image:
@@ -42,7 +45,7 @@ def process_image(image):
             img_format  = img.format
 
         output = BytesIO()
-        img.save(output, format=img_format, quality=40, optimize=True)
+        img.save(output, format=img_format, quality=settings.QUALITY_IMAGE, optimize=True)
         output.seek(0)
 
         return ContentFile(output.read(), name=f"compressed_{image.name}{ext}")

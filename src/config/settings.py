@@ -296,6 +296,11 @@ STATIC_URL = "/static/"
 MEDIA_URL = "/uploads/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
 
+QUALITY_IMAGE = 80
+QUALITY_THUMB = 80
+
+IMAGE_ROOT = "/uploads/images/"
+THUMB_ROOT = "/thumbs/"
 
 # Cloudinary storage settings
 

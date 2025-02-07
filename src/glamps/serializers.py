@@ -145,7 +145,7 @@ class GlampSerializer(ModelSerializer):
             print(original_path)
 
             base_path = thumb_name.split("/")[1:-1]
-            thumb_path = "/uploads/images/" + "/".join(base_path) + "/thumbs/" + original_path.split("/")[-1]
+            thumb_path = settings.IMAGE_ROOT + "/".join(base_path) + settings.THUMB_ROOT + original_path.split("/")[-1]
 
             print(base_path)
             print(thumb_path)
@@ -165,7 +165,7 @@ class GlampSerializer(ModelSerializer):
                 thumb_name = upload_to(image_obj, original_path)
 
                 base_path = thumb_name.split("/")[1:-1]
-                thumb_path = "/uploads/images/" + "/".join(base_path) + "/thumbs/" + original_path.split("/")[-1]
+                thumb_path = settings.IMAGE_ROOT + "/".join(base_path) + settings.THUMB_ROOT + original_path.split("/")[-1]
 
                 thumbs.append(self.context["request"].build_absolute_uri(
                     urljoin(settings.MEDIA_URL, thumb_path)
@@ -359,7 +359,7 @@ class GlampByCategorySerializer(ModelSerializer):
             print(original_path)
 
             base_path = thumb_name.split("/")[1:-1]
-            thumb_path = "/uploads/images/" + "/".join(base_path) + "/thumbs/" + original_path.split("/")[-1]
+            thumb_path = settings.IMAGE_ROOT + "/".join(base_path) + settings.THUMB_ROOT + original_path.split("/")[-1]
 
             print(base_path)
             print(thumb_path)
@@ -379,7 +379,7 @@ class GlampByCategorySerializer(ModelSerializer):
                 thumb_name = upload_to(image_obj, original_path)
 
                 base_path = thumb_name.split("/")[1:-1]
-                thumb_path = "/uploads/images/" + "/".join(base_path) + "/thumbs/" + original_path.split("/")[-1]
+                thumb_path = settings.IMAGE_ROOT + "/".join(base_path) + settings.THUMB_ROOT + original_path.split("/")[-1]
 
                 thumbs.append(self.context["request"].build_absolute_uri(
                     urljoin(settings.MEDIA_URL, thumb_path)
