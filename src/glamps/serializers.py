@@ -10,7 +10,7 @@ from categories.models import Category
 from categories.serializers import CategorySerializer
 from config import settings
 from glamps.models import Glamp
-from glamps.models.glamp import ImageList
+from glamps.models import ImageList
 from glamps.validators import (
     validate_glamp_price,
     validate_premium_level,
