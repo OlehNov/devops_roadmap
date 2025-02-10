@@ -289,7 +289,7 @@ class Glamp(TimestampMixin):
 
 class ImageList(models.Model):
     images_list = models.ImageField(upload_to=upload_to)
-    parent = models.ForeignKey(Glamp, on_delete=models.CASCADE, related_name="images_list")
+    parent = models.ForeignKey(Glamp, on_delete=models.CASCADE, related_name="images_list", default=None, null=True)
     thumbs_list = ImageSpecField(
         source="images_list",
         processors=[ResizeToFill(300, 300)],
