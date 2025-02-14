@@ -4,6 +4,7 @@ from rest_framework.serializers import ModelSerializer, ValidationError
 from managers.models import GlampManager
 from roles.constants import Role
 from users.serializers import UserRegisterSerializer, UserSerializer
+from users.validators import validate_first_name_last_name
 
 User = get_user_model()
 
@@ -48,3 +49,15 @@ class ManagerSerializer(ModelSerializer):
         model = GlampManager
         fields = "__all__"
         read_only_fields = ["id", "status"]
+
+    def validate(self, data):
+        for item in data.keys():
+            match item:
+                case "first_name":
+                    data["first_name"] = validate_first_name_last_name(data.get("first_name"))
+                case "last_name":
+                    data["last_name"] = validate_first_name_last_name(data.get("last_name"))
+                case _:
+                    pass
+
+        return data
