@@ -63,9 +63,6 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
             first_name = serializer.validated_data["first_name"]
             last_name = serializer.validated_data["last_name"]
 
-            validate_first_name_last_name(first_name)
-            validate_first_name_last_name(last_name)
-
             administrator = Administrator.objects.get(id=created_user.id, user=created_user)
 
             if not administrator:
@@ -74,8 +71,8 @@ class AdministratorModelViewSet(ModelViewSet, EventLogMixin):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            administrator.first_name = first_name
-            administrator.last_name = last_name
+            administrator.first_name = validate_first_name_last_name(first_name)
+            administrator.last_name = validate_first_name_last_name(last_name)
             administrator.save()
 
             validated_data = serializer.validated_data
