@@ -13,7 +13,8 @@ from glamps.validators import (
     validate_name_glamp,
     validate_premium_level,
     validate_status,
-    validate_type
+    validate_type,
+    validate_index
 )
 from addons.upload_images.downloaders import ThumbnailStorage, upload_to
 from config import settings
@@ -272,6 +273,60 @@ class Glamp(TimestampMixin):
     )
     room_on_first_flor = models.BooleanField(
         _("The Room Is Completely Located On The First Floor"), default=False
+    )
+    index = models.CharField(
+        _("Index"), max_length=255, validators=[validate_index], default=False
+    )
+    single_beds = models.PositiveSmallIntegerField(
+        _("Single Beds"), null=True, blank=True, default=None
+    )
+    double_beds = models.PositiveSmallIntegerField(
+        _("Double Beds"), null=True, blank=True, default=None
+    )
+    guests = models.PositiveSmallIntegerField(
+        _("Guests"), null=True, blank=True, default=None
+    )
+    checkin_time = models.TimeField(
+        _("Check-in Time"), null=True, blank=True, default=None
+    )
+    checkout_time = models.TimeField(
+        _("Check-out Time"), null=True, blank=True, default=None
+    )
+    smoking_allowed = models.BooleanField(
+        _("Smoking Allowed"), default=False
+    )
+    parties_allowed = models.BooleanField(
+        _("Parties Allowed"), default=False
+    )
+    winter = models.BooleanField(
+        _("Winter"), default=False
+    )
+    spring = models.BooleanField(
+        _("Spring"), default=False
+    )
+    summer = models.BooleanField(
+        _("Summer"), default=False
+    )
+    autumn = models.BooleanField(
+        _("Autumn"), default=False
+    )
+    earnings = models.DecimalField(
+        _("Earnings"), max_digits=10, decimal_places=2, null=True, blank=True, default=None
+    )
+    base_price = models.FloatField(
+        _("Base Price"), null=True, blank=True, default=None
+    )
+    tourist_tax = models.FloatField(
+        _("Tourist Tax"), null=True, blank=True, default=None
+    )
+    platform_fee = models.FloatField(
+        _("Platform Fee"), null=True, blank=True, default=None
+    )
+    terms_agreed = models.BooleanField(
+        _("Terms Agreed"), default=False
+    )
+    title = models.CharField(
+        _("Title"), max_length=255, null=True, blank=True, default=None
     )
 
     class Meta:

@@ -55,3 +55,11 @@ def validate_premium_level(value):
             "%(value)s is not a valid level",
             params={"value": value},
         )
+
+def validate_index(value):
+    if not value.isdigit():
+        raise ValidationError(
+            "Index can be only digit"
+        )
+
+    return value

@@ -150,3 +150,6 @@
 1. Add fields for main image and main thumb in Glamp model
 2. Add model ImageList for download list image and create list thumbs 
 ---
+## 15.02.2025 16:13. Matched fields in Glamp to the layout.
+1. Add new fields in Glamp model
+---
