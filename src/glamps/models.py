@@ -14,7 +14,7 @@ from glamps.validators import (
     validate_premium_level,
     validate_status,
     validate_type,
-    validate_index
+    validate_zip_code
 )
 from addons.upload_images.downloaders import ThumbnailStorage, upload_to
 from config import settings
@@ -274,8 +274,8 @@ class Glamp(TimestampMixin):
     room_on_first_flor = models.BooleanField(
         _("The Room Is Completely Located On The First Floor"), default=False
     )
-    index = models.CharField(
-        _("Index"), max_length=255, validators=[validate_index], default=False
+    zip_code = models.CharField(
+        _("Index"), max_length=255, validators=[validate_zip_code], default=False
     )
     single_beds = models.PositiveSmallIntegerField(
         _("Single Beds"), null=True, blank=True, default=None
@@ -310,16 +310,16 @@ class Glamp(TimestampMixin):
     autumn = models.BooleanField(
         _("Autumn"), default=False
     )
-    earnings = models.DecimalField(
+    earnings_owner = models.DecimalField(
         _("Earnings"), max_digits=10, decimal_places=2, null=True, blank=True, default=None
     )
-    base_price = models.FloatField(
+    earnings_base_price = models.FloatField(
         _("Base Price"), null=True, blank=True, default=None
     )
-    tourist_tax = models.FloatField(
+    earnings_tourist_taxes = models.FloatField(
         _("Tourist Tax"), null=True, blank=True, default=None
     )
-    platform_fee = models.FloatField(
+    earnings_platform_fee = models.FloatField(
         _("Platform Fee"), null=True, blank=True, default=None
     )
     terms_agreed = models.BooleanField(
