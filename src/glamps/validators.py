@@ -63,3 +63,11 @@ def validate_zip_code(value):
         )
 
     return value
+
+def validate_glamp_description(value):
+    if len(value) < 300:
+        raise ValidationError(
+            "The description must be more than 300 characters"
+        )
+
+    return value

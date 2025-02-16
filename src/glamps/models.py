@@ -14,7 +14,8 @@ from glamps.validators import (
     validate_premium_level,
     validate_status,
     validate_type,
-    validate_zip_code
+    validate_zip_code,
+    validate_glamp_description
 )
 from addons.upload_images.downloaders import ThumbnailStorage, upload_to
 from config import settings
@@ -77,7 +78,7 @@ class Glamp(TimestampMixin):
         _("Slug"), max_length=225, null=True, blank=True, unique=True, default=None
     )
     description = models.TextField(
-        _("Description"), max_length=5000, null=False, blank=False, default=None
+        _("Description"), max_length=5000, null=False, blank=False, default=None, validators=[validate_glamp_description]
     )
     category = models.ForeignKey(
         Category,

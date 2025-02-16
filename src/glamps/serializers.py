@@ -16,7 +16,9 @@ from glamps.validators import (
     validate_premium_level,
     validate_slug_glamp,
     validate_status,
-    validate_type
+    validate_type,
+    validate_name_glamp,
+    validate_glamp_description
 )
 from roles.constants import Role
 from users.serializers import UserSerializer
@@ -43,12 +45,12 @@ class GlampSerializer(ModelSerializer):
     glamp_type = serializers.IntegerField(
         required=True, validators=[validate_type]
     )
-    name = serializers.CharField(required=True, max_length=225)
+    name = serializers.CharField(required=True, max_length=225, validators=[validate_name_glamp])
     capacity = serializers.IntegerField(required=True, min_value=1)
     status = serializers.IntegerField(
         required=True, validators=[validate_status]
     )
-    description = serializers.CharField(required=True, max_length=5000)
+    description = serializers.CharField(required=True, max_length=5000, validators=[validate_glamp_description])
     street = serializers.CharField(required=True, max_length=225)
     number_of_bedrooms = serializers.IntegerField(required=True)
     number_of_beds = serializers.IntegerField(required=True)
