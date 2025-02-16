@@ -13,7 +13,9 @@ from glamps.validators import (
     validate_name_glamp,
     validate_premium_level,
     validate_status,
-    validate_type
+    validate_type,
+    validate_zip_code,
+    validate_glamp_description
 )
 from addons.upload_images.downloaders import ThumbnailStorage, upload_to
 from config import settings
@@ -76,7 +78,7 @@ class Glamp(TimestampMixin):
         _("Slug"), max_length=225, null=True, blank=True, unique=True, default=None
     )
     description = models.TextField(
-        _("Description"), max_length=5000, null=False, blank=False, default=None
+        _("Description"), max_length=5000, null=False, blank=False, default=None, validators=[validate_glamp_description]
     )
     category = models.ForeignKey(
         Category,
@@ -272,6 +274,60 @@ class Glamp(TimestampMixin):
     )
     room_on_first_flor = models.BooleanField(
         _("The Room Is Completely Located On The First Floor"), default=False
+    )
+    zip_code = models.CharField(
+        _("Index"), max_length=255, validators=[validate_zip_code], default=False
+    )
+    single_beds = models.PositiveSmallIntegerField(
+        _("Single Beds"), null=True, blank=True, default=None
+    )
+    double_beds = models.PositiveSmallIntegerField(
+        _("Double Beds"), null=True, blank=True, default=None
+    )
+    guests = models.PositiveSmallIntegerField(
+        _("Guests"), null=True, blank=True, default=None
+    )
+    checkin_time = models.TimeField(
+        _("Check-in Time"), null=True, blank=True, default=None
+    )
+    checkout_time = models.TimeField(
+        _("Check-out Time"), null=True, blank=True, default=None
+    )
+    smoking_allowed = models.BooleanField(
+        _("Smoking Allowed"), default=False
+    )
+    parties_allowed = models.BooleanField(
+        _("Parties Allowed"), default=False
+    )
+    winter = models.BooleanField(
+        _("Winter"), default=False
+    )
+    spring = models.BooleanField(
+        _("Spring"), default=False
+    )
+    summer = models.BooleanField(
+        _("Summer"), default=False
+    )
+    autumn = models.BooleanField(
+        _("Autumn"), default=False
+    )
+    earnings_owner = models.DecimalField(
+        _("Earnings"), max_digits=10, decimal_places=2, null=True, blank=True, default=None
+    )
+    earnings_base_price = models.DecimalField(
+        _("Base Price"), max_digits=10, decimal_places=2, null=True, blank=True, default=None
+    )
+    earnings_tourist_taxes = models.DecimalField(
+        _("Tourist Tax"), max_digits=10, decimal_places=2, null=True, blank=True, default=None
+    )
+    earnings_platform_fee = models.DecimalField(
+        _("Platform Fee"), max_digits=10, decimal_places=2, null=True, blank=True, default=None
+    )
+    terms_agreed = models.BooleanField(
+        _("Terms Agreed"), default=False
+    )
+    title = models.CharField(
+        _("Title"), max_length=255, null=True, blank=True, default=None
     )
 
     class Meta:
