@@ -59,7 +59,7 @@ def validate_premium_level(value):
 def validate_zip_code(value):
     if not value.isdigit():
         raise ValidationError(
-            "Index can be only digit"
+            "Zip code can be only digit"
         )
 
     return value

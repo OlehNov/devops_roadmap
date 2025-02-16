@@ -313,14 +313,14 @@ class Glamp(TimestampMixin):
     earnings_owner = models.DecimalField(
         _("Earnings"), max_digits=10, decimal_places=2, null=True, blank=True, default=None
     )
-    earnings_base_price = models.FloatField(
-        _("Base Price"), null=True, blank=True, default=None
+    earnings_base_price = models.DecimalField(
+        _("Base Price"), max_digits=10, decimal_places=2, null=True, blank=True, default=None
     )
-    earnings_tourist_taxes = models.FloatField(
-        _("Tourist Tax"), null=True, blank=True, default=None
+    earnings_tourist_taxes = models.DecimalField(
+        _("Tourist Tax"), max_digits=10, decimal_places=2, null=True, blank=True, default=None
     )
-    earnings_platform_fee = models.FloatField(
-        _("Platform Fee"), null=True, blank=True, default=None
+    earnings_platform_fee = models.DecimalField(
+        _("Platform Fee"), max_digits=10, decimal_places=2, null=True, blank=True, default=None
     )
     terms_agreed = models.BooleanField(
         _("Terms Agreed"), default=False
