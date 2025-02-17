@@ -1,0 +1,2 @@
+tty-share --public --listen 127.0.0.1:port
+for example:  tty-share --public --listen 127.0.0.1:9996
