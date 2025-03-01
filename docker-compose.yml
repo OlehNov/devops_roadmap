@@ -1,76 +1,41 @@
 services:
-  db:
-    restart: always
-    image: mysql:latest
-    env_file:
-      - .env
-    volumes:
-      - db_data:/var/lib/mysql
-    ports:
-      - 3306:3306
-    networks:
-      - glamp
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   web:
     build: .
-    volumes:
-      - .:/app
-      - static_value:/static/
-      - media_value:/media/
+    restart: always
+    depends_on:
+      broker:
+        condition: service_started
     ports:
-      - 8181:8000
+      - "8181:8000"
     env_file:
       - .env
-    depends_on:
-      - db
+    volumes:
+      - static_value:/static/
+      - media_value:/media/
     networks:
       - glamp
+        # entrypoint: ["/bin/bash", "/app/script/docker-entrypoint.sh"]
 
   broker:
     image: redis:latest
-    ports:
-      - 6379:6379
-    depends_on:
-      - db
+    expose: [6379]
     networks:
       - glamp
 
   celery-worker:
     build: .
+    command: bash -c "cd src/ && celery -A config.celery worker -l INFO"
     env_file:
       - .env
-    command: bash -c "cd src/ && celery -A config.celery worker -l INFO"
-    volumes:
-      - .:/app
-    depends_on:
-      - db
-      - broker
+    depends_on: [broker, web]
     networks:
       - glamp
 
-#  celery-beat:
-#    build: .
-#    command: bash -c "cd src/ && celery -A config.celery beat --loglevel=info"
-#    volumes:
-#      - .:/app
-#    env_file:
-#      - .env
-#    depends_on:
-#      - db
-#      - broker
-#    networks:
-#      - glamp
-
 volumes:
-  db_data:
   static_value:
   media_value:
 
 networks:
   glamp:
     driver: bridge
+

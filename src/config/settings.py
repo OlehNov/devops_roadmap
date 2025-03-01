@@ -121,7 +121,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "config.urls"
 
-CORS_ALLOW_ALL_ORIGINS = True
+#CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
 # Templates Settings
 TEMPLATES = [
@@ -240,8 +241,9 @@ SIMPLE_JWT = {
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Ensure session and CSRF cookies are only sent over HTTPS
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False
+#CSRF_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 
 # Password validation
