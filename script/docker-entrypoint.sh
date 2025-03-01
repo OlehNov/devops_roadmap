@@ -1,12 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
-host="${DB_HOST}"
-port="${DB_PORT}"
 timeout=60
 elapsed=0
 
 echo "Waiting for database to be ready..."
-until mysqladmin ping -h"$host" -P"$port" --silent; do
+until mysqladmin ping -h"${DB_HOST}" -P"${DB_PORT}" -u ${DB_USER} -p${DB_PASSWORD} --silent; do
   echo "Database is unavailable - sleeping"
   sleep 1
   elapsed=$((elapsed + 1))
