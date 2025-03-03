@@ -28,13 +28,8 @@ RUN apt-get update && \
     mariadb-client && \
     rm -rf /var/lib/apt/lists/*
 
-#RUN addgroup --system user && \
-#    adduser --system --ingroup user user
-
 COPY --from=build /opt/venv /opt/venv
 COPY . .
-
-#USER user
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
