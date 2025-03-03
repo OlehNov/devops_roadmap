@@ -55,3 +55,19 @@ def validate_premium_level(value):
             "%(value)s is not a valid level",
             params={"value": value},
         )
+
+def validate_zip_code(value):
+    if not value.isdigit():
+        raise ValidationError(
+            "Zip code can be only digit"
+        )
+
+    return value
+
+def validate_glamp_description(value):
+    if len(value) < 300:
+        raise ValidationError(
+            "The description must be more than 300 characters"
+        )
+
+    return value

@@ -93,7 +93,7 @@
 ---
 ![текст](https://img.shields.io/badge/POST-%23FFFF00)
 
-#### ➡️ **URL**: [http://localhost:8181/api/v1/tourists/](http://localhost:8181/api/v1/tourists/)
+#### ➡️ **URL**: [http://localhost:8181/api/v1/tourists/register-tourist/](http://localhost:8181/api/v1/tourists/register-tourist/)
 
 ### Request Requirements:
  - Any

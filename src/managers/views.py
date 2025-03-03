@@ -61,9 +61,6 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
             first_name = serializer.validated_data["first_name"]
             last_name = serializer.validated_data["last_name"]
 
-            validate_first_name_last_name(first_name)
-            validate_first_name_last_name(last_name)
-
             manager = GlampManager.objects.get(id=created_user.id, user=created_user)
 
             if not manager:
@@ -72,8 +69,8 @@ class ManagerModelViewSet(ModelViewSet, EventLogMixin):
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
-            manager.first_name = first_name
-            manager.last_name = last_name
+            manager.first_name = validate_first_name_last_name(first_name)
+            manager.last_name = validate_first_name_last_name(last_name)
             manager.save()
 
             validated_data = serializer.validated_data

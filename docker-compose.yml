@@ -3,13 +3,11 @@ services:
   web:
     build: .
     restart: always
-    image: glamp_app
-    container_name: web
     depends_on:
       broker:
         condition: service_started
     ports:
-      - "127.0.0.1:8181:8000"
+      - "8181:8000"
     env_file:
       - .env
     volumes:
@@ -17,18 +15,15 @@ services:
       - media_value:/media/
     networks:
       - glamp
-    # entrypoint: ["/bin/bash", "/app/script/docker-entrypoint.sh"]
 
   broker:
     image: redis:latest
-    container_name: broker
     expose: [6379]
     networks:
       - glamp
 
   celery-worker:
     build: .
-    container_name: celery-worker
     command: bash -c "cd src/ && celery -A config.celery worker -l INFO"
     env_file:
       - .env
@@ -43,5 +38,3 @@ volumes:
 networks:
   glamp:
     driver: bridge
-  # db_network:
-  #   external: true

@@ -146,3 +146,10 @@
 ## 28.01.2025 13:13. Bugfix #130.
 1. Fix is_hidden in glamps by category endpoint.
 ---
+## 07.02.2025 13:13. Images integration 112.
+1. Add fields for main image and main thumb in Glamp model
+2. Add model ImageList for download list image and create list thumbs 
+---
+## 15.02.2025 16:13. Matched fields in Glamp to the layout.
+1. Add new fields in Glamp model
+---

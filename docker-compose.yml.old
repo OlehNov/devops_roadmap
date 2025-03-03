@@ -1,0 +1,67 @@
+services:
+  db:
+    restart: always
+    image: mysql:latest
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    networks:
+      - glamp
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    image: glamp_app
+    ports:
+      - 8181:8000
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - static_value:/static/
+      - media_value:/media/
+    networks:
+      - glamp
+    entrypoint: ["/bin/bash", "/app/script/wait-for-web-services.sh"]
+
+  broker:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    depends_on:
+        db:
+          condition: service_healthy
+    networks:
+      - glamp
+
+  celery-worker:
+    image: glamp_app
+    command: bash -c "cd src/ && celery -A config.celery worker -l INFO"
+    volumes:
+      - .:/app
+    networks:
+      - glamp
+    entrypoint: ["/bin/bash", "/app/script/wait-for-services.sh"]
+
+  celery-beat:
+    image: glamp_app
+    command: bash -c "cd src/ && celery -A config.celery beat --loglevel=info"
+    networks:
+      - glamp
+    entrypoint: ["/bin/bash", "/app/script/wait-for-services.sh"]
+
+volumes:
+  db_data:
+  static_value:
+  media_value:
+
+networks:
+  glamp:
+    driver: bridge
