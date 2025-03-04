@@ -6,6 +6,7 @@ WORKDIR /app
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     gcc \
+    build-essential \
     default-libmysqlclient-dev \
     pkg-config && \
     rm -rf /var/lib/apt/lists/*
@@ -20,25 +21,27 @@ RUN python -m venv /opt/venv && \
 
 FROM base AS production
 
-WORKDIR /app
 
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    netcat-openbsd \
+    curl \
     mariadb-client && \
     rm -rf /var/lib/apt/lists/*
 
-#RUN addgroup --system user && \
-#    adduser --system --ingroup user user
+RUN addgroup --system user && \
+   adduser --system --ingroup user user
 
 COPY --from=build /opt/venv /opt/venv
-COPY . ./
 
-#RUN chown -R user:user /app
+WORKDIR /app
+
+COPY . .
+
+RUN chown -R user:user /app
 
 RUN chmod +x /app/script/docker-entrypoint.sh
 
-#USER user
+USER user
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

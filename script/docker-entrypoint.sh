@@ -19,8 +19,8 @@ done
 
 echo "Database is up - executing commands"
 #python src/addons/databases/create_eventlog_db_script.py
-python src/manage.py makemigrations
-python src/manage.py migrate
-python src/manage.py migrate eventlogs --database=eventlog
+# python src/manage.py makemigrations
+# python src/manage.py migrate
+# python src/manage.py migrate eventlogs --database=eventlog
 #python src/manage.py loaddata src/dump.json
 exec python src/manage.py runserver 0.0.0.0:8000
