@@ -1,0 +1,4 @@
+Local machine
+url: http://0.0.0.0:8181/admin/
+email: admin1@admin1.com
+password: admin1
