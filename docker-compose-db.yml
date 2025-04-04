@@ -2,26 +2,36 @@ version: '3.8'
 
 services:
   db:
-    image: mysql:latest
+    # image: mysql:latest
+    image: mariadb:10.11
     container_name: db
-    restart: always
+    restart: unless-stopped
     env_file:
       - .env-db
     volumes:
-      - db_data:/var/lib/mysql
+      # - db_data:/var/lib/mysql
+      - data_base:/var/lib/mysql
     ports:
-      - 3306:3306
+      - 3308:3306
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 1G
     networks:
       - db_network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "db"]
+      # test: ["CMD", "mysqladmin", "ping", "-h", "db"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -P 3306 -u root -proot --protocol=tcp || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 30s
 
 volumes:
-  db_data:
+  data_base:
+  # db_data:
+
 
 networks:
   db_network:
